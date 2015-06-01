@@ -52,7 +52,6 @@ public:
       {
 	   
 		T weight = i.sampleWeight(A, a,b);
-		cerr << i.getAverage() <<"cosT    "<<i.getCosTheta()<< endl;
 		T tmp = i.getAverage()*i.getCosTheta();
 		tmp = weight*tmp/abs(tmp);
 

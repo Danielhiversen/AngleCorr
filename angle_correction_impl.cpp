@@ -73,8 +73,6 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 		abs_vessel_vel = abs_vessel_vel*sgn(abs_vessel_vel);
 
 
-		cerr << flow_direction << endl;
-
 		if( abs_dir< uncertainty_limit){
 					continue;
 		}
