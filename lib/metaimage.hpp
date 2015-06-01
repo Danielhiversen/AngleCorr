@@ -40,11 +40,8 @@ public:
   setFileName(const string filename)
   {
     m_reader->SetFileName(filename.c_str());
-	#if VTK_MAJOR_VERSION <= 5
-    	m_reader->Update();
-	#else
-        m_reader->Update();
-	#endif
+    m_reader->Update();
+
   }
 
   /**
