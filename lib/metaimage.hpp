@@ -43,6 +43,7 @@ public:
 	#if VTK_MAJOR_VERSION <= 5
     	m_reader->Update();
 	#else
+        m_reader->Update();
 	#endif
   }
 
