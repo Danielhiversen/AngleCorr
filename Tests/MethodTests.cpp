@@ -87,7 +87,7 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
   double true_flow [1]={-0.465};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_1.vtk", splines,0.0);
+  CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_1.vtk", splines,0.0));
 }
 
 
@@ -109,7 +109,7 @@ TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
   double true_flow [1]={-0.557};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_2.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_2.vtk", splines,0.0));
 }
   
 TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
@@ -129,7 +129,7 @@ TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
   double true_flow [1]={-0.534};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_3.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_3.vtk", splines,0.0));
 }
 
 
@@ -151,7 +151,7 @@ TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
   double true_flow [1]={-0.577};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_4.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_4.vtk", splines,0.0));
 }
 
 
@@ -173,7 +173,7 @@ TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
   double true_flow [2]={-0.933,0.239};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_5.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_5.vtk", splines,0.0));
 }
 
 
@@ -195,7 +195,7 @@ TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
   double true_flow [2]={0.651,-2.50};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_6.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_6.vtk", splines,0.0));
 }
 
 
@@ -217,7 +217,7 @@ TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][alia
   double true_flow [1]={-0.314};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_7.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_7.vtk", splines,0.0));
 }
 
 
@@ -239,7 +239,7 @@ TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][alia
   double true_flow [1]={0.403};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_8.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_8.vtk", splines,0.0));
 }
 
 
@@ -264,7 +264,7 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
   double true_flow [1]={-0.625};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_9.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_9.vtk", splines,0.0));
 }
 
 
@@ -287,6 +287,6 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
   double true_flow [1]={0.5847};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  writeDirectionToVtkFile("output_flowdirection_test_10.vtk", splines,0.0);
+   CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_10.vtk", splines,0.0));
 }
 
