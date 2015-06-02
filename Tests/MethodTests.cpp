@@ -10,6 +10,23 @@
 using namespace std;
 
 
+void validateFlowDirection_FlowVel(vector<Spline3D<D> > *splines, double *true_flow){
+
+
+  D flow_direction;
+  D flow_vel;
+
+  int k=0;
+  for(auto &spline: *splines)
+  {
+    flow_vel = spline.getIntersections().getEstimatedVelocity();
+	flow_direction = spline.getIntersections().getEstimatedDirection();
+    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
+	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
+  }
+}
+
+
 TEST_CASE("Test for nan in output", "[angle_correction]")
 {
 
@@ -63,22 +80,13 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={-0.465};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
-  
+  validateFlowDirection_FlowVel(splines,true_flow);
+
   writeDirectionToVtkFile("output_flowdirection_test_1.vtk", splines,0.0);
 }
 
@@ -94,21 +102,12 @@ TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={-0.557};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_2.vtk", splines,0.0);
 }
@@ -123,21 +122,12 @@ TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={-0.534};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_3.vtk", splines,0.0);
 }
@@ -154,21 +144,12 @@ TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={-0.577};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_4.vtk", splines,0.0);
 }
@@ -185,21 +166,12 @@ TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [2]={-0.933,0.239};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_5.vtk", splines,0.0);
 }
@@ -216,21 +188,12 @@ TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [2]={0.651,-2.50};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_6.vtk", splines,0.0);
 }
@@ -247,21 +210,12 @@ TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][alia
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={-0.314};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_7.vtk", splines,0.0);
 }
@@ -278,21 +232,12 @@ TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][alia
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={0.403};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_8.vtk", splines,0.0);
 }
@@ -312,21 +257,12 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={-0.625};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_9.vtk", splines,0.0);
 }
@@ -344,21 +280,12 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  //double 0.0 = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
+ 
 
   vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
-  D flow_direction;
-  D flow_vel;
   double true_flow [1]={0.5847};
-  int k=0;
-  for(auto &spline: *splines)
-  {
-    flow_vel = spline.getIntersections().getEstimatedVelocity();
-	flow_direction = spline.getIntersections().getEstimatedDirection();
-    CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-	CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-  }
+  validateFlowDirection_FlowVel(splines,true_flow);
 
   writeDirectionToVtkFile("output_flowdirection_test_10.vtk", splines,0.0);
 }
