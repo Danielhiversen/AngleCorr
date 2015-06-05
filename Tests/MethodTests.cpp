@@ -259,7 +259,7 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
 
 
 
-TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction][b]")
+TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction]")
 {
 
   char centerline[] = "../Testdata/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
@@ -269,7 +269,7 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
   double cutoff = 0.18;
   int nConvolutions = 6;
 
- 
+
 
   vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
@@ -277,5 +277,39 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
   validateFlowDirection_FlowVel(splines,true_flow);
 
    CHECK_NOTHROW(writeDirectionToVtkFile("output_flowdirection_test_10.vtk", splines,0.0));
+}
+
+
+TEST_CASE("Test EstimateAngleCorrectedFlowDirection", "[angle_correction]")
+{
+
+  char centerline[] = "../Testdata/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
+  char image_prefix[] = "../Testdata/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
+
+  double Vnyq =  0.312;
+  double cutoff = 0.18;
+  int nConvolutions = 6;
+
+  const char* filename_a ="output_flowdirection_test_11_a.vtk";
+  const char* filename_b ="output_flowdirection_test_11_b.vtk";
+
+
+  vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(centerline, image_prefix, Vnyq, cutoff, nConvolutions, 0.5);
+  writeDirectionToVtkFile(filename_a, polydataFlowData);
+
+  vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
+  writeDirectionToVtkFile(filename_b, splines,0.5);
+
+
+  std::ifstream file_a(filename_a);
+  std::ifstream file_b(filename_b);
+  std::string line_a,line_b;
+  while (std::getline(file_a, line_a))
+  {
+	  std::getline(file_b, line_b);
+	  CHECK( line_a == line_b);
+  }
+
+
 }
 
