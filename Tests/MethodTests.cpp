@@ -30,7 +30,12 @@ void validateFlowDirection_FlowVel(vector<Spline3D<D> > *splines, double *true_f
 TEST_CASE("Test for nan in output", "[angle_correction]")
 {
 
+
+
 	cerr << std::string(ANGLECORRECTION_TEST_DATA_DIR) << endl;
+	char test[]=std::string(ANGLECORRECTION_TEST_DATA_DIR)
+	cerr << test << endl;
+
   char centerline[] = "../Testdata/2015-01-27_Tumor.cx3/Images/US_02_20150127T110442_Angio_1_tsf_cl1.vtk";
   char image_prefix[] = "../Testdata/2015-01-27_Tumor.cx3/US_Acq/US-Acq_02_20150127T110442_raw/US-Acq_02_20150127T110442_Velocity_";
   double Vnyq = 0.2925;
