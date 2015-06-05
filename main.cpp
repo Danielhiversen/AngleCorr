@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
     exit(1);
   }
   int argidx = 1;
-  char* centerline = argv[argidx++];
-  char* image_prefix = argv[argidx++];
+  const char* centerline = argv[argidx++];
+  const char* image_prefix = argv[argidx++];
   double Vnyq = atof(argv[argidx++]);
   double cutoff = atof(argv[argidx++]);
   int nConvolutions = atoi(argv[argidx++]);

@@ -223,7 +223,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
 }
 
 
-static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
+static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
 {
 	  vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
 
@@ -239,7 +239,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* ima
 
 }
 
-vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(char* centerline, char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit){
+vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit){
 	vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix , Vnyq, cutoff, nConvolutions);
 	return flowDirection( splines, uncertainty_limit);
 }
