@@ -10,7 +10,5 @@ AngleCorrection_add_sources(
 	precision.hpp
 	quadratic_spline_fitter.hpp
 	spline3d.hpp
-	tpreader.cpp
-	tpreader.hpp	
 )
 

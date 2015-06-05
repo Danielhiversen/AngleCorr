@@ -1,5 +1,4 @@
 #include "spline3d.hpp"
-#include "tpreader.hpp"
 #include <vtkDoubleArray.h>
 #include <sys/time.h>
 
@@ -134,7 +133,7 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 }
 
 
-static vector<Spline3D<D> >*   angle_correction_impl(char* toolpositions, char* centerline, char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
+static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
 {
 	bool verbose = false;
   
@@ -143,10 +142,6 @@ static vector<Spline3D<D> >*   angle_correction_impl(char* toolpositions, char* 
 
   // Read and build centerline spline  
   gettimeofday(&tv1,NULL);
-  vector<Matrix4> matrices;
-  TpReader tp_reader = TpReader(toolpositions);
-  tp_reader.read();
-  matrices = tp_reader.getMatrices();
 
   vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
   
@@ -163,7 +158,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(char* toolpositions, char* 
   
   // Read images
   gettimeofday(&tv1,NULL);
-  vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix),matrices);
+  vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
 
   if (verbose)
   {

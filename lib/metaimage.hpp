@@ -31,6 +31,7 @@ public:
     m_reader = vtkSmartPointer<vtkMetaImageReader>::New();
     m_transform = Matrix4::Zero();
     m_idx = -1;
+    m_filename ="";
   }
 
   /**
@@ -39,6 +40,7 @@ public:
   void 
   setFileName(const string filename)
   {
+    m_filename = filename;
     m_reader->SetFileName(filename.c_str());
     m_reader->Update();
 
@@ -61,6 +63,8 @@ public:
     spacing = m_reader->GetPixelSpacing();
     m_xspacing = spacing[0];
     m_yspacing = spacing[1];
+
+    setTransform();
 
   }
 
@@ -179,13 +183,62 @@ public:
    * Set the transformation matrix for this image. The transformation matrix is the matrix that transforms from 
    * image coordinates to world coordinates.
    * @param transform Transformation matrix
-   */
+
   void 
   setTransform(Matrix4 transform)
   {
     m_transform = transform;
   }
-  
+     */
+
+
+  void 
+  setTransform()
+    {
+
+	  std::ifstream infile(m_filename);
+	  std::string line;
+	  while (std::getline(infile, line))
+	  {
+
+	    if(line.find("Offset")!=std::string::npos)
+	    {
+	    	string buf;
+	    	stringstream ss(line);
+	    	int i=0;
+	    	ss >> buf;
+	    	ss >> buf;
+	    	while (ss >> buf)
+	    	{
+	    		m_transform(i++,3)=std::stod(buf);
+	    	}
+	    	m_transform(3,3)=1;
+
+	    }else if(line.find("TransformMatrix")!=std::string::npos)
+	    {
+	    	string buf;
+			stringstream ss(line);
+			int i=0;
+			int j=0;
+			ss >> buf;
+			ss >> buf;
+			while (ss >> buf)
+			{
+				if(i >2){
+					i=0;
+					j++;
+				}
+				m_transform(i++,j)=std::stod(buf);
+			}
+	    }
+	  }
+
+    }
+
+
+
+
+
   /**
    * Get the transformation matrix for this image
    * @return the transformation matrix
@@ -296,7 +349,7 @@ public:
    * @return a vector containing the retrieved images
    */
   static vector<MetaImage>
-  readImages(const string prefix,vector<Matrix4>& matrices)
+  readImages(const string prefix)
   {
     vector<MetaImage> ret;
 
@@ -318,7 +371,6 @@ public:
       curimg->setFileName(filename);
       curimg->read();
       curimg->setIdx(i);
-      curimg->setTransform(matrices[i]);
       ret.push_back(MetaImage());
       curimg = &(ret.back());
 	
@@ -355,6 +407,7 @@ private:
   double m_yspacing;
   Matrix4 m_transform;
   vtkSmartPointer<vtkMetaImageReader> m_reader;
+  string m_filename;
 };
 
 #endif //METAIMAGE_HPP

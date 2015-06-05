@@ -23,11 +23,10 @@ int main(int argc, char *argv[])
 {
   if(argc != 8)
   {
-    cerr << "Usage: " << argv[0] << " toolpositions.fp centerline.vtk image_prefix Vnyq cutoff nConvolutions dir_uncertainty\n";
+    cerr << "Usage: " << argv[0] << " centerline.vtk image_prefix Vnyq cutoff nConvolutions dir_uncertainty\n";
     exit(1);
   }
   int argidx = 1;
-  char* toolpositions = argv[argidx++];
   char* centerline = argv[argidx++];
   char* image_prefix = argv[argidx++];
   double Vnyq = atof(argv[argidx++]);
@@ -36,7 +35,7 @@ int main(int argc, char *argv[])
 
   double uncertainty_limit = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
 
-  vector<Spline3D<D> > *splines = angle_correction_impl(toolpositions, centerline, image_prefix, Vnyq, cutoff, nConvolutions);
+  vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
   // Write output files
   writeDirectionToVtkFile("output_flowdirection.vtk", splines,uncertainty_limit);
