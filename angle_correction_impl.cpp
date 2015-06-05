@@ -133,55 +133,20 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 }
 
 
-static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
+static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > images , double Vnyq, double cutoff,  int nConvolutions)
 {
-	bool verbose = false;
+  bool verbose = false;
   
-  struct timeval tv1,tv2,tv3,tv4;
-  gettimeofday(&tv3,NULL);
-
-  // Read and build centerline spline  
-  gettimeofday(&tv1,NULL);
-
-  vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
-  
-  clReader->SetFileName(centerline);
-  clReader->Update();
-  vtkPolyData *vpd_centerline = clReader->GetOutput();
- 
   vector<Spline3D<D> > *splines = Spline3D<D>::build(vpd_centerline);
-  if (verbose)
-  {
-	  gettimeofday(&tv2,NULL);
-	  printTime("Build centerline", tv1, tv2);
-  }
-  
-  // Read images
-  gettimeofday(&tv1,NULL);
-  vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
-
-  if (verbose)
-  {
-	  gettimeofday(&tv2,NULL);
-	  printTime("Read images",tv1,tv2);
-  }
-
-  gettimeofday(&tv1,NULL);
 
   for(Spline3D<D>& spline : *splines)
   {
     spline.setTransform(true);
     spline.setAxis(1);
   }
-  if (verbose)
-  {
-	  gettimeofday(&tv2,NULL);
-	  printTime("Various initialization",tv1,tv2);
-  }
-  
+
   
   // Smooth the splines
-  gettimeofday(&tv1,NULL);
   for(auto &spline: *splines)
   {
     for(int j = 0; j < nConvolutions; j++)
@@ -190,28 +155,14 @@ static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* ima
     }
 
   }
-  if (verbose)
-  {
-	  gettimeofday(&tv2,NULL);
-	  printTime("Smoothing", tv1, tv2);
-  }
-  
+
   // Compute control points for splines
-  gettimeofday(&tv1, NULL);
   for(auto &spline: *splines)
   {
     spline.compute();
   }
 
-  if (verbose)
-  {
-	  gettimeofday(&tv2, NULL);
-	  printTime("Spline fitting", tv1, tv2);
-  }
-
-
   // Find all the intersections
-  gettimeofday(&tv1, NULL);
   int n_intersections = 0;
   for(auto &spline: *splines)
   {
@@ -219,10 +170,8 @@ static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* ima
     spline.getIntersections().setVelocityEstimationCutoff(cutoff,1.0);
     n_intersections += spline.getIntersections().size();
   }
-  gettimeofday(&tv2, NULL);
   if (verbose)
   {
-	  printTime("Intersections",tv1, tv2);
 	  cerr << "Found " << n_intersections << " intersections\n";
 
   }
@@ -230,59 +179,33 @@ static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* ima
 
   // Now that we know the intersection points, 
   // we can go through all the image planes and do the region growing.
-  
-  gettimeofday(&tv1, NULL);
-
   regionGrow(splines);
   
-  if (verbose)
-    {
-	  gettimeofday(&tv2, NULL);
-	  printTime("Region growing", tv1, tv2);
-    }
   
   // We may now do the direction vector estimation
-  gettimeofday(&tv1,NULL);
- 
+
   for(auto &spline: *splines)
   {
     // Using the default parameters set in IntersectionSet constructor
     spline.getIntersections().estimateDirection();
   }
 
-  if (verbose)
-  {
-	  gettimeofday(&tv2,NULL);
-	  printTime("Direction estimation",tv1,tv2);
-  }
- 
+
 
   // Do aliasing correction
   if (Vnyq > 0){
-	  gettimeofday(&tv1,NULL);
 	  for(auto &spline: *splines)
 	  {
 		spline.getIntersections().correctAliasing(Vnyq);
 	  }
-	  if (verbose)
-	  {
-		  gettimeofday(&tv2,NULL);
-		  printTime("Aliasing correction",tv1,tv2);
-	  }
   }
 
   // Least squares velocity estimates
-  gettimeofday(&tv1,NULL);
   for(auto &spline: *splines)
   {
     spline.getIntersections().estimateVelocityLS();
   }
 
-  if (verbose)
-  {
-	  gettimeofday(&tv2,NULL);
-	  printTime("Least Squares velocity estimate",tv1,tv2);
-  }
  
   // Output direction and LS velocity
   if (verbose)
@@ -294,10 +217,24 @@ static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* ima
 		 << spline.getIntersections().getEstimatedDirection()
 		 << " LS velocity " << spline.getIntersections().getEstimatedVelocity() << endl;
 	  }
-
-	  	  gettimeofday(&tv4,NULL);
-	  printTime("Total",tv3,tv4);
   }
 
   return splines;
+}
+
+
+static vector<Spline3D<D> >*   angle_correction_impl(char* centerline, char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
+{
+	  vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
+
+	  clReader->SetFileName(centerline);
+	  clReader->Update();
+	  vtkPolyData *vpd_centerline = clReader->GetOutput();
+
+
+	  vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
+
+
+	  return angle_correction_impl(vpd_centerline,images ,  Vnyq, cutoff,  nConvolutions);
+
 }
