@@ -11,8 +11,6 @@ using namespace std;
 
 
 void validateFlowDirection_FlowVel(vector<Spline3D<D> > *splines, double *true_flow){
-
-
   D flow_direction;
   D flow_vel;
 
@@ -89,7 +87,6 @@ TEST_CASE("Test for nan in output", "[angle_correction]")
 }
   
 
-
 TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
 {
   char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
@@ -129,6 +126,7 @@ TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
 
 }
   
+
 TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
 {
   char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
@@ -248,9 +246,6 @@ TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][alia
 }
 
 
-
-
-
 TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction]")
 {
 
@@ -269,7 +264,6 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_9.vtk"));
 }
-
 
 
 TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction]")
