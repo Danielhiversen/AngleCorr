@@ -299,7 +299,7 @@ TEST_CASE("Test EstimateAngleCorrectedFlowDirection", "[angle_correction]")
   const char* filename_a ="Tests/output_flowdirection_test_11_a.vtk";
   const char* filename_b ="Tests/output_flowdirection_test_11_b.vtk";
 
-  vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, 0.5);
+  vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, 0.5,1);
   writeDirectionToVtkFile(filename_a, polydataFlowData);
 
   vector<Spline3D<D> > *splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);

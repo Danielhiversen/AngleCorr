@@ -345,7 +345,6 @@ public:
   /**
    * Factory function to get a bunch of images by reading them from disk.
    * @param prefix The prefix of the file name. File names are assumed to be of the format prefix$NUMBER.mhd
-   * @param matrices The transformation matrices for the images, as read from the CustusX .tp file
    * @return a vector containing the retrieved images
    */
   static vector<MetaImage>

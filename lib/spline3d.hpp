@@ -190,6 +190,9 @@ public:
   }
 
 
+
+
+
   /**
    * Find an intersection between this curve and a plane.
    * The method is to first find two adjacent points in m_points (the points to interpolate)
@@ -302,6 +305,8 @@ public:
 				  + ((1-t)*(1-t)*0.5)*m_cpoints[i][pos-1];
     } 
   }
+
+
 
   /**
    * Contstruct a set of splines representing the centerline described as a set of lines in *data.

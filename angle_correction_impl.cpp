@@ -38,8 +38,7 @@ void printTime(string label, struct timeval tv1, struct timeval tv2)
 }
 
 
-
-vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, double uncertainty_limit)
+vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, double uncertainty_limit, double minArrowDist)
 {
 	vtkSmartPointer<vtkPoints> pointarray = vtkSmartPointer<vtkPoints>::New();
 
@@ -63,6 +62,8 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 	D abs_dir;
 	D abs_vessel_vel;
 
+	int num_uncertainty_limit = 0;
+
 	for(auto &spline: *splines)
 	  {
 
@@ -73,7 +74,8 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 
 
 		if( abs_dir< uncertainty_limit){
-					continue;
+				num_uncertainty_limit++;
+				continue;
 		}
 		if(std::isnan(abs_dir) || std::isnan(abs_vessel_vel) ){
 				continue;
@@ -90,10 +92,9 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 			p_temp[1]=p[2]-p_prev[1];
 			p_temp[1]=p[2]-p_prev[2];
 
-			if(length3d(p_temp)<1){
+			if(length3d(p_temp)<minArrowDist){
 				continue;
 			}
-
 			p_prev[0]=p[0];
 			p_prev[1]=p[1];
 			p_prev[2]=p[2];
@@ -128,9 +129,21 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 	  pointdata->AddArray(dir_uncertainty);
 	  pointdata->AddArray(velocitydata);
 
+	  if (num_uncertainty_limit){
+		  cerr << "Removed " << num_uncertainty_limit << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
+	  }
+
+
 	  return polydata;
 
 }
+
+
+vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, double uncertainty_limit)
+{
+    return flowDirection(splines, uncertainty_limit,1.0);
+}
+
 
 
 static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > images , double Vnyq, double cutoff,  int nConvolutions)
@@ -239,12 +252,27 @@ static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,cons
 
 }
 
-vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit){
+vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit, double minArrowDist){
 	vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix , Vnyq, cutoff, nConvolutions);
-	return flowDirection( splines, uncertainty_limit);
+	return flowDirection( splines, uncertainty_limit,minArrowDist);
 }
 
-vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > images , double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit){
-	vector<Spline3D<D> > *splines = angle_correction_impl(vpd_centerline, images , Vnyq, cutoff, nConvolutions);
-	return flowDirection( splines, uncertainty_limit);
+
+
+
+/**
+* EstimateAngleCorrectedFlowDirection
+* @param centerline - centerline of the blood vessels
+* @param images - 2D velocity frames
+* @param Vnyq - Nyquist velocity
+*
+* @param minAbsCosThetaCutoff - lower abs(cosTheta) cutoff
+* @param splineSmoothing - smoothning of the blood vessel spline
+* @param uncertainty_limit - lower value for reject vessel segment
+* @param minArrowDist - min distance between visualization arrows
+*/
+vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(vtkPolyData *centerline, vector<MetaImage<inData_t> > images , double Vnyq, double minAbsCosThetaCutoff,  int splineSmoothing, double uncertainty_limit, double minArrowDist){
+	vector<Spline3D<D> > *splines = angle_correction_impl(centerline, images , Vnyq, minAbsCosThetaCutoff, splineSmoothing);
+	return flowDirection( splines, uncertainty_limit,minArrowDist);
 }
+
