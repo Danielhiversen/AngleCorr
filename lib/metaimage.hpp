@@ -8,6 +8,7 @@
 #include <vtkImageData.h>
 #include <vtkPointData.h>
 #include <map>
+#include "ErrorHandler.hpp"
 
 
 /**
@@ -54,12 +55,23 @@ public:
   {
     m_img = m_reader->GetOutput();
 
-
+	vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+	m_reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+	m_reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
 	#if VTK_MAJOR_VERSION <= 5
     	m_img->Update();
 	#else
 	#endif
+
+	if (errorObserver->GetError())
+	{
+		reportError("ERROR: Could not read velocity data \n"+ errorObserver->GetErrorMessage());
+	}
+	if (errorObserver->GetWarning()){
+	   cerr << "Caught warning while reading center line data \n! " << errorObserver->GetWarningMessage();
+	}
+
     m_xsize = m_reader->GetWidth();
     m_ysize = m_reader->GetHeight();
     double *spacing;
@@ -365,7 +377,7 @@ public:
     ret.push_back(MetaImage());
     curimg = &(ret.back());
     if(!curimg->getReader()->CanReadFile(filename.c_str())){
-    	cerr << "Failed to read images" << endl;
+		reportError("ERROR: Could not read velocity data \n");
     }
     while(curimg->getReader()->CanReadFile(filename.c_str()))
     {

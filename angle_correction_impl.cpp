@@ -42,6 +42,13 @@ void printTime(string label, struct timeval tv1, struct timeval tv2)
 
 vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, double uncertainty_limit, double minArrowDist)
 {
+	  if (uncertainty_limit < 0.0){
+		    reportError("ERROR: uncertainty_limit must be positive ");
+	  }
+	  if (minArrowDist < 0.0){
+	  	    reportError("ERROR: minArrowDist must be positive ");
+	    }
+
 	vtkSmartPointer<vtkPoints> pointarray = vtkSmartPointer<vtkPoints>::New();
 
 	vtkSmartPointer<vtkDoubleArray> flowdirection = vtkSmartPointer<vtkDoubleArray>::New();
@@ -151,7 +158,13 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > images , double Vnyq, double cutoff,  int nConvolutions)
 {
   bool verbose = false;
-  
+  if (Vnyq < 0.0){
+	    reportError("ERROR: vNyquist must be positive ");
+  }
+  if (nConvolutions < 0.0){
+  	    reportError("ERROR: nConvolutions must be positive ");
+    }
+
   vector<Spline3D<D> > *splines = Spline3D<D>::build(vpd_centerline);
 
   for(Spline3D<D>& spline : *splines)
