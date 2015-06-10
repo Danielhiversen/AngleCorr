@@ -249,21 +249,21 @@ static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,cons
 
 	clReader->SetFileName(centerline);
 	clReader->Update();
-	vtkPolyData *vpd_centerline = clReader->GetOutput();
+
+	if (errorObserver->GetError())
+	    {
+	    reportError("ERROR: Could not read center line data \n"+ errorObserver->GetErrorMessage());
+
+	    }
+	if (errorObserver->GetWarning()){
+	   cerr << "Caught warning while reading center line data \n! " << errorObserver->GetWarningMessage();
+	}
 
 //	if(!clReader->IsFilePolyData()){
 //		throw std::runtime_error("ERROR: Could not read center line data: Invalid data format, must be poly data");
 //	}
 
-	if (errorObserver->GetError())
-	    {
-	    throw std::runtime_error("ERROR: Could not read center line data " + errorObserver->GetErrorMessage());
-	    }
-
-	if (errorObserver->GetWarning()){
-	   cerr << "Caught warning! " << errorObserver->GetWarningMessage();
-	}
-
+	vtkPolyData *vpd_centerline = clReader->GetOutput();
 
 	vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
 
