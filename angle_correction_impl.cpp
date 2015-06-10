@@ -2,42 +2,8 @@
 #include "ErrorHandler.hpp"
 #include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
-#include <sys/time.h>
 
 using namespace std;
-
-
-/**
- * Region grow all the images in all the intersections in all the splines
- * @param splines The splines to region grow
- */
-void regionGrow(vector<Spline3D<D> > *splines){
-  for(auto &spline: *splines)
-  {
-    for_each(spline.getIntersections().begin(), spline.getIntersections().end(),[](Intersection<D> &it){it.regionGrow();});
-  }
-}
-
-
-/**
- * Get the time difference between two struct timevals
- * @param tv1 the first timeval
- * @param tv2 the second timeval
- * @return tv2 - tv1
- */
-uint64_t getTimeDifference(struct timeval tv1, struct timeval tv2)
-{
-  uint64_t ret = (tv2.tv_sec-tv1.tv_sec)*1000000 + (  tv2.tv_usec - tv1.tv_usec);
-  return ret;
-}
-
-/**
- * Convenience function to print a label and the difference between two struct timevals
- */
-void printTime(string label, struct timeval tv1, struct timeval tv2)
-{
-  cerr << label << endl << "\t\t\t\t: " << (double)getTimeDifference(tv1, tv2)/1000.0 << " msecs" << endl;
-}
 
 
 vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, double uncertainty_limit, double minArrowDist)
@@ -207,7 +173,10 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
 
   // Now that we know the intersection points, 
   // we can go through all the image planes and do the region growing.
-  regionGrow(splines);
+  for(auto &spline: *splines)
+  {
+    for_each(spline.getIntersections().begin(), spline.getIntersections().end(),[](Intersection<D> &it){it.regionGrow();});
+  }
   
   
   // We may now do the direction vector estimation
