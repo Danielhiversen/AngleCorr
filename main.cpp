@@ -21,7 +21,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  if(argc != 8)
+  if(argc != 7)
   {
     cerr << "Usage: " << argv[0] << " centerline.vtk image_prefix Vnyq cutoff nConvolutions dir_uncertainty\n";
     exit(1);
@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
   double Vnyq = atof(argv[argidx++]);
   double cutoff = atof(argv[argidx++]);
   int nConvolutions = atoi(argv[argidx++]);
-
   double uncertainty_limit = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
 
   vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
