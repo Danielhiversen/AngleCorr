@@ -1,7 +1,19 @@
+/*
+ * ErrorHandler.hpp
+ *
+ *  Created on: Jun 10, 2015
+ *      Author: dahoiv
+ */
+
+#ifndef ERRORHANDLER_HPP_
+#define ERRORHANDLER_HPP_
+
+
 #include <string>
 #include <stdexcept>
 #include <vtkSmartPointer.h>
 #include <vtkCommand.h>
+
 
 class ErrorObserver : public vtkCommand
 {
@@ -70,5 +82,9 @@ void reportError(std::string  errMsg){
 }
 
 
+
+
+
+#endif /* ERRORHANDLER_HPP_ */
 
 

@@ -53,6 +53,9 @@ public:
   read()
   {
     m_img = m_reader->GetOutput();
+
+
+
 	#if VTK_MAJOR_VERSION <= 5
     	m_img->Update();
 	#else

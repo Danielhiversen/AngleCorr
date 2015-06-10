@@ -1,5 +1,5 @@
 #include "spline3d.hpp"
-#include "ErrorHandler.cpp"
+#include "ErrorHandler.hpp"
 #include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
 #include <sys/time.h>
@@ -245,7 +245,6 @@ static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,cons
 	vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
 	clReader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
 	clReader->AddObserver(vtkCommand::WarningEvent,errorObserver);
-
 
 	clReader->SetFileName(centerline);
 	clReader->Update();
