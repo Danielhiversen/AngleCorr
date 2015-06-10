@@ -1,5 +1,7 @@
 #include "spline3d.hpp"
+#include "ErrorHandler.cpp"
 #include <vtkDoubleArray.h>
+#include <vtkSmartPointer.h>
 #include <sys/time.h>
 
 using namespace std;
@@ -238,17 +240,35 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
 
 static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
 {
-	  vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
+	vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
 
-	  clReader->SetFileName(centerline);
-	  clReader->Update();
-	  vtkPolyData *vpd_centerline = clReader->GetOutput();
-
-
-	  vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
+	vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+	clReader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+	clReader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
 
-	  return angle_correction_impl(vpd_centerline,images ,  Vnyq, cutoff,  nConvolutions);
+	clReader->SetFileName(centerline);
+	clReader->Update();
+	vtkPolyData *vpd_centerline = clReader->GetOutput();
+
+//	if(!clReader->IsFilePolyData()){
+//		throw std::runtime_error("ERROR: Could not read center line data: Invalid data format, must be poly data");
+//	}
+
+	if (errorObserver->GetError())
+	    {
+	    throw std::runtime_error("ERROR: Could not read center line data " + errorObserver->GetErrorMessage());
+	    }
+
+	if (errorObserver->GetWarning()){
+	   cerr << "Caught warning! " << errorObserver->GetWarningMessage();
+	}
+
+
+	vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
+
+
+	return angle_correction_impl(vpd_centerline,images ,  Vnyq, cutoff,  nConvolutions);
 
 }
 

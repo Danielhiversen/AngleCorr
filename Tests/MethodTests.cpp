@@ -32,7 +32,7 @@ void validateFiles(const char* filename_a,const char* filename_b){
 	while (std::getline(file_a, line_a))
 	{
 		  std::getline(file_b, line_b);
-		  CHECK( line_a == line_b);
+		  REQUIRE( line_a == line_b);
 	}
 }
 
@@ -307,4 +307,21 @@ TEST_CASE("Test EstimateAngleCorrectedFlowDirection", "[angle_correction]")
 
   validateFiles(filename_a, filename_b);
 }
+
+
+
+TEST_CASE("Test No valid files", "[angle_correction]")
+{
+
+  char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/NonExisting.vtk";
+  char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
+
+  double Vnyq =  0.312;
+  double cutoff = 0.18;
+  int nConvolutions = 6;
+
+  CHECK_THROWS(vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, 0.5,1));
+  
+}
+
 
