@@ -358,6 +358,8 @@ TEST_CASE("Test Invalid parameters", "[angle_correction]")
   minArrowDist = -0.5;
   CHECK_THROWS(vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff,  nConvolutions, uncertainty_limit,minArrowDist));
 
+  minArrowDist = 1.5;
+  CHECK_NOTHROW(vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff,  nConvolutions, uncertainty_limit,minArrowDist));
 
 }
 
