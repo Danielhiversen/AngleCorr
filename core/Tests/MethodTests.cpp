@@ -3,6 +3,7 @@
 #include "angle_correction_impl.cpp"
 #include <vtkPolyDataWriter.h>
 #include <lib/writeToFile.cpp>
+#include <cstdio>
 
 #include "catch.hpp"
 
@@ -29,11 +30,14 @@ void validateFiles(const char* filename_a,const char* filename_b){
 	std::ifstream file_a(filename_a);
 	std::ifstream file_b(filename_b);
 	std::string line_a,line_b;
+    bool file_a_exist = false;
 	while (std::getline(file_a, line_a))
 	{
 		  std::getline(file_b, line_b);
 		  REQUIRE( line_a == line_b);
+          file_a_exist = true;
 	}
+    REQUIRE(file_a_exist);
 }
 
 char * appendTestFolder(const char * filename){
@@ -103,6 +107,7 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
   const char testFile[] = "testOut/flowdirection_test_1.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_1.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -123,7 +128,7 @@ TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
   const char testFile[] = "testOut/flowdirection_test_2.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_2.vtk"));
-
+  std::remove(appendTestFolder(testFile));
 }
   
 
@@ -143,6 +148,7 @@ TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
   const char testFile[] = "testOut/flowdirection_test_3.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_3.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -163,6 +169,7 @@ TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
   const char testFile[] = "testOut/flowdirection_test_4.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_4.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -183,6 +190,7 @@ TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
   const char testFile[] = "testOut/flowdirection_test_5.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_5.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -203,6 +211,7 @@ TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
   const char testFile[] = "testOut/flowdirection_test_6.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_6.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -223,6 +232,7 @@ TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][alia
   const char testFile[] = "testOut/flowdirection_test_7.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_7.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -243,6 +253,7 @@ TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][alia
   const char testFile[] = "testOut/flowdirection_test_8.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_8.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -263,6 +274,7 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
   const char testFile[] = "testOut/flowdirection_test_9.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_9.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -283,6 +295,7 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
   const char testFile[] = "testOut/flowdirection_test_10.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
   validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+  std::remove(appendTestFolder(testFile));
 }
 
 
@@ -305,7 +318,9 @@ TEST_CASE("Test EstimateAngleCorrectedFlowDirection", "[angle_correction]")
   vector<Spline3D<D> > *splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
   writeDirectionToVtkFile(appendTestFolder(filename_b), splines,0.5);
 
-  validateFiles(filename_a, filename_b);
+  validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
+  std::remove(appendTestFolder(filename_a));
+  std::remove(appendTestFolder(filename_b));
 }
 
 
