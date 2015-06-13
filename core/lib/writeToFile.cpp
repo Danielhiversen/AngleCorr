@@ -9,8 +9,6 @@ void writeDirectionToVtkFile(const char* filename,
 	  writer->AddObserver(vtkCommand::ErrorEvent,errorObserver);
 	  writer->AddObserver(vtkCommand::WarningEvent,errorObserver);
 	
-
-	  vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
 	  writer->SetFileName(filename);
 	  #if VTK_MAJOR_VERSION <= 5
 	  	  writer->SetInput(polydata);
