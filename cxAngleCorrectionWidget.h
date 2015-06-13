@@ -67,6 +67,7 @@ public slots:
 
 private:
 
+    bool execute();
 	XmlOptionFile mSettings;
 
     VisServicesPtr mVisServices;
@@ -84,6 +85,7 @@ private:
     DoublePropertyPtr mMaxThetaCutoff;
     DoublePropertyPtr mUncertaintyLimit;
     DoublePropertyPtr mMinArrowDist;
+
 };
 
 } /* namespace cx */

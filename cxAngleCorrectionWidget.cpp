@@ -82,7 +82,9 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, Acquisi
     QLabel* clLabel = new QLabel("Select centerline:");
     mVerticalLayout->addWidget(clLabel);
 	connect(mClFileSelectWidget, &FileSelectWidget::fileSelected, this,&AngleCorrectionWidget::selectClData);
-	mClFileSelectWidget->setNameFilter(QStringList() << "*_tsf_cl*.vtk");
+    QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
+    filter << "*_tsf_cl??.vtk";   
+	mClFileSelectWidget->setNameFilter(filter);
     mVerticalLayout->addWidget(mClFileSelectWidget);    
 
 
@@ -111,6 +113,7 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, Acquisi
 
 AngleCorrectionWidget::~AngleCorrectionWidget()
 {
+   // mClSplines->clear();
 }
 
 QString AngleCorrectionWidget::defaultWhatsThis() const
@@ -202,10 +205,19 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 void AngleCorrectionWidget::runAngleCorection()
 {
 
+    mRunAngleCorrButton->setEnabled(false);
+    bool result = execute();
+    mRunAngleCorrButton->setEnabled(true);
+}
+
+
+
+bool AngleCorrectionWidget::execute()
+{
     QString dataFilename = mVelFileSelectWidget->getFilename();
     if(dataFilename.length() ==0){
         reportError("No velocity data selected");
-        return;
+        return false;
     }
     dataFilename.replace(".fts","_");
 
@@ -213,15 +225,16 @@ void AngleCorrectionWidget::runAngleCorection()
     QString clFilename = mClFileSelectWidget->getFilename();
     if(clFilename.length() ==0){
         reportError("No centerline selected");
-        return;
+        return false;
     }
+
     double Vnyq = 0.0;
     double cutoff = cos(mMaxThetaCutoff->getValue()/180.0*M_PI);
     int nConvolutions = (int) mClSmoothing->getValue();
     double uncertainty_limit = mUncertaintyLimit->getValue();
     double minArrowDist = mMinArrowDist->getValue();
 
-    vector<Spline3D<D> > *splines;
+    vector<Spline3D<D> > *mClSplines;
     try {    
         report(dataFilename);
         report(clFilename);
@@ -229,14 +242,14 @@ void AngleCorrectionWidget::runAngleCorection()
         //EstimateAngleCorrectedFlowDirection(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit, double minArrowDist)7
     	//vector<Spline3D<D> > *mVelSplines = angle_correction_impl(centerline, image_prefix , Vnyq, cutoff, nConvolutions);
 
-        splines = angle_correction_impl(clFilename.toStdString().c_str(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
+        mClSplines = angle_correction_impl(clFilename.toStdString().c_str(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
 
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 1:"+qstring_cast(e.what()));
-        return;
+        return false;
     } catch (...){
 		reportError("Angle correction algorithm threw a unknown exception in step 1.");
-        return;
+        return false;
     }
 
 
@@ -244,24 +257,20 @@ void AngleCorrectionWidget::runAngleCorection()
                             +"_"+QDateTime::currentDateTime().toString(timestampSecondsFormat())+"_angleCorr.vtk";
     try {    
         report(outputFilename);
-         writeDirectionToVtkFile(outputFilename.toStdString().c_str(), splines, uncertainty_limit);
+         writeDirectionToVtkFile(outputFilename.toStdString().c_str(), mClSplines, uncertainty_limit);
     	//	outputCenterline->setVtkPolyData(flowDirection( mVelSplines, uncertainty_limit,minArrowDist));
         sleep(4);
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 2:"+qstring_cast(e.what()));
-        return;
+        return false;
     } catch (...){
 		reportError("Angle correction algorithm threw a unknown exception in step 2.");
-        return;
+        return false;
     }
 
-
-    //Display data in cx
-
-
-	reportSuccess(QString("Completed angle correction"));
+    reportSuccess(QString("Completed angle correction"));
+    return true;
 }
-
 
 
 } /* namespace cx */

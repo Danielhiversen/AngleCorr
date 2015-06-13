@@ -377,5 +377,3 @@ TEST_CASE("Test Invalid parameters", "[angle_correction]")
   CHECK_NOTHROW(vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff,  nConvolutions, uncertainty_limit,minArrowDist));
 
 }
-
-
