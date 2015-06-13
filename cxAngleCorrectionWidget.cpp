@@ -221,12 +221,15 @@ void AngleCorrectionWidget::runAngleCorection()
     double uncertainty_limit = mUncertaintyLimit->getValue();
     double minArrowDist = mMinArrowDist->getValue();
 
+    vector<Spline3D<D> > *splines;
     try {    
         report(dataFilename);
         report(clFilename);
         //.toStdString()
         //EstimateAngleCorrectedFlowDirection(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit, double minArrowDist)7
     	//vector<Spline3D<D> > *mVelSplines = angle_correction_impl(centerline, image_prefix , Vnyq, cutoff, nConvolutions);
+
+        splines = angle_correction_impl(clFilename.toStdString().c_str(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
 
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 1:"+qstring_cast(e.what()));
@@ -241,6 +244,7 @@ void AngleCorrectionWidget::runAngleCorection()
                             +QFileInfo(clFilename).baseName()+"_"+QDateTime::currentDateTime().toString(timestampSecondsFormat())+"_angleCorr.vtk";
     try {    
         report(outputFilename);
+         writeDirectionToVtkFile(outputFilename.toStdString().c_str(), splines, uncertainty_limit);
     	//	outputCenterline->setVtkPolyData(flowDirection( mVelSplines, uncertainty_limit,minArrowDist));
         sleep(4);
     } catch (std::exception& e){
@@ -253,20 +257,6 @@ void AngleCorrectionWidget::runAngleCorection()
 
 
     //Display data in cx
-
-  char centerline[] = "/home/dahoiv/Dokumenter/postDoc/AngleCorr/Testdata/2015-05-27_12-02_AngelCorr_tets (copy).cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
-  char image_prefix[] = "/home/dahoiv/Dokumenter/postDoc/AngleCorr/Testdata/2015-05-27_12-02_AngelCorr_tets (copy).cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
-
-  Vnyq =  0.312;
-  cutoff = 0.18;
-  nConvolutions = 6;
-  vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
-
-
-  const char testFile[] = "output_flowdirection_test_10.vtk";
-  //writeDirectionToVtkFile(testFile, splines,0.0);
-
-
 
 
 	reportSuccess(QString("Completed angle correction"));

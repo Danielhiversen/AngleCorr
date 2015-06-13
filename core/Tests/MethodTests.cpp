@@ -3,6 +3,7 @@
 #include "angle_correction_impl.cpp"
 #include <vtkPolyDataWriter.h>
 #include <lib/writeToFile.cpp>
+#include <cstdio>
 
 #include "catch.hpp"
 
@@ -87,7 +88,7 @@ TEST_CASE("Test for nan in output", "[angle_correction]")
 }
   
 
-TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
+TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dir]")
 {
   char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
   char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
@@ -101,7 +102,8 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
   validateFlowDirection_FlowVel(splines,true_flow);
 
   const char testFile[] = "output_flowdirection_test_1.vtk";
-  CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
+  std::remove(appendTestFolder(testFile));
+  //CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_1.vtk"));
 }
 
@@ -362,5 +364,4 @@ TEST_CASE("Test Invalid parameters", "[angle_correction]")
   CHECK_NOTHROW(vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff,  nConvolutions, uncertainty_limit,minArrowDist));
 
 }
-
 

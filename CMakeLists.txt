@@ -94,7 +94,6 @@ if(BUILD_TESTING)
     #set(ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR} CACHE)
     # Remove any existing "
     string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
-    message("-- ANGLECORRECTION test data directory set to: \"${ANGLECORRECTION_TEST_DATA_DIR}\"")
     add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
 
     add_library(cxtest_org_custusx_anglecorrection ${CX_TEST_PLUGINANGLECORR_SOURCE_FILES})

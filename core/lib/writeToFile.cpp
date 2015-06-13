@@ -13,15 +13,18 @@ void writeDirectionToVtkFile(const char* filename,
 	  	  writer->SetInputData(polydata);
 	  #endif
 	  writer->Write();
-
-
 }
 
 void writeDirectionToVtkFile(const char* filename,
-		    vector<Spline3D<D> > *splines, double uncertainty_limit)
+		    vector<Spline3D<D> > *splines, double uncertainty_limit, double minArrowDist)
 {
-	  vtkSmartPointer<vtkPolyData> polydata = flowDirection(splines, uncertainty_limit);
+	  vtkSmartPointer<vtkPolyData> polydata = flowDirection(splines, uncertainty_limit, minArrowDist);
 	  writeDirectionToVtkFile(filename,	polydata);
 }
 
 
+void writeDirectionToVtkFile(const char* filename,
+		    vector<Spline3D<D> > *splines, double uncertainty_limit)
+{
+	  writeDirectionToVtkFile(filename,	splines,uncertainty_limit,0.3);
+}
