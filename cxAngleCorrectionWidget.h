@@ -33,13 +33,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef CXANGLECORRECTIONWIDGET_H_
 #define CXANGLECORRECTIONWIDGET_H_
 #include "cxBaseWidget.h"
-//#include <QWidget>
 #include <QPushButton>
 #include "cxFileSelectWidget.h"
 #include "cxUSAcqusitionWidget.h"
 #include "cxXmlOptionItem.h"
-#include <QFuture>
-#include <QFutureWatcher>
+
 
 class QVBoxLayout;
 
@@ -70,8 +68,6 @@ public slots:
 private:
 
 	XmlOptionFile mSettings;
-
-	TimedAlgorithmProgressBar* mTimedAlgorithmProgressBar;
 
     VisServicesPtr mVisServices;
     AcquisitionServicePtr mAcquisitionService;

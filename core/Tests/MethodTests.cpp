@@ -100,7 +100,7 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
   double true_flow [1]={-0.465};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_1.vtk";
+  const char testFile[] = "output_flowdirection_test_1.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_1.vtk"));
 }
@@ -120,7 +120,7 @@ TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
   double true_flow [1]={-0.557};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_2.vtk";
+  const char testFile[] = "output_flowdirection_test_2.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_2.vtk"));
 
@@ -140,7 +140,7 @@ TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
   double true_flow [1]={-0.534};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_3.vtk";
+  const char testFile[] = "output_flowdirection_test_3.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_3.vtk"));
 }
@@ -160,7 +160,7 @@ TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
   double true_flow [1]={-0.577};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_4.vtk";
+  const char testFile[] = "output_flowdirection_test_4.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_4.vtk"));
 }
@@ -180,7 +180,7 @@ TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
   double true_flow [2]={-0.933,0.239};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_5.vtk";
+  const char testFile[] = "output_flowdirection_test_5.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_5.vtk"));
 }
@@ -200,7 +200,7 @@ TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
   double true_flow [2]={0.651,-2.50};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_6.vtk";
+  const char testFile[] = "output_flowdirection_test_6.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_6.vtk"));
 }
@@ -220,7 +220,7 @@ TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][alia
   double true_flow [1]={-0.314};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_7.vtk";
+  const char testFile[] = "output_flowdirection_test_7.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_7.vtk"));
 }
@@ -240,7 +240,7 @@ TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][alia
   double true_flow [1]={0.403};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_8.vtk";
+  const char testFile[] = "output_flowdirection_test_8.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_8.vtk"));
 }
@@ -260,7 +260,7 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
   double true_flow [1]={-0.625};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_9.vtk";
+  const char testFile[] = "output_flowdirection_test_9.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_9.vtk"));
 }
@@ -280,7 +280,7 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
   double true_flow [1]={0.5847};
   validateFlowDirection_FlowVel(splines,true_flow);
 
-  const char testFile[] = "Tests/output_flowdirection_test_10.vtk";
+  const char testFile[] = "output_flowdirection_test_10.vtk";
   CHECK_NOTHROW(writeDirectionToVtkFile(testFile, splines,0.0));
   validateFiles(testFile, appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
 }
@@ -296,8 +296,8 @@ TEST_CASE("Test EstimateAngleCorrectedFlowDirection", "[angle_correction]")
   double cutoff = 0.18;
   int nConvolutions = 6;
 
-  const char* filename_a ="Tests/output_flowdirection_test_11_a.vtk";
-  const char* filename_b ="Tests/output_flowdirection_test_11_b.vtk";
+  const char* filename_a ="output_flowdirection_test_11_a.vtk";
+  const char* filename_b ="output_flowdirection_test_11_b.vtk";
 
   vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, 0.5,1);
   writeDirectionToVtkFile(filename_a, polydataFlowData);

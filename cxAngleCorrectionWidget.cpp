@@ -45,22 +45,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxProfile.h"
 #include "cxHelperWidgets.h"
 #include "cxTime.h"
-#include "cxTimedAlgorithmProgressBar.h"
 #include "cxMesh.h"
 
 
 #include <vector>
-#include <vtkSmartPointer.h>
 #include "angle_correction_impl.cpp"
 #include <vtkPolyDataWriter.h>
 #include <lib/writeToFile.cpp>
 
 ///
-
-
-
-
-
 
 namespace cx
 {
@@ -110,10 +103,6 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, Acquisi
 
 
 	mVerticalLayout->addStretch();
-
-    mTimedAlgorithmProgressBar = new cx::TimedAlgorithmProgressBar;
-	mVerticalLayout->addWidget(mTimedAlgorithmProgressBar);
-
 
     this->patientChangedSlot();
     mOptionsWidget->setVisible(false);

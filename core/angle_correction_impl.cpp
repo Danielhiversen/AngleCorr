@@ -222,6 +222,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
 
 static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
 {
+
 	vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
 
 	vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
@@ -230,7 +231,6 @@ static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,cons
 
 	clReader->SetFileName(centerline);
 	clReader->Update();
-
 	if (errorObserver->GetError())
 	    {
 	    reportError("ERROR: Could not read center line data \n"+ errorObserver->GetErrorMessage());
@@ -247,8 +247,6 @@ static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,cons
 	vtkPolyData *vpd_centerline = clReader->GetOutput();
 
 	vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
-
-
 	return angle_correction_impl(vpd_centerline,images ,  Vnyq, cutoff,  nConvolutions);
 
 }

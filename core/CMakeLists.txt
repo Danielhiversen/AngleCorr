@@ -83,10 +83,14 @@ AngleCorrection_add_subdirectories(lib Tests)
 
 #### Set include dirs
 include_directories(${AngleCorrection_INCLUDE_DIRS})
+
 get_directory_property(hasParent PARENT_DIRECTORY)
 if(hasParent)
     set (AngleCorrection_INCLUDE_DIRS ${AngleCorrection_INCLUDE_DIRS} PARENT_SCOPE)
-    set (SUPERLU_INCLUDE_DIRS ${SUPERLU_INCLUDE_DIRS} PARENT_SCOPE)
+    set (AngleCorrection_TEST_SOURCE_FILES ${AngleCorrection_TEST_SOURCE_FILES} PARENT_SCOPE)
+    set (ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR}  PARENT_SCOPE)
+    set (SUPERLU_LIBRARIES ${SUPERLU_LIBRARIES}  PARENT_SCOPE)
+    set (SUPERLU_INCLUDE_DIR ${SUPERLU_INCLUDE_DIR}  PARENT_SCOPE)
 endif()
 
 #### Enable C++11
@@ -108,25 +112,25 @@ endif()
 
 
 ## lib
-add_library(lib ${AngleCorrection_SOURCE_FILES} )
+if(NOT hasParent)
+    add_library(lib ${AngleCorrection_SOURCE_FILES} )
+endif()
 
 
 if(BUILD_TESTS)
-    if(APPLE)
-        # Do not run OUL test on Apple at the moment
-        # TODO: fix the HP OUL tests
-        add_executable(test ${AngleCorrection_TEST_SOURCE_FILES})
-    else()
-        add_executable(test ${AngleCorrection_TEST_SOURCE_FILES} ${OUL_TEST_SOURCE_FILES})
-    endif()
+    add_executable(test ${AngleCorrection_TEST_SOURCE_FILES})
 endif()
-add_executable(angle_correction main.cpp)
 
+if(NOT hasParent)
+    add_executable(angle_correction main.cpp)
+    target_link_libraries(angle_correction ${LIBRARIES} lib)
+endif()
 
-
-target_link_libraries(angle_correction ${LIBRARIES} lib)
 
 if(BUILD_TESTS)
     target_link_libraries(test ${LIBRARIES} lib)
 endif()
+
+
+
 
