@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(AngleCorrection)
 option(BUILD_TESTS "Build tests." ON)
-set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../TestData/" CACHE STRING "Directory of test data")
+set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
 
