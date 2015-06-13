@@ -108,6 +108,7 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 		  cerr << "Removed " << num_uncertainty_limit << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
 	  }
 
+      splines->clear();
 
 	  return polydata;
 
@@ -215,6 +216,8 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
 		 << " LS velocity " << spline.getIntersections().getEstimatedVelocity() << endl;
 	  }
   }
+
+  images.clear();
 
   return splines;
 }
