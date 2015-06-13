@@ -108,13 +108,7 @@ add_library(lib ${AngleCorrection_SOURCE_FILES} )
 
 
 if(BUILD_TESTS)
-    if(APPLE)
-        # Do not run OUL test on Apple at the moment
-        # TODO: fix the HP OUL tests
         add_executable(test ${AngleCorrection_TEST_SOURCE_FILES})
-    else()
-        add_executable(test ${AngleCorrection_TEST_SOURCE_FILES} ${OUL_TEST_SOURCE_FILES})
-    endif()
 endif()
 add_executable(angle_correction main.cpp)
 
