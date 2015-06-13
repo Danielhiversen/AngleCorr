@@ -240,8 +240,8 @@ void AngleCorrectionWidget::runAngleCorection()
     }
 
 
-   QString outputFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+QFileInfo(dataFilename).baseName()
-                            +QFileInfo(clFilename).baseName()+"_"+QDateTime::currentDateTime().toString(timestampSecondsFormat())+"_angleCorr.vtk";
+   QString outputFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+QFileInfo(clFilename).baseName()
+                            +"_"+QDateTime::currentDateTime().toString(timestampSecondsFormat())+"_angleCorr.vtk";
     try {    
         report(outputFilename);
          writeDirectionToVtkFile(outputFilename.toStdString().c_str(), splines, uncertainty_limit);

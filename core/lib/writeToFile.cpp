@@ -40,5 +40,5 @@ void writeDirectionToVtkFile(const char* filename,
 void writeDirectionToVtkFile(const char* filename,
 		    vector<Spline3D<D> > *splines, double uncertainty_limit)
 {
-	  writeDirectionToVtkFile(filename,	splines,uncertainty_limit,0.3);
+	  writeDirectionToVtkFile(filename,	splines,uncertainty_limit,1.0);
 }
