@@ -1,93 +1,62 @@
-cmake_minimum_required(VERSION 2.8.9)
-project(AngleCorrection)
-option(BUILD_TESTS "Build tests." ON)
-set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../TestData/" CACHE STRING "Directory of test data")
-
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
-
-#### Macro for adding source files and directories
-macro (AngleCorrection_add_sources)
-    file (RELATIVE_PATH _relPath "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-    foreach (_src ${ARGN})
-        if (_relPath)
-            list (APPEND AngleCorrection_SOURCE_FILES "${_relPath}/${_src}")
-        else()
-            list (APPEND AngleCorrection_SOURCE_FILES "${_src}")
-        endif()
-    endforeach()
-    if (_relPath)
-        # propagate AngleCorrection_SOURCE_FILES to parent directory
-        set (AngleCorrection_SOURCE_FILES ${AngleCorrection_SOURCE_FILES} PARENT_SCOPE)
-    endif()
-endmacro()
-
-macro (AngleCorrection_add_test_sources)
-    file (RELATIVE_PATH _relPath "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-    foreach (_src ${ARGN})
-        if (_relPath)
-            list (APPEND AngleCorrection_TEST_SOURCE_FILES "${_relPath}/${_src}")
-        else()
-            list (APPEND AngleCorrection_TEST_SOURCE_FILES "${_src}")
-        endif()
-    endforeach()
-    if (_relPath)
-        # propagate AngleCorrection_TEST_SOURCE_FILES to parent directory
-        set (AngleCorrection_TEST_SOURCE_FILES ${AngleCorrection_TEST_SOURCE_FILES} PARENT_SCOPE)
-    endif()
-endmacro()
-
-macro (AngleCorrection_add_subdirectories)
-    file (RELATIVE_PATH _relPath "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-    foreach (_src ${ARGN})
-        list (APPEND AngleCorrection_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/${_src}")
-        add_subdirectory(${_src})
-    endforeach()
-    if (_relPath)
-        # propagate AngleCorrection_INCLUDE_DIRS to parent directory
-        set (AngleCorrection_INCLUDE_DIRS ${AngleCorrection_INCLUDE_DIRS} PARENT_SCOPE)
-    endif()
-endmacro()
+project(org_custusx_anglecorrection)
 
 
-# Remove any existing "
-string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
-message("-- ANGLECORRECTION test data directory set to: \"${ANGLECORRECTION_TEST_DATA_DIR}\"")
-add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
 
-#### Set up library dependencies
-set(AngleCorrection_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-## VTK
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
-message("-- Enabling VTK")
-set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
+set(PLUGIN_export_directive "${PROJECT_NAME}_EXPORT")
 
+
+set(PLUGIN_SRCS
+  cxAngleCorrectionPluginActivator.cpp
+  cxAngleCorrectionGUIExtenderService.cpp
+  cxAngleCorrectionWidget.cpp
+)
+
+
+
+add_subdirectory(core) 
+include_directories(${AngleCorrection_INCLUDE_DIRS}) 
 
 ## SuperLU
-find_package(SuperLU REQUIRED)
 include_directories(${SUPERLU_INCLUDE_DIR})
 set(LIBRARIES ${LIBRARIES} ${SUPERLU_LIBRARIES})
 
 
-## Eigen
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
 
 
 
+# Files which should be processed by Qts moc
+set(PLUGIN_MOC_SRCS
+  cxAngleCorrectionPluginActivator.h
+  cxAngleCorrectionGUIExtenderService.h
+  cxAngleCorrectionWidget.h
+)
 
-#### Add all subdirs
-AngleCorrection_add_subdirectories(lib Tests)
+# Qt Designer files which should be processed by Qts uic
+set(PLUGIN_UI_FORMS
+)
 
-#### Set include dirs
-include_directories(${AngleCorrection_INCLUDE_DIRS})
-get_directory_property(hasParent PARENT_DIRECTORY)
-if(hasParent)
-    set (AngleCorrection_INCLUDE_DIRS ${AngleCorrection_INCLUDE_DIRS} PARENT_SCOPE)
-    set (SUPERLU_INCLUDE_DIRS ${SUPERLU_INCLUDE_DIRS} PARENT_SCOPE)
-endif()
+# QRC Files which should be compiled into the plugin
+set(PLUGIN_resources
+)
+
+
+#Compute the plugin dependencies
+ctkFunctionGetTargetLibraries(PLUGIN_target_libraries)
+set(PLUGIN_target_libraries 
+    ${PLUGIN_target_libraries}   
+	cxResource
+	cxResourceWidgets
+	cxLogicManager
+	cxGUIExtenderService
+	org_custusx_acquisition
+    )
+
+set(PLUGIN_OUTPUT_DIR "")
+if(CX_WINDOWS)
+    #on windows we want dlls to be placed with the executables
+    set(PLUGIN_OUTPUT_DIR "../")
+endif(CX_WINDOWS)
 
 #### Enable C++11
 # Note that Microsoft Visual C++ compiler enables C++11 by default
@@ -107,26 +76,22 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 
-## lib
-add_library(lib ${AngleCorrection_SOURCE_FILES} )
+ctkMacroBuildPlugin(
+  NAME ${PROJECT_NAME}
+  EXPORT_DIRECTIVE ${PLUGIN_export_directive}
+  SRCS ${PLUGIN_SRCS}
+  MOC_SRCS ${PLUGIN_MOC_SRCS}
+  UI_FORMS ${PLUGIN_UI_FORMS}
+  RESOURCES ${PLUGIN_resources}
+  TARGET_LIBRARIES ${PLUGIN_target_libraries}
+  OUTPUT_DIR ${PLUGIN_OUTPUT_DIR}
+)
+
+target_include_directories(org_custusx_anglecorrection
+    PUBLIC
+    .
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
 
 
-if(BUILD_TESTS)
-    if(APPLE)
-        # Do not run OUL test on Apple at the moment
-        # TODO: fix the HP OUL tests
-        add_executable(test ${AngleCorrection_TEST_SOURCE_FILES})
-    else()
-        add_executable(test ${AngleCorrection_TEST_SOURCE_FILES} ${OUL_TEST_SOURCE_FILES})
-    endif()
-endif()
-add_executable(angle_correction main.cpp)
-
-
-
-target_link_libraries(angle_correction ${LIBRARIES} lib)
-
-if(BUILD_TESTS)
-    target_link_libraries(test ${LIBRARIES} lib)
-endif()
 
