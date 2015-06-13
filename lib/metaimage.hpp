@@ -71,7 +71,7 @@ public:
 		reportError("ERROR: Could not read velocity data \n"+ errorObserver->GetErrorMessage());
 	}
 	if (errorObserver->GetWarning()){
-	   cerr << "Caught warning while reading center line data \n! " << errorObserver->GetWarningMessage();
+	   cerr << "Caught warning while reading velocity data \n! " << errorObserver->GetWarningMessage();
 	}
 
 	if ( m_reader->GetFileDimensionality() != 2){
