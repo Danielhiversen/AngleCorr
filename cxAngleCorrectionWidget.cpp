@@ -221,14 +221,13 @@ bool AngleCorrectionWidget::execute()
     dataFilename.replace(".fts","_");
 
 
-    QString clFilename = "";//mClFileSelectWidget->getFilename();
-    if(clFilename.length() ==0){
+    if(!mClDataSelectWidget->getMesh()){
         reportError("No centerline selected");
         return false;
     }
 
-    QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
-    filter << "*_tsf_cl??.vtk";   
+    //QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
+    //filter << "*_tsf_cl??.vtk";   
     // if file name not filter warning!
 
     double Vnyq = 0.0;
@@ -240,8 +239,7 @@ bool AngleCorrectionWidget::execute()
     vector<Spline3D<D> > *mClSplines;
     try {    
         report(dataFilename);
-        report(clFilename);
-        mClSplines = angle_correction_impl(clFilename.toStdString().c_str(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
+        mClSplines = angle_correction_impl(mClDataSelectWidget->getMesh()->getVtkPolyData(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
 
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 1:"+qstring_cast(e.what()));
@@ -252,7 +250,7 @@ bool AngleCorrectionWidget::execute()
     }
 
 
-    QString temp = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+QFileInfo(clFilename).baseName()+"_angleCorr%1.vtk";
+    QString temp = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+mClDataSelectWidget->getMesh()->getName()+"_angleCorr%1.vtk";
     QString outputFilename = temp.arg(1);
     int i =1;
     while(QFileInfo(outputFilename).isFile())
