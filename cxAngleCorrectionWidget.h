@@ -63,11 +63,10 @@ public:
 	virtual ~AngleCorrectionWidget();
 public slots:
 	void runAngleCorection();
-    void patientChangedSlot();
+    void patientChangedSlot();    
     void selectVelData(QString filename);
-    void selectClData(QString filename);
 	void toggleDetailsSlot();
-
+    void cLDataChangedSlot();
 private:
 
     bool execute();

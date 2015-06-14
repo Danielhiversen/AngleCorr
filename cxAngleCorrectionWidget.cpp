@@ -49,6 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxMesh.h"
 #include "cxSelectDataStringProperty.h"
 #include "cxRegistrationTransform.h"
+#include "cxMeshHelpers.h"
 
 
 #include "angle_correction_impl.cpp"
@@ -72,21 +73,11 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     connect(mVisServices->getPatientService().get(), SIGNAL(patientChanged()), this, SLOT(patientChangedSlot()));
    // connect(mAcquisitionService.get(), SIGNAL(saveDataCompleted(QString)), this, SLOT(selectVelData(QString)));
     this->setWhatsThis(this->defaultWhatsThis());
-
-    QLabel* velLabel = new QLabel("Select velocity data:");
-    mVerticalLayout->addWidget(velLabel);
-	connect(mVelFileSelectWidget, &FileSelectWidget::fileSelected, this,&AngleCorrectionWidget::selectVelData);
-	mVelFileSelectWidget->setNameFilter(QStringList() << "*_Velocity.fts");
-    mVerticalLayout->addWidget(mVelFileSelectWidget);
-
-    QLabel* clLabel = new QLabel("Select centerline:");
-    mVerticalLayout->addWidget(clLabel);
 	
-    mClDataSelectWidget = StringPropertySelectMesh::New(mVisServices->patientModelService);
+    mClDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
 	mClDataSelectWidget->setValueName("Centerline: ");
 	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClDataSelectWidget));
-
-
+    connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(cLDataChangedSlot()));
 
     mOptionsWidget = this->createOptionsWidget();
 	mOptionsWidget->setVisible(settings()->value("AngleCorr/AngleCorrShowDetails").toBool());
@@ -107,6 +98,7 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
 	mVerticalLayout->addStretch();
 
     this->patientChangedSlot();
+    this->cLDataChangedSlot();
     mOptionsWidget->setVisible(false);
 
 }
@@ -130,6 +122,18 @@ void AngleCorrectionWidget::patientChangedSlot()
     mVelFileSelectWidget->setPath(dataFilename);
 }
 
+void AngleCorrectionWidget::cLDataChangedSlot()
+{
+    if(!mClDataSelectWidget->getMesh()){
+        return;
+    }
+
+    report("Changed cl");
+
+//    mClDataSelectWidget->getMesh()
+
+}
+
 
 void AngleCorrectionWidget::selectVelData(QString filename)
 {
@@ -147,8 +151,8 @@ void AngleCorrectionWidget::selectVelData(QString filename)
 
 void AngleCorrectionWidget::toggleDetailsSlot()
 {
-  mOptionsWidget->setVisible(!mOptionsWidget->isVisible());
-  settings()->setValue("AngleCorr/AngleCorrShowDetails", mOptionsWidget->isVisible());
+    mOptionsWidget->setVisible(!mOptionsWidget->isVisible());
+    settings()->setValue("AngleCorr/AngleCorrShowDetails", mOptionsWidget->isVisible());
 }
 
 QWidget* AngleCorrectionWidget::createOptionsWidget()
@@ -160,6 +164,13 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 	int line = 0;
 
 	layout->addWidget(this->createHorizontalLine(), line, 0, 1, 3);
+	++line;
+
+    QLabel* velLabel = new QLabel("Select velocity data:");
+    mVerticalLayout->addWidget(velLabel);
+	connect(mVelFileSelectWidget, &FileSelectWidget::fileSelected, this,&AngleCorrectionWidget::selectVelData);
+	mVelFileSelectWidget->setNameFilter(QStringList() << "*Velocity.fts");
+    layout->addWidget(mVelFileSelectWidget,line,1);
 	++line;
 
     layout->addWidget(new QLabel("Centerline smoothing:", this), line, 0);
@@ -191,7 +202,6 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 
 void AngleCorrectionWidget::runAngleCorection()
 {
-
     mRunAngleCorrButton->setEnabled(false);
     bool result = execute();
     mRunAngleCorrButton->setEnabled(true);
@@ -201,18 +211,20 @@ void AngleCorrectionWidget::runAngleCorection()
 
 bool AngleCorrectionWidget::execute()
 {
-    QString dataFilename = mVelFileSelectWidget->getFilename();
-    if(dataFilename.length() ==0){
-        reportError("No velocity data selected");
-        return false;
-    }
-    dataFilename.replace(".fts","_");
-
-
     if(!mClDataSelectWidget->getMesh()){
         reportError("No centerline selected");
         return false;
     }
+
+    
+    QString dataFilename = mVelFileSelectWidget->getFilename();
+    if(dataFilename.length() ==0){
+        //dataFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/US_Acq/" + mClDataSelectWidget->getMesh()->getUid()
+        reportError("No velocity data selected");
+         mOptionsWidget->setVisible(true);
+        return false;
+    }
+    dataFilename.replace(".fts","_");
 
     //QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
     //filter << "*_tsf_cl??.vtk";   
@@ -258,6 +270,9 @@ bool AngleCorrectionWidget::execute()
         return false;
     }
 
+
+    report(mClDataSelectWidget->getMesh()->getUid());
+    report(mClDataSelectWidget->getMesh()->getUid());
 
 
     QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angelCorr%1"; 
