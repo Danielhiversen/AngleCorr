@@ -62,7 +62,6 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     BaseWidget(parent, "AngleCorrectionWidget", "Angle Correction"),
     mVerticalLayout(new QVBoxLayout(this)),
     mVelFileSelectWidget( new FileSelectWidget(this)),
-  //  mClDataSelectWidget( new DataSelectWidget(this)),
     mVisServices(visServices)
 {
 
@@ -127,9 +126,6 @@ void AngleCorrectionWidget::patientChangedSlot()
 {
     QString dataFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/US_Acq/";
     mVelFileSelectWidget->setPath(dataFilename);
-
-    QString clFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/";
-    //mClFileSelectWidget->setPath(clFilename);
 }
 
 
@@ -145,16 +141,6 @@ void AngleCorrectionWidget::selectVelData(QString filename)
 }
 
 
-void AngleCorrectionWidget::selectClData(QString filename)
-{
-	if (filename.isEmpty())
-	{
-		reportWarning("no centerline file selected");
-		return;
-	}
-
-	 // mClFileSelectWidget->setFilename(filename);
-}
 
 
 void AngleCorrectionWidget::toggleDetailsSlot()
