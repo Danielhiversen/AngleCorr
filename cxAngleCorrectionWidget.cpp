@@ -50,6 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxSelectDataStringProperty.h"
 #include "cxRegistrationTransform.h"
 #include "cxMeshHelpers.h"
+#include "cxViewGroupData.h"
 
 
 #include "angle_correction_impl.cpp"
@@ -95,6 +96,22 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
 	mVerticalLayout->addWidget(mRunAngleCorrButton);
 
 
+	QWidget* retval = new QWidget(this);
+	QGridLayout* layout = new QGridLayout(retval);
+	layout->setMargin(0);
+    layout->addWidget(new QLabel("Toggle show angle corrected data:", this),0,0);
+    mToggleShowOutputAction = this->createAction(this,
+                    QIcon(":/icons/open_icon_library/eye.png.png"),
+                    "Toggle show angle corrected data in view", "",
+                    SLOT(toggleShowOutputData()),
+                    NULL);
+    mToggleShowOutputAction->setCheckable(false);
+    CXSmallToolButton* toggleShowButton = new CXSmallToolButton();
+    toggleShowButton->setDefaultAction(mToggleShowOutputAction);
+	layout->addWidget(toggleShowButton,0,1);
+	mVerticalLayout->addWidget(retval);
+
+
 	mVerticalLayout->addStretch();
 
     this->patientChangedSlot();
@@ -112,7 +129,7 @@ QString AngleCorrectionWidget::defaultWhatsThis() const
 {
   return "<html>"
       "<h3>AngleCorrection plugin.</h3>"
-      "<p>Used for developers as a starting points for developing a new plugin</p>"
+      "<p>Angle correct velocities from ultrasound acquisitons</p>"
       "</html>";
 }
 
@@ -154,6 +171,28 @@ void AngleCorrectionWidget::toggleDetailsSlot()
     mOptionsWidget->setVisible(!mOptionsWidget->isVisible());
     settings()->setValue("AngleCorr/AngleCorrShowDetails", mOptionsWidget->isVisible());
 }
+
+
+void AngleCorrectionWidget::toggleShowOutputData()
+{
+    if (!mOutData)
+        return;
+
+    int groupIdx = mVisServices->visualizationService->getActiveGroupId();
+    if (groupIdx<0)
+        groupIdx = 0;
+	ViewGroupDataPtr currentViewGroup =  mVisServices->visualizationService->getGroup(groupIdx);
+
+    if (mToggleShowOutputAction->isChecked())
+    {
+		currentViewGroup->addData(mOutData->getUid());
+    }
+    else
+    {
+		currentViewGroup->removeData(mOutData->getUid());
+    }
+}
+
 
 QWidget* AngleCorrectionWidget::createOptionsWidget()
 {
@@ -205,6 +244,7 @@ void AngleCorrectionWidget::runAngleCorection()
     mRunAngleCorrButton->setEnabled(false);
     bool result = execute();
     mRunAngleCorrButton->setEnabled(true);
+    mToggleShowOutputAction->setCheckable(true);
 }
 
 
@@ -277,13 +317,13 @@ bool AngleCorrectionWidget::execute()
 
     QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angelCorr%1"; 
 	QString name = mClDataSelectWidget->getMesh()->getName()+" angelCorr%1";
-    MeshPtr mesh = mVisServices->patientModelService->createSpecificData<Mesh>(uid, name);
-	mesh->setVtkPolyData(output);
-	mesh->setColor(QColor(0, 0, 255, 255));
-    mesh->get_rMd_History()->setParentSpace(mClDataSelectWidget->getMesh()->getUid());
+    mOutData = mVisServices->patientModelService->createSpecificData<Mesh>(uid, name);
+	mOutData->setVtkPolyData(output);
+	mOutData->setColor(QColor(0, 0, 255, 255));
+    mOutData->get_rMd_History()->setParentSpace(mClDataSelectWidget->getMesh()->getUid());
 
-	mVisServices->patientModelService->insertData(mesh);
-	mVisServices->visualizationService->autoShowData(mesh);
+	mVisServices->patientModelService->insertData(mOutData);
+	mVisServices->visualizationService->autoShowData(mOutData);
 
 
     reportSuccess(QString("Completed angle correction"));

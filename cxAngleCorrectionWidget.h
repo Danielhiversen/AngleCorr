@@ -67,6 +67,7 @@ public slots:
     void selectVelData(QString filename);
 	void toggleDetailsSlot();
     void cLDataChangedSlot();
+    void toggleShowOutputData();
 private:
 
     bool execute();
@@ -81,11 +82,13 @@ private:
     QPushButton* mRunAngleCorrButton;
     QWidget* createOptionsWidget();
     QWidget* mOptionsWidget;
+    QAction* mToggleShowOutputAction;
 
     DoublePropertyPtr mClSmoothing;
     DoublePropertyPtr mMaxThetaCutoff;
     DoublePropertyPtr mUncertaintyLimit;
     DoublePropertyPtr mMinArrowDist;
+    MeshPtr mOutData;
 
 };
 
