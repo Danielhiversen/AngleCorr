@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxLogger.h"
 #include "cxPatientModelServiceProxy.h"
 #include "cxAcquisitionServiceProxy.h"
+#include "cxViewService.h"
 #include "cxPatientModelService.h"
 #include "cxVisServices.h"
 #include "cxSettings.h"
@@ -47,6 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxTime.h"
 #include "cxMesh.h"
 #include "cxSelectDataStringProperty.h"
+#include "cxRegistrationTransform.h"
 
 
 #include "angle_correction_impl.cpp"
@@ -244,9 +246,10 @@ bool AngleCorrectionWidget::execute()
         i++;
         outputFilename = temp.arg(i);
     }
+    vtkSmartPointer<vtkPolyData> output;
     try {    
         report(outputFilename);
-         writeDirectionToVtkFile(outputFilename.toStdString().c_str(), mClSplines, uncertainty_limit, minArrowDist);
+         output= flowDirection(mClSplines, uncertainty_limit, minArrowDist);
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 2:"+qstring_cast(e.what()));
         return false;
@@ -254,6 +257,19 @@ bool AngleCorrectionWidget::execute()
 		reportError("Angle correction algorithm threw a unknown exception in step 2.");
         return false;
     }
+
+
+
+    QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angelCorr%1"; 
+	QString name = mClDataSelectWidget->getMesh()->getName()+" angelCorr%1";
+    MeshPtr mesh = mVisServices->patientModelService->createSpecificData<Mesh>(uid, name);
+	mesh->setVtkPolyData(output);
+	mesh->setColor(QColor(0, 0, 255, 255));
+    mesh->get_rMd_History()->setParentSpace(mClDataSelectWidget->getMesh()->getUid());
+
+	mVisServices->patientModelService->insertData(mesh);
+	mVisServices->visualizationService->autoShowData(mesh);
+
 
     reportSuccess(QString("Completed angle correction"));
     return true;
