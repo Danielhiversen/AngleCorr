@@ -167,10 +167,10 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 	++line;
 
     QLabel* velLabel = new QLabel("Velocity data:");
-    mVerticalLayout->addWidget(velLabel,line,1);
+    layout->addWidget(velLabel,line,0);
 	connect(mVelFileSelectWidget, &FileSelectWidget::fileSelected, this,&AngleCorrectionWidget::selectVelData);
 	mVelFileSelectWidget->setNameFilter(QStringList() << "*Velocity.fts");
-    layout->addWidget(mVelFileSelectWidget,line,2);
+    layout->addWidget(mVelFileSelectWidget,line,1);
 	++line;
 
     layout->addWidget(new QLabel("Centerline smoothing:", this), line, 0);
