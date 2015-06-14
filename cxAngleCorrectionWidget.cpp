@@ -46,9 +46,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxHelperWidgets.h"
 #include "cxTime.h"
 #include "cxMesh.h"
+#include "cxSelectDataStringProperty.h"
 
 
-#include <vector>
 #include "angle_correction_impl.cpp"
 #include <vtkPolyDataWriter.h>
 #include <lib/writeToFile.cpp>
@@ -58,19 +58,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace cx
 {
 
-AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, AcquisitionServicePtr acquisitionService, QWidget* parent) :
+AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget* parent) :
     BaseWidget(parent, "AngleCorrectionWidget", "Angle Correction"),
     mVerticalLayout(new QVBoxLayout(this)),
     mVelFileSelectWidget( new FileSelectWidget(this)),
-    mClFileSelectWidget( new FileSelectWidget(this)),
+  //  mClDataSelectWidget( new DataSelectWidget(this)),
     mVisServices(visServices)
 {
-//    mVisServices = visServices;
-    mAcquisitionService = acquisitionService;
+
     mSettings = profile()->getXmlSettings().descend("angelCorr");
 
     connect(mVisServices->getPatientService().get(), SIGNAL(patientChanged()), this, SLOT(patientChangedSlot()));
-    connect(mAcquisitionService.get(), SIGNAL(saveDataCompleted(QString)), this, SLOT(selectVelData(QString)));
+   // connect(mAcquisitionService.get(), SIGNAL(saveDataCompleted(QString)), this, SLOT(selectVelData(QString)));
     this->setWhatsThis(this->defaultWhatsThis());
 
     QLabel* velLabel = new QLabel("Select velocity data:");
@@ -81,11 +80,11 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, Acquisi
 
     QLabel* clLabel = new QLabel("Select centerline:");
     mVerticalLayout->addWidget(clLabel);
-	connect(mClFileSelectWidget, &FileSelectWidget::fileSelected, this,&AngleCorrectionWidget::selectClData);
-    QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
-    filter << "*_tsf_cl??.vtk";   
-	mClFileSelectWidget->setNameFilter(filter);
-    mVerticalLayout->addWidget(mClFileSelectWidget);    
+	
+    mClDataSelectWidget = StringPropertySelectMesh::New(mVisServices->patientModelService);
+	mClDataSelectWidget->setValueName("Centerline: ");
+	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClDataSelectWidget));
+
 
 
     mOptionsWidget = this->createOptionsWidget();
@@ -130,7 +129,7 @@ void AngleCorrectionWidget::patientChangedSlot()
     mVelFileSelectWidget->setPath(dataFilename);
 
     QString clFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/";
-    mClFileSelectWidget->setPath(clFilename);
+    //mClFileSelectWidget->setPath(clFilename);
 }
 
 
@@ -154,7 +153,7 @@ void AngleCorrectionWidget::selectClData(QString filename)
 		return;
 	}
 
-	  mClFileSelectWidget->setFilename(filename);
+	 // mClFileSelectWidget->setFilename(filename);
 }
 
 
@@ -222,11 +221,15 @@ bool AngleCorrectionWidget::execute()
     dataFilename.replace(".fts","_");
 
 
-    QString clFilename = mClFileSelectWidget->getFilename();
+    QString clFilename = "";//mClFileSelectWidget->getFilename();
     if(clFilename.length() ==0){
         reportError("No centerline selected");
         return false;
     }
+
+    QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
+    filter << "*_tsf_cl??.vtk";   
+    // if file name not filter warning!
 
     double Vnyq = 0.0;
     double cutoff = cos(mMaxThetaCutoff->getValue()/180.0*M_PI);
@@ -238,10 +241,6 @@ bool AngleCorrectionWidget::execute()
     try {    
         report(dataFilename);
         report(clFilename);
-        //.toStdString()
-        //EstimateAngleCorrectedFlowDirection(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit, double minArrowDist)7
-    	//vector<Spline3D<D> > *mVelSplines = angle_correction_impl(centerline, image_prefix , Vnyq, cutoff, nConvolutions);
-
         mClSplines = angle_correction_impl(clFilename.toStdString().c_str(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
 
     } catch (std::exception& e){
@@ -253,13 +252,17 @@ bool AngleCorrectionWidget::execute()
     }
 
 
-   QString outputFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+QFileInfo(clFilename).baseName()
-                            +"_"+QDateTime::currentDateTime().toString(timestampSecondsFormat())+"_angleCorr.vtk";
+    QString temp = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+QFileInfo(clFilename).baseName()+"_angleCorr%1.vtk";
+    QString outputFilename = temp.arg(1);
+    int i =1;
+    while(QFileInfo(outputFilename).isFile())
+    {
+        i++;
+        outputFilename = temp.arg(i);
+    }
     try {    
         report(outputFilename);
-         writeDirectionToVtkFile(outputFilename.toStdString().c_str(), mClSplines, uncertainty_limit);
-    	//	outputCenterline->setVtkPolyData(flowDirection( mVelSplines, uncertainty_limit,minArrowDist));
-        sleep(4);
+         writeDirectionToVtkFile(outputFilename.toStdString().c_str(), mClSplines, uncertainty_limit, minArrowDist);
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 2:"+qstring_cast(e.what()));
         return false;

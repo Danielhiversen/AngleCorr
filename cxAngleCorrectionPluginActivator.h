@@ -47,7 +47,7 @@ typedef boost::shared_ptr<class RegisteredService> RegisteredServicePtr;
  *
  * \ingroup org_custusx_AngleCorrection
  *
- * \date 2014-04-15
+ * \date 2015-06-14
  * \author Daniel Hoyer Iversen
  */
 class AngleCorrectionPluginActivator :  public QObject, public ctkPluginActivator

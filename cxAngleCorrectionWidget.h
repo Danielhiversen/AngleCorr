@@ -35,8 +35,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxBaseWidget.h"
 #include <QPushButton>
 #include "cxFileSelectWidget.h"
+#include "cxDataSelectWidget.h"
 #include "cxUSAcqusitionWidget.h"
+#include "cxPatientModelServiceProxy.h"
 #include "cxXmlOptionItem.h"
+#include "cxSelectDataStringProperty.h"
 
 
 class QVBoxLayout;
@@ -49,14 +52,14 @@ namespace cx
  *
  * \ingroup org_custusx_AngleCorrection
  *
- * \date 2014-05-02
- * \author Christian Askeland
+ * \date 2015-06-14
+ * \author Daniel Hoyer Iversen
  */
 class AngleCorrectionWidget : public BaseWidget
 {
 	Q_OBJECT
 public:
-	AngleCorrectionWidget(VisServicesPtr services, AcquisitionServicePtr acquisitionService, QWidget* parent);
+    AngleCorrectionWidget(VisServicesPtr visServices, QWidget* parent) ;
 	virtual ~AngleCorrectionWidget();
 public slots:
 	void runAngleCorection();
@@ -71,9 +74,8 @@ private:
 	XmlOptionFile mSettings;
 
     VisServicesPtr mVisServices;
-    AcquisitionServicePtr mAcquisitionService;
     FileSelectWidget* mVelFileSelectWidget;
-    FileSelectWidget* mClFileSelectWidget;
+    StringPropertySelectMeshPtr mClDataSelectWidget;
 
 	QString defaultWhatsThis() const;
 	QVBoxLayout*  mVerticalLayout;

@@ -45,8 +45,8 @@ namespace cx
  *
  * \ingroup org_custusx_AngleCorrection
  *
- * \date 2014-04-01
- * \author Christian Askeland
+ * \date 2015-06-14
+ * \author Daniel Hoyer Iversen
  */
 class org_custusx_anglecorrection_EXPORT AngleCorrectionGUIExtenderService : public GUIExtenderService
 {
