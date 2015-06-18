@@ -76,6 +76,7 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     this->setWhatsThis(this->defaultWhatsThis());
 	
     mClDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
+    mClDataSelectWidget->setUidRegexp("tsf_cl");
 	mClDataSelectWidget->setValueName("Centerline: ");
 	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClDataSelectWidget));
     connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(cLDataChangedSlot()));
