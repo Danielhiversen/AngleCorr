@@ -145,9 +145,18 @@ void AngleCorrectionWidget::cLDataChangedSlot()
         return;
     }
 
-    report("Changed cl");
 
-//    mClDataSelectWidget->getMesh()
+    mVelFileSelectWidget->setFilename("");
+    QString clUid = mClDataSelectWidget->getMesh()->getUid();
+    QStringList files=mVelFileSelectWidget->getAllFiles();
+    for (int i = 0; i < files.size(); ++i)
+    {
+        if(files.at(i).contains(clUid.section("_",1,2 )))
+        {
+        	  mVelFileSelectWidget->setFilename(files.at(i));
+              break;
+        }
+    }
 
 }
 
