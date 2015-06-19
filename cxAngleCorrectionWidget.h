@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef CXANGLECORRECTIONWIDGET_H_
 #define CXANGLECORRECTIONWIDGET_H_
+
+
 #include "cxBaseWidget.h"
 #include <QPushButton>
 #include "cxFileSelectWidget.h"
@@ -76,13 +78,14 @@ private:
     VisServicesPtr mVisServices;
     FileSelectWidget* mVelFileSelectWidget;
     StringPropertySelectMeshPtr mClDataSelectWidget;
+    StringPropertySelectMeshPtr mOutDataSelectWidget;
 
 	QString defaultWhatsThis() const;
 	QVBoxLayout*  mVerticalLayout;
     QPushButton* mRunAngleCorrButton;
     QWidget* createOptionsWidget();
     QWidget* mOptionsWidget;
-    QAction* mToggleShowOutputAction;
+
 
     DoublePropertyPtr mClSmoothing;
     DoublePropertyPtr mMaxThetaCutoff;

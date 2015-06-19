@@ -89,20 +89,10 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
 	mVerticalLayout->addWidget(mRunAngleCorrButton);
 
 
-	QWidget* retval = new QWidget(this);
-	QGridLayout* layout = new QGridLayout(retval);
-	layout->setMargin(0);
-    layout->addWidget(new QLabel("Toggle show angle corrected data:", this),0,0);
-    mToggleShowOutputAction = this->createAction(this,
-                    QIcon(":/icons/open_icon_library/eye.png.png"),
-                    "Toggle show angle corrected data in view", "",
-                    SLOT(toggleShowOutputData()),
-                    NULL);
-    mToggleShowOutputAction->setCheckable(false);
-    CXSmallToolButton* toggleShowButton = new CXSmallToolButton();
-    toggleShowButton->setDefaultAction(mToggleShowOutputAction);
-	layout->addWidget(toggleShowButton,0,1);
-	mVerticalLayout->addWidget(retval);
+    mOutDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
+    mOutDataSelectWidget->setUidRegexp("angleCorr"); 
+	mOutDataSelectWidget->setValueName("Output: ");
+	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mOutDataSelectWidget));
 
 
 	mVerticalLayout->addStretch();
@@ -158,7 +148,7 @@ void AngleCorrectionWidget::selectVelData(QString filename)
 {
 	if (filename.isEmpty())
 	{
-		reportWarning("no velocity file selected");
+		reportWarning("No velocity file selected");
 		return;
 	}
 
@@ -175,25 +165,7 @@ void AngleCorrectionWidget::toggleDetailsSlot()
 }
 
 
-void AngleCorrectionWidget::toggleShowOutputData()
-{
-    if (!mOutData)
-        return;
 
-    int groupIdx = mVisServices->visualizationService->getActiveGroupId();
-    if (groupIdx<0)
-        groupIdx = 0;
-	ViewGroupDataPtr currentViewGroup =  mVisServices->visualizationService->getGroup(groupIdx);
-
-    if (mToggleShowOutputAction->isChecked())
-    {
-		currentViewGroup->addData(mOutData->getUid());
-    }
-    else
-    {
-		currentViewGroup->removeData(mOutData->getUid());
-    }
-}
 
 
 QWidget* AngleCorrectionWidget::createOptionsWidget()
@@ -246,7 +218,6 @@ void AngleCorrectionWidget::runAngleCorection()
     mRunAngleCorrButton->setEnabled(false);
     bool result = execute();
     mRunAngleCorrButton->setEnabled(true);
-    mToggleShowOutputAction->setCheckable(true);
     reportSuccess(QString("Completed angle correction"));
 }
 
