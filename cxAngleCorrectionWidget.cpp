@@ -31,31 +31,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =========================================================================*/
 
 #include "cxAngleCorrectionWidget.h"
+#include "cxDoubleProperty.h"
+#include "cxHelperWidgets.h"
+#include "cxLogger.h"
+#include "cxMesh.h"
+#include "cxProfile.h"
+#include "cxRegistrationTransform.h"
+#include "cxSelectDataStringProperty.h"
+#include "cxSettings.h"
+#include "cxTime.h"
+#include "cxViewGroupData.h"
+#include "cxViewService.h"
+#include "cxVisServices.h"
+#include "Exceptions.hpp"
 #include <QLabel>
 #include <QVBoxLayout>
-#include "Exceptions.hpp"
-
-#include "cxLogger.h"
-#include "cxPatientModelServiceProxy.h"
-#include "cxAcquisitionServiceProxy.h"
-#include "cxViewService.h"
-#include "cxPatientModelService.h"
-#include "cxVisServices.h"
-#include "cxSettings.h"
-#include "cxDoubleProperty.h"
-#include "cxProfile.h"
-#include "cxHelperWidgets.h"
-#include "cxTime.h"
-#include "cxMesh.h"
-#include "cxSelectDataStringProperty.h"
-#include "cxRegistrationTransform.h"
-#include "cxMeshHelpers.h"
-#include "cxViewGroupData.h"
-
-
 #include "angle_correction_impl.cpp"
-#include <vtkPolyDataWriter.h>
-#include <lib/writeToFile.cpp>
+
 
 ///
 
@@ -255,6 +247,7 @@ void AngleCorrectionWidget::runAngleCorection()
     bool result = execute();
     mRunAngleCorrButton->setEnabled(true);
     mToggleShowOutputAction->setCheckable(true);
+    reportSuccess(QString("Completed angle correction"));
 }
 
 
@@ -288,7 +281,6 @@ bool AngleCorrectionWidget::execute()
 
     vector<Spline3D<D> > *mClSplines;
     try {    
-        report(dataFilename);
         mClSplines = angle_correction_impl(mClDataSelectWidget->getMesh()->getVtkPolyData(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
 
     } catch (std::exception& e){
@@ -310,7 +302,6 @@ bool AngleCorrectionWidget::execute()
     }
     vtkSmartPointer<vtkPolyData> output;
     try {    
-        report(outputFilename);
          output= flowDirection(mClSplines, uncertainty_limit, minArrowDist);
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 2:"+qstring_cast(e.what()));
@@ -319,11 +310,6 @@ bool AngleCorrectionWidget::execute()
 		reportError("Angle correction algorithm threw a unknown exception in step 2.");
         return false;
     }
-
-
-    report(mClDataSelectWidget->getMesh()->getUid());
-    report(mClDataSelectWidget->getMesh()->getUid());
-
 
     QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1"; 
 	QString name = mClDataSelectWidget->getMesh()->getName()+" angleCorr%1";
@@ -335,9 +321,7 @@ bool AngleCorrectionWidget::execute()
 	mVisServices->patientModelService->insertData(mOutData);
 	mVisServices->visualizationService->autoShowData(mOutData);
 
-
-    reportSuccess(QString("Completed angle correction"));
-    return true;
+   return true;
 }
 
 
