@@ -69,14 +69,14 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     mVisServices(visServices)
 {
 
-    mSettings = profile()->getXmlSettings().descend("angelCorr");
+    mSettings = profile()->getXmlSettings().descend("angleCorr");
 
     connect(mVisServices->getPatientService().get(), SIGNAL(patientChanged()), this, SLOT(patientChangedSlot()));
    // connect(mAcquisitionService.get(), SIGNAL(saveDataCompleted(QString)), this, SLOT(selectVelData(QString)));
     this->setWhatsThis(this->defaultWhatsThis());
 	
     mClDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
-    mClDataSelectWidget->setUidRegexp("tsf_cl");
+    mClDataSelectWidget->setUidRegexp("tsf_cl(?!.*angleCorr).*"); 
 	mClDataSelectWidget->setValueName("Centerline: ");
 	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClDataSelectWidget));
     connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(cLDataChangedSlot()));
@@ -325,8 +325,8 @@ bool AngleCorrectionWidget::execute()
     report(mClDataSelectWidget->getMesh()->getUid());
 
 
-    QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angelCorr%1"; 
-	QString name = mClDataSelectWidget->getMesh()->getName()+" angelCorr%1";
+    QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1"; 
+	QString name = mClDataSelectWidget->getMesh()->getName()+" angleCorr%1";
     mOutData = mVisServices->patientModelService->createSpecificData<Mesh>(uid, name);
 	mOutData->setVtkPolyData(output);
 	mOutData->setColor(QColor(0, 0, 255, 255));
