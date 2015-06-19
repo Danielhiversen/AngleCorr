@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxFileSelectWidget.h"
 #include "cxDataSelectWidget.h"
 #include "cxUSAcqusitionWidget.h"
+#include "cxTimedAlgorithmProgressBar.h"
 #include "cxPatientModelServiceProxy.h"
 #include "cxXmlOptionItem.h"
 #include "cxSelectDataStringProperty.h"
@@ -78,7 +79,6 @@ private:
     VisServicesPtr mVisServices;
     FileSelectWidget* mVelFileSelectWidget;
     StringPropertySelectMeshPtr mClDataSelectWidget;
-    StringPropertySelectMeshPtr mOutDataSelectWidget;
 
 	QString defaultWhatsThis() const;
 	QVBoxLayout*  mVerticalLayout;
@@ -92,6 +92,9 @@ private:
     DoublePropertyPtr mUncertaintyLimit;
     DoublePropertyPtr mMinArrowDist;
     MeshPtr mOutData;
+
+    StringPropertySelectMeshPtr mOutDataSelectWidget;
+	TimedAlgorithmProgressBar* mTimedAlgorithmProgressBar;
 
 };
 

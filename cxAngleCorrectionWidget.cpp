@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Exceptions.hpp"
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QtConcurrent/QtConcurrentRun>
 #include "angle_correction_impl.cpp"
 
 
@@ -94,6 +95,9 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
 	mOutDataSelectWidget->setValueName("Output: ");
 	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mOutDataSelectWidget));
 
+
+    mTimedAlgorithmProgressBar = new cx::TimedAlgorithmProgressBar;
+	mVerticalLayout->addWidget(mTimedAlgorithmProgressBar);
 
 	mVerticalLayout->addStretch();
 
@@ -216,7 +220,7 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 void AngleCorrectionWidget::runAngleCorection()
 {
     mRunAngleCorrButton->setEnabled(false);
-    bool result = execute();
+    bool result = QtConcurrent::run(this, &AngleCorrectionWidget::execute);
     mRunAngleCorrButton->setEnabled(true);
     reportSuccess(QString("Completed angle correction"));
 }
@@ -229,20 +233,16 @@ bool AngleCorrectionWidget::execute()
         reportError("No centerline selected");
         return false;
     }
+    vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
 
     
     QString dataFilename = mVelFileSelectWidget->getFilename();
     if(dataFilename.length() ==0){
-        //dataFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/US_Acq/" + mClDataSelectWidget->getMesh()->getUid()
         reportError("No velocity data selected");
          mOptionsWidget->setVisible(true);
         return false;
     }
     dataFilename.replace(".fts","_");
-
-    //QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
-    //filter << "*_tsf_cl??.vtk";   
-    // if file name not filter warning!
 
     double Vnyq = 0.0;
     double cutoff = cos(mMaxThetaCutoff->getValue()/180.0*M_PI);
@@ -252,7 +252,7 @@ bool AngleCorrectionWidget::execute()
 
     vector<Spline3D<D> > *mClSplines;
     try {    
-        mClSplines = angle_correction_impl(mClDataSelectWidget->getMesh()->getVtkPolyData(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
+        mClSplines = angle_correction_impl(clData, dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
 
     } catch (std::exception& e){
 		reportError("std::exception in angle correction algorithm  step 1:"+qstring_cast(e.what()));
@@ -263,14 +263,6 @@ bool AngleCorrectionWidget::execute()
     }
 
 
-    QString temp = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+mClDataSelectWidget->getMesh()->getName()+"_angleCorr%1.vtk";
-    QString outputFilename = temp.arg(1);
-    int i =1;
-    while(QFileInfo(outputFilename).isFile())
-    {
-        i++;
-        outputFilename = temp.arg(i);
-    }
     vtkSmartPointer<vtkPolyData> output;
     try {    
          output= flowDirection(mClSplines, uncertainty_limit, minArrowDist);
