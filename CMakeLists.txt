@@ -6,6 +6,7 @@ set(PLUGIN_export_directive "${PROJECT_NAME}_EXPORT")
 
 set(PLUGIN_SRCS
   cxAngleCorrectionPluginActivator.cpp
+  cxAngleCorrectionExecuter.cpp
   cxAngleCorrectionGUIExtenderService.cpp
   cxAngleCorrectionWidget.cpp
 )
@@ -18,6 +19,7 @@ include_directories(${AngleCorrection_INCLUDE_DIRS})
 # Files which should be processed by Qts moc
 set(PLUGIN_MOC_SRCS
   cxAngleCorrectionPluginActivator.h
+  cxAngleCorrectionExecuter.h
   cxAngleCorrectionGUIExtenderService.h
   cxAngleCorrectionWidget.h
 )

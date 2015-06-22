@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "cxBaseWidget.h"
 #include <QPushButton>
+#include "cxAngleCorrectionExecuter.h"
 #include "cxFileSelectWidget.h"
 #include "cxDataSelectWidget.h"
 #include "cxUSAcqusitionWidget.h"
@@ -43,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxPatientModelServiceProxy.h"
 #include "cxXmlOptionItem.h"
 #include "cxSelectDataStringProperty.h"
-
 
 class QVBoxLayout;
 
@@ -58,6 +58,10 @@ namespace cx
  * \date 2015-06-14
  * \author Daniel Hoyer Iversen
  */
+
+
+typedef boost::shared_ptr<class AngleCorrectionExecuter> AngleCorrectionExecuterPtr;
+
 class AngleCorrectionWidget : public BaseWidget
 {
 	Q_OBJECT
@@ -71,6 +75,9 @@ public slots:
 	void toggleDetailsSlot();
     void cLDataChangedSlot();
     void toggleShowOutputData();
+private slots:
+	void preprocessExecuter();
+	void executionFinished();
 private:
 
     bool execute();
@@ -95,6 +102,8 @@ private:
 
     StringPropertySelectMeshPtr mOutDataSelectWidget;
 	TimedAlgorithmProgressBar* mTimedAlgorithmProgressBar;
+
+	AngleCorrectionExecuterPtr mExecuter;
 
 };
 

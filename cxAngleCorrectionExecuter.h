@@ -1,4 +1,14 @@
-//---------------------------------------------------------------------------------------------------------------------
+#ifndef CXANGLECORRECTIONEXECUTER_H
+#define CXANGLECORRECTIONEXECUTER_H
+
+#include "org_custusx_anglecorrection_Export.h"
+
+#include "cxForwardDeclarations.h"
+#include "cxThreadedTimedAlgorithm.h"
+
+namespace cx
+{
+
 /**
  *
  * \ingroup org_custusx_AngleCorrection
@@ -6,36 +16,22 @@
  * \date 2015-06-14
  * \author Daniel Hoyer Iversen
  */
-#ifndef CXANGLECORRECTIONEXECUTER_H_
-#define CXANGLECORRECTIONEXECUTER_H_
 
-#include "cxResourceExport.h"
-
-#include <QFutureWatcher>
-#include <QtConcurrent/QtConcurrentRun>
-
-#include "cxTimedAlgorithm.h"
-
-#include "vtkForwardDeclarations.h"
-#include "cxForwardDeclarations.h"
-
-namespace cx
-{
-
-class AngleCorrectionExecuter : public ThreadedTimedAlgorithm<QString>
+class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public ThreadedTimedAlgorithm<bool>
 {
   Q_OBJECT
 public:
   AngleCorrectionExecuter();
-  void setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist);
   virtual ~AngleCorrectionExecuter();
+  void setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist);
   vtkSmartPointer<vtkPolyData> getOutput();
 
 private slots:
   virtual void postProcessingSlot();
 
 private:
-  virtual QString calculate();
+  virtual bool calculate();
+
   vtkSmartPointer<vtkPolyData> mClData;
   QString mDataFilename;
   double mVnyq;
@@ -43,7 +39,9 @@ private:
   int mnConvolutions;
   double mUncertainty_limit;
   double mMinArrowDist;
+
+  vtkSmartPointer<vtkPolyData> mOutput;
 };
 
 }//namespace
-
+#endif /* CXANGLECORRECTIONEXECUTER_H */
