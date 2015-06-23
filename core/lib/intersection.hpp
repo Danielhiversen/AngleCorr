@@ -247,7 +247,7 @@ public:
 
     negative = m_points.size()-positive;
   
-    T pos_weight = (T)(positive - negative)/(D)(positive + negative);
+    T pos_weight = (T)(positive - negative)/(double)(positive + negative);
     pos_weight = pos_weight * pos_weight;
     T ret = A*pos_weight;
     if(abs(m_cosTheta) > a && abs(m_cosTheta) < b)

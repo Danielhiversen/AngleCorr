@@ -9,6 +9,8 @@ set(PLUGIN_SRCS
   cxAngleCorrectionExecuter.cpp
   cxAngleCorrectionGUIExtenderService.cpp
   cxAngleCorrectionWidget.cpp
+  core/angle_correction_impl.cpp
+  core/angle_correction_impl.h
 )
 
 

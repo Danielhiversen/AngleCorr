@@ -167,9 +167,9 @@ public:
    * param @p The point to transform
    */
   void 
-  toImgCoords(D &x, 
-	      D &y, 
-	      const D p[3]) const
+  toImgCoords(double &x, 
+	      double &y, 
+	      const double p[3]) const
   {
 
 

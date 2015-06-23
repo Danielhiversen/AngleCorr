@@ -77,7 +77,7 @@ private:
   std::string WarningMessage;
 };
 
-void reportError(std::string  errMsg){
+static void reportError(std::string  errMsg){
 	throw std::runtime_error(errMsg);
 }
 

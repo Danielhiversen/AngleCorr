@@ -96,7 +96,7 @@ public:
       {
 		if(abs(i.getCosTheta()) < a || abs(i.getCosTheta()) > b)
 		  return ret;
-		D tmp1, tmp2;
+		double tmp1, tmp2;
 
 		tmp1 = i.getAverage()*i.getCosTheta();
 		tmp2 = i.getCosTheta()*i.getCosTheta();

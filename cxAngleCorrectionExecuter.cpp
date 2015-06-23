@@ -1,7 +1,7 @@
 #include "cxAngleCorrectionExecuter.h"
 #include "cxLogger.h"
-#include "angle_correction_impl.cpp"
 
+#include "angle_correction_impl.h"
 namespace cx
 {
 
@@ -46,7 +46,7 @@ bool AngleCorrectionExecuter::calculate()
 {
   
     report(QString("Algorithm Angle correction started"));
-    vector<Spline3D<D> > *mClSplines;
+    vectorSpline3dDouble *mClSplines;
     try {    
         mClSplines = angle_correction_impl(mClData, mDataFilename.toStdString().c_str(), mVnyq, mCutoff, mnConvolutions);
     } catch (std::exception& e){

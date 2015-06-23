@@ -1,6 +1,8 @@
 #include <vector>
 #include "ErrorHandler.hpp"
 
+typedef vector<Spline3D<double> > vectorSpline3dDouble;
+
 void writeDirectionToVtkFile(const char* filename,
 		vtkSmartPointer<vtkPolyData> polydata )
 {
@@ -30,7 +32,7 @@ void writeDirectionToVtkFile(const char* filename,
 }
 
 void writeDirectionToVtkFile(const char* filename,
-		    vector<Spline3D<D> > *splines, double uncertainty_limit, double minArrowDist)
+		    vectorSpline3dDouble *splines, double uncertainty_limit, double minArrowDist)
 {
 	  vtkSmartPointer<vtkPolyData> polydata = flowDirection(splines, uncertainty_limit, minArrowDist);
 	  writeDirectionToVtkFile(filename,	polydata);
@@ -38,7 +40,7 @@ void writeDirectionToVtkFile(const char* filename,
 
 
 void writeDirectionToVtkFile(const char* filename,
-		    vector<Spline3D<D> > *splines, double uncertainty_limit)
+		    vectorSpline3dDouble *splines, double uncertainty_limit)
 {
 	  writeDirectionToVtkFile(filename,	splines,uncertainty_limit,1.0);
 }

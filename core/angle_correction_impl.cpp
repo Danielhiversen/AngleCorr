@@ -2,11 +2,12 @@
 #include "ErrorHandler.hpp"
 #include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
+#include "angle_correction_impl.h"
 
 using namespace std;
 
 
-vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, double uncertainty_limit, double minArrowDist)
+vtkSmartPointer<vtkPolyData> flowDirection( vectorSpline3dDouble *splines, double uncertainty_limit, double minArrowDist)
 {
 	  if (uncertainty_limit < 0.0){
 		    reportError("ERROR: uncertainty_limit must be positive ");
@@ -28,14 +29,14 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 	vtkSmartPointer<vtkDoubleArray> velocitydata = vtkSmartPointer<vtkDoubleArray>::New();
 	velocitydata->SetName("Vessel velocity");
 
-	D p[3];
-	D p_prev[3];
-	D p_temp[3];
-	D flow_vector[3];
-	D flow_vector_n[3];
-	D flow_direction;
-	D abs_dir;
-	D abs_vessel_vel;
+	double p[3];
+	double p_prev[3];
+	double p_temp[3];
+	double flow_vector[3];
+	double flow_vector_n[3];
+	double flow_direction;
+	double abs_dir;
+	double abs_vessel_vel;
 
 	int num_uncertainty_limit = 0;
 
@@ -115,14 +116,14 @@ vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, doubl
 }
 
 
-vtkSmartPointer<vtkPolyData> flowDirection( vector<Spline3D<D> > *splines, double uncertainty_limit)
+vtkSmartPointer<vtkPolyData> flowDirection( vectorSpline3dDouble *splines, double uncertainty_limit)
 {
     return flowDirection(splines, uncertainty_limit,1.0);
 }
 
 
 
-static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > images , double Vnyq, double cutoff,  int nConvolutions)
+vectorSpline3dDouble*   angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > images , double Vnyq, double cutoff,  int nConvolutions)
 {
   bool verbose = false;
   if (Vnyq < 0.0){
@@ -132,9 +133,9 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
   	    reportError("ERROR: nConvolutions must be positive ");
     }
 
-  vector<Spline3D<D> > *splines = Spline3D<D>::build(vpd_centerline);
+  vectorSpline3dDouble *splines = Spline3D<double>::build(vpd_centerline);
 
-  for(Spline3D<D>& spline : *splines)
+  for(Spline3D<double>& spline : *splines)
   {
     spline.setTransform(true);
     spline.setAxis(1);
@@ -176,7 +177,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
   // we can go through all the image planes and do the region growing.
   for(auto &spline: *splines)
   {
-    for_each(spline.getIntersections().begin(), spline.getIntersections().end(),[](Intersection<D> &it){it.regionGrow();});
+    for_each(spline.getIntersections().begin(), spline.getIntersections().end(),[](Intersection<double> &it){it.regionGrow();});
   }
   
   
@@ -224,7 +225,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
 
 
 
-static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline, const  char* image_prefix , double Vnyq, double cutoff,  int nConvolutions)
+vectorSpline3dDouble*   angle_correction_impl(vtkPolyData *vpd_centerline, const  char* image_prefix , double Vnyq, double cutoff,  int nConvolutions)
 {
 
 	vector<MetaImage<inData_t> > images = MetaImage<inData_t>::readImages(std::string(image_prefix));
@@ -232,7 +233,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(vtkPolyData *vpd_centerline
 
 }
 
-static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
+vectorSpline3dDouble*   angle_correction_impl(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions)
 {
 
 	vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
@@ -268,7 +269,7 @@ static vector<Spline3D<D> >*   angle_correction_impl(const char* centerline,cons
 
 
 vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(const char* centerline,const  char* image_prefix, double Vnyq, double cutoff,  int nConvolutions, double uncertainty_limit, double minArrowDist){
-	vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix , Vnyq, cutoff, nConvolutions);
+	vectorSpline3dDouble *splines = angle_correction_impl(centerline, image_prefix , Vnyq, cutoff, nConvolutions);
 	return flowDirection( splines, uncertainty_limit,minArrowDist);
 }
 
@@ -287,7 +288,7 @@ vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(const char* cen
 * @param minArrowDist - min distance between visualization arrows
 */
 vtkSmartPointer<vtkPolyData> EstimateAngleCorrectedFlowDirection(vtkPolyData *centerline, vector<MetaImage<inData_t> > images , double Vnyq, double minAbsCosThetaCutoff,  int splineSmoothing, double uncertainty_limit, double minArrowDist){
-	vector<Spline3D<D> > *splines = angle_correction_impl(centerline, images , Vnyq, minAbsCosThetaCutoff, splineSmoothing);
+	vectorSpline3dDouble *splines = angle_correction_impl(centerline, images , Vnyq, minAbsCosThetaCutoff, splineSmoothing);
 	return flowDirection( splines, uncertainty_limit,minArrowDist);
 }
 
