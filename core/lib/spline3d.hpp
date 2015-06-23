@@ -437,14 +437,12 @@ public:
     }
 
     // Put all the generated data into the return spline3d structure
-    int num =0;
     for(unsigned int i = 0; i < ptstack[0].size(); i++)
     {
       if(ptstack[0][i].size() > 1) {
     	  Spline3D<T> newspline = Spline3D<T>(ptstack[0][i].size());
     	  newspline.setPoints(ptstack[0][i], ptstack[1][i], ptstack[2][i]);
           ret.push_back(newspline);
-          num++;
       }
     }
 

@@ -37,27 +37,27 @@ AngleCorrectionExecuter::~AngleCorrectionExecuter()
 
 void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-    if(true || mClData!=clData ||
-            mDataFilename!=dataFilename ||
-            mVnyq!=Vnyq ||
-            mCutoff!=cutoff ||
-            mnConvolutions!=nConvolutions)
-    {
+ //   if(true || mClData!=clData ||
+ //           mDataFilename!=dataFilename ||
+ //           mVnyq!=Vnyq ||
+ //           mCutoff!=cutoff ||
+ //           mnConvolutions!=nConvolutions)
+ //   {
         mClData=clData;
         mDataFilename=dataFilename;
         mVnyq=Vnyq;
         mCutoff=cutoff;
         mnConvolutions=nConvolutions;
         mUpdate1=true;
-    }
+ //   }
 
-    if(mUncertainty_limit!=uncertainty_limit ||
-            mMinArrowDist!=minArrowDist)
-    {
+  //  if(mUncertainty_limit!=uncertainty_limit ||
+  //          mMinArrowDist!=minArrowDist)
+  //  {
         mUncertainty_limit=uncertainty_limit;
         mMinArrowDist=minArrowDist;
         mUpdate2=true;
-    }
+  //  }
     mValidInput= true;
 
 }
@@ -74,8 +74,8 @@ bool AngleCorrectionExecuter::calculate()
     if(!mValidInput) return false;
     report(QString("Algorithm Angle correction started"));
     vectorSpline3dDouble umClSplines;
-    if(mUpdate1)
-    {
+    //if(mUpdate1)
+   // {
         umClSplines.clear();
         try {
             report(QString("Step1"));
@@ -88,11 +88,11 @@ bool AngleCorrectionExecuter::calculate()
             reportError("Angle correction algorithm threw a unknown exception in step 1.");
             return false;
         }
-    }
+    //}
     report(QString("Finished step 1 of 2 for angle correction"));
 
-    if(mUpdate1 || mUpdate2)
-    {
+    //if(mUpdate1 || mUpdate2)
+    //{
         try {
             report(QString("Step2"));
             mOutput= flowDirection(umClSplines, mUncertainty_limit, mMinArrowDist);
@@ -103,7 +103,7 @@ bool AngleCorrectionExecuter::calculate()
             reportError("Angle correction algorithm threw a unknown exception in step 2.");
             return false;
         }
-    }
+    //}
 
     reportSuccess(QString("Algorithm Angle correction complete [%1s]").arg(this->getSecondsPassedAsString()));
     return true;
