@@ -45,7 +45,7 @@ private:
 
   vtkSmartPointer<vtkPolyData> mOutput;
 
-  vectorSpline3dDouble *mClSplines;
+  vectorSpline3dDouble mClSplines;
   bool mUpdate1;
   bool mUpdate2;
   bool mValidInput;

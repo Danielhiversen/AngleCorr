@@ -314,7 +314,7 @@ public:
    * @param data A set of points with lines between them
    * @return a set of 3D splines
    */
-  static vector<Spline3D<T> >* 
+  static vector<Spline3D<T> >
   build(vtkPolyData *data)
   {
     // Algorithm:
@@ -329,7 +329,7 @@ public:
     
     // Step 1
     AdjList list(data->GetNumberOfPoints());
-    vector<Spline3D<T> > *ret = new vector<Spline3D<T> >();
+    vector<Spline3D<T> > ret;
     
    // Step 2: Get the lines from the polyData structure and put them in the AdjList
     vtkCellArray *lines = data->GetLines();
@@ -443,7 +443,7 @@ public:
       if(ptstack[0][i].size() > 1) {
     	  Spline3D<T> newspline = Spline3D<T>(ptstack[0][i].size());
     	  newspline.setPoints(ptstack[0][i], ptstack[1][i], ptstack[2][i]);
-    	  ret->push_back(newspline);
+          ret.push_back(newspline);
           num++;
       }
     }

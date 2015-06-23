@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   int nConvolutions = atoi(argv[argidx++]);
   double uncertainty_limit = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
 
-  vectorSpline3dDouble *splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
+  vectorSpline3dDouble splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
 
   // Write output files
   writeDirectionToVtkFile("output_flowdirection.vtk", splines,uncertainty_limit);

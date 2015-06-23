@@ -25,7 +25,6 @@ AngleCorrectionExecuter::AngleCorrectionExecuter() :
     mnConvolutions=0;
     mUncertainty_limit=0;
     mMinArrowDist=0;
-    mClSplines = NULL;
     mUpdate1 = true;
     mUpdate2 = true;
     mValidInput= false;
@@ -33,13 +32,12 @@ AngleCorrectionExecuter::AngleCorrectionExecuter() :
 
 AngleCorrectionExecuter::~AngleCorrectionExecuter()
 {
-    mClSplines->clear();
 }
 
 
 void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-    if(mClData!=clData ||
+    if(true || mClData!=clData ||
             mDataFilename!=dataFilename ||
             mVnyq!=Vnyq ||
             mCutoff!=cutoff ||
@@ -66,8 +64,8 @@ void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QStr
 
 void AngleCorrectionExecuter::postProcessingSlot()
 {
-    mUpdate1=false;
-    mUpdate2=false;
+    //mUpdate1=false;
+  //  mUpdate2=false;
     mValidInput=false;
 }
 
@@ -75,12 +73,14 @@ bool AngleCorrectionExecuter::calculate()
 {
     if(!mValidInput) return false;
     report(QString("Algorithm Angle correction started"));
-
+    vectorSpline3dDouble umClSplines;
     if(mUpdate1)
     {
+        umClSplines.clear();
         try {
-            if(mClSplines!=NULL) mClSplines->clear();
-            mClSplines = angle_correction_impl(mClData, mDataFilename.toStdString().c_str(), mVnyq, mCutoff, mnConvolutions);
+            report(QString("Step1"));
+            mOutput= NULL;
+            umClSplines = angle_correction_impl(mClData, mDataFilename.toStdString().c_str(), mVnyq, mCutoff, mnConvolutions);
         } catch (std::exception& e){
             reportError("std::exception in angle correction algorithm  step 1: "+qstring_cast(e.what()));
             return false;
@@ -91,10 +91,11 @@ bool AngleCorrectionExecuter::calculate()
     }
     report(QString("Finished step 1 of 2 for angle correction"));
 
-    if(mUpdate2 || mUpdate2)
+    if(mUpdate1 || mUpdate2)
     {
         try {
-            mOutput= flowDirection(mClSplines, mUncertainty_limit, mMinArrowDist);
+            report(QString("Step2"));
+            mOutput= flowDirection(umClSplines, mUncertainty_limit, mMinArrowDist);
         } catch (std::exception& e){
             reportError("std::exception in angle correction algorithm  step 2: "+qstring_cast(e.what()));
             return false;
