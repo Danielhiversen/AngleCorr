@@ -48,6 +48,7 @@ private:
   vectorSpline3dDouble *mClSplines;
   bool mUpdate1;
   bool mUpdate2;
+  bool mValidInput;
 };
 
 }//namespace
