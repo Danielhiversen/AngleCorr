@@ -377,3 +377,46 @@ TEST_CASE("Test Invalid parameters", "[angle_correction]")
   CHECK_NOTHROW(vtkSmartPointer<vtkPolyData> polydataFlowData = EstimateAngleCorrectedFlowDirection(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff,  nConvolutions, uncertainty_limit,minArrowDist));
 
 }
+
+
+
+
+
+
+TEST_CASE("Test several runs", "[angle_correction]")
+{
+
+  char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/NonExisting.vtk";
+  char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
+
+  double Vnyq =  0.312;
+  double cutoff = 0.18;
+  int nConvolutions = 6;
+  double uncertainty_limit = 0.5;
+  double minArrowDist = 1.0;
+
+  char centerline2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
+  char image_prefix2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
+
+  double Vnyq2 =  0.312;
+  double cutoff2 = 0.18;
+  int nConvolutions2 = 6;
+
+  const char* filename_a ="/testOut/flowdirection_test_11_a.vtk";
+  const char* filename_b ="/testOut/flowdirection_test_11_b.vtk";
+
+  vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
+  writeDirectionToVtkFile(appendTestFolder(filename_a), splines,0.5);
+  writeDirectionToVtkFile(appendTestFolder(filename_b), splines,0.5);
+  validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
+  std::remove(appendTestFolder(filename_b));
+
+  splines = angle_correction_impl(appendTestFolder(centerline2), appendTestFolder(image_prefix2), Vnyq2, cutoff2, nConvolutions2);
+
+  splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
+  writeDirectionToVtkFile(appendTestFolder(filename_b), splines,0.5);
+
+  validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
+  std::remove(appendTestFolder(filename_a));
+  std::remove(appendTestFolder(filename_b));
+}

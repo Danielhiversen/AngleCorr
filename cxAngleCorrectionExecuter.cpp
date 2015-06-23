@@ -73,14 +73,14 @@ bool AngleCorrectionExecuter::calculate()
 {
     if(!mValidInput) return false;
     report(QString("Algorithm Angle correction started"));
-    vectorSpline3dDouble umClSplines;
+    vectorSpline3dDouble clSplines;
     //if(mUpdate1)
    // {
-        umClSplines.clear();
+        mClSplines.clear();
         try {
             report(QString("Step1"));
             mOutput= NULL;
-            umClSplines = angle_correction_impl(mClData, mDataFilename.toStdString().c_str(), mVnyq, mCutoff, mnConvolutions);
+            clSplines = angle_correction_impl(mClData, mDataFilename.toStdString().c_str(), mVnyq, mCutoff, mnConvolutions);
         } catch (std::exception& e){
             reportError("std::exception in angle correction algorithm  step 1: "+qstring_cast(e.what()));
             return false;
@@ -88,6 +88,7 @@ bool AngleCorrectionExecuter::calculate()
             reportError("Angle correction algorithm threw a unknown exception in step 1.");
             return false;
         }
+        mClSplines=clSplines;
     //}
     report(QString("Finished step 1 of 2 for angle correction"));
 
@@ -95,7 +96,7 @@ bool AngleCorrectionExecuter::calculate()
     //{
         try {
             report(QString("Step2"));
-            mOutput= flowDirection(umClSplines, mUncertainty_limit, mMinArrowDist);
+            mOutput= flowDirection(mClSplines, mUncertainty_limit, mMinArrowDist);
         } catch (std::exception& e){
             reportError("std::exception in angle correction algorithm  step 2: "+qstring_cast(e.what()));
             return false;
