@@ -6,7 +6,8 @@
 #include "cxForwardDeclarations.h"
 #include "cxThreadedTimedAlgorithm.h"
 
-//#include "angle_correction_impl.h"
+#include "cxMathBase.h"
+#include "angle_correction_impl.h"
 
 namespace cx
 {
@@ -43,6 +44,10 @@ private:
   double mMinArrowDist;
 
   vtkSmartPointer<vtkPolyData> mOutput;
+
+  vectorSpline3dDouble *mClSplines;
+  bool mUpdate1;
+  bool mUpdate2;
 };
 
 }//namespace
