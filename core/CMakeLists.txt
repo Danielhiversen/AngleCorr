@@ -76,10 +76,14 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
 
 
-
+AngleCorrection_add_sources(
+    angle_correction_impl.h
+    angle_correction_impl.cpp
+)
 
 #### Add all subdirs
 AngleCorrection_add_subdirectories(lib Tests)
+
 
 #### Set include dirs
 include_directories(${AngleCorrection_INCLUDE_DIRS})
@@ -111,25 +115,17 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 
-## lib
-if(NOT hasParent)
-    add_library(lib ${AngleCorrection_SOURCE_FILES} )
-endif()
-
 
 if(BUILD_TESTS)
-    add_executable(test ${AngleCorrection_TEST_SOURCE_FILES})
+    add_executable(test ${AngleCorrection_TEST_SOURCE_FILES} ${AngleCorrection_SOURCE_FILES})
+    target_link_libraries(test ${LIBRARIES})
 endif()
 
 if(NOT hasParent)
-    add_executable(angle_correction main.cpp)
-    target_link_libraries(angle_correction ${LIBRARIES} lib)
+    add_executable(angle_correction main.cpp ${AngleCorrection_SOURCE_FILES})
+    target_link_libraries(angle_correction ${LIBRARIES})
 endif()
 
-
-if(BUILD_TESTS)
-    target_link_libraries(test ${LIBRARIES} lib)
-endif()
 
 
 
