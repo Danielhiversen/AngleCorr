@@ -386,7 +386,7 @@ TEST_CASE("Test Invalid parameters", "[angle_correction]")
 TEST_CASE("Test several runs", "[angle_correction]")
 {
 
-  char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/NonExisting.vtk";
+  char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
   char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
 
   double Vnyq =  0.312;
@@ -395,8 +395,9 @@ TEST_CASE("Test several runs", "[angle_correction]")
   double uncertainty_limit = 0.5;
   double minArrowDist = 1.0;
 
-  char centerline2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
-  char image_prefix2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
+
+  char centerline2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_06_20150527T130329_Angio_1_tsf_cl1.vtk";
+  char image_prefix2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_06_20150527T130329_raw/US-Acq_06_20150527T130329_Velocity_";
 
   double Vnyq2 =  0.312;
   double cutoff2 = 0.18;
