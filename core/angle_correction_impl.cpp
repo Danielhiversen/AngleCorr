@@ -34,7 +34,7 @@ AngleCorrection::~AngleCorrection(){
 
 void AngleCorrection::setInput(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > velData, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-
+    mValidInput= false;
     if (uncertainty_limit < 0.0) reportError("ERROR: uncertainty_limit must be positive ");
     if (minArrowDist < 0.0) reportError("ERROR: minArrowDist must be positive ");
     if (Vnyq < 0.0) reportError("ERROR: vNyquist must be positive ");
@@ -67,6 +67,7 @@ void AngleCorrection::setInput(vtkPolyData *vpd_centerline, vector<MetaImage<inD
 
 void AngleCorrection::setInput(vtkPolyData *vpd_centerline, const  char* image_prefix , double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
+    mValidInput= false;
     vector<MetaImage<inData_t> > velData = MetaImage<inData_t>::readImages(std::string(image_prefix));
     this->setInput(vpd_centerline,  velData,  Vnyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
 }
@@ -74,7 +75,7 @@ void AngleCorrection::setInput(vtkPolyData *vpd_centerline, const  char* image_p
 
 void AngleCorrection::setInput(const char* centerline,const char* image_prefix, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-
+    mValidInput= false;
     vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
 
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
@@ -112,33 +113,16 @@ bool AngleCorrection::calculate()
     //if(mUpdate1)
    // {
         mClSplines.clear();
-        try {
-            cerr << "Step 1";
-            mOutput= NULL;
-            clSplines = angle_correction_impl(mClData, mVelData, mVnyq, mCutoff, mnConvolutions);
-        } catch (std::exception& e){
-            cerr << "std::exception in angle correction algorithm  step 1: ";
-            return false;
-        } catch (...){
-            cerr << "Angle correction algorithm threw a unknown exception in step 1.";
-            return false;
-        }
-        mClSplines=clSplines;
+        clSplines = angle_correction_impl(mClData, mVelData, mVnyq, mCutoff, mnConvolutions);
+         mClSplines=clSplines;
     //}
         cerr << "Finished step 1 of 2 for angle correction";
 
     //if(mUpdate1 || mUpdate2)
     //{
-        try {
-            cerr << "Step 2";
-            mOutput= flowDirection(mClSplines, mUncertainty_limit, mMinArrowDist);
-        } catch (std::exception& e){
-            cerr <<  "std::exception in angle correction algorithm  step 2: ";
-            return false;
-        } catch (...){
-            cerr << "Angle correction algorithm threw a unknown exception in step 2.";
-            return false;
-        }
+        cerr << "Step 2";
+         mOutput= flowDirection(mClSplines, mUncertainty_limit, mMinArrowDist);
+
     //}
 
     mValidInput=false;
