@@ -14,20 +14,9 @@ namespace cx
  */
 
 AngleCorrectionExecuter::AngleCorrectionExecuter() :
-    ThreadedTimedAlgorithm<bool>("Angle correction", 5)
+    ThreadedTimedAlgorithm<bool>("Angle correction", 5), AngleCorrection()
 {
-    mOutput = NULL;
-    mUseDefaultMessages = false;
-    mClData=NULL;
-    mDataFilename="";
-    mVnyq=0;
-    mCutoff=0;
-    mnConvolutions=0;
-    mUncertainty_limit=0;
-    mMinArrowDist=0;
-    mUpdate1 = true;
-    mUpdate2 = true;
-    mValidInput= false;
+
 }
 
 AngleCorrectionExecuter::~AngleCorrectionExecuter()
@@ -36,18 +25,27 @@ AngleCorrectionExecuter::~AngleCorrectionExecuter()
 
 void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-    //mDataFilename.toStdString().c_str()
+    AngleCorrection::setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions,  uncertainty_limit,  minArrowDist);
 }
 
+
+bool AngleCorrectionExecuter::calculate()
+{
+     return  AngleCorrection::calculate();
+}
+
+
+void AngleCorrectionExecuter::postProcessingSlot()
+{
+
+}
 vtkSmartPointer<vtkPolyData>  AngleCorrectionExecuter::getOutput()
 {
     if(!this->isFinished()) return NULL;
     if(!this->getResult()) return NULL;
 
-    return mOutput;
+    return  AngleCorrection::getOutput();
 }
-
-
 
 
 } /* namespace cx */

@@ -20,7 +20,7 @@ namespace cx
  * \author Daniel Hoyer Iversen
  */
 
-class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public ThreadedTimedAlgorithm<bool>
+class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public ThreadedTimedAlgorithm<bool>,  public AngleCorrection
 {
   Q_OBJECT
 public:
@@ -29,26 +29,13 @@ public:
   void setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist);
   vtkSmartPointer<vtkPolyData> getOutput();
 
+
 private slots:
   virtual void postProcessingSlot();
 
 private:
   virtual bool calculate();
 
-  vtkSmartPointer<vtkPolyData> mClData;
-  QString mDataFilename;
-  double mVnyq;
-  double mCutoff;
-  int mnConvolutions;
-  double mUncertainty_limit;
-  double mMinArrowDist;
-
-  vtkSmartPointer<vtkPolyData> mOutput;
-
-  vectorSpline3dDouble mClSplines;
-  bool mUpdate1;
-  bool mUpdate2;
-  bool mValidInput;
 };
 
 }//namespace
