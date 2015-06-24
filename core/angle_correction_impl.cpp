@@ -132,12 +132,6 @@ vectorSpline3dDouble  angle_correction_impl(vtkPolyData *vpd_centerline, vector<
     }
 
 
-  if (verbose)
-  {
-        vpd_centerline->Print(std::cout); //cerr
-  }
-
-
   vectorSpline3dDouble splines = Spline3D<double>::build(vpd_centerline);
 
   for(Spline3D<double>& spline : splines)
