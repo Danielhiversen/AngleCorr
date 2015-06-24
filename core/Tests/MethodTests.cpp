@@ -49,6 +49,21 @@ char * appendTestFolder(const char * filename){
 }
 
 
+void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions,double *true_flow, char true_output[]){
+    const char testFile[] = "/testOut/flowdirection_test_1.vtk";
+
+    AngleCorrection angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
+    CHECK_NOTHROW(angleCorr.calculate());
+
+    vectorSpline3dDouble splines = angleCorr.getClSpline();
+    validateFlowDirection_FlowVel(splines,true_flow);
+
+    CHECK_NOTHROW( angleCorr.writeDirectionToVtkFile(appendTestFolder(testFile)));
+    validateFiles(appendTestFolder(testFile), appendTestFolder(true_output));
+    std::remove(appendTestFolder(testFile));
+}
+
 
 TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
 {
@@ -59,208 +74,156 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
     double cutoff = 0.18;
     int nConvolutions = 6;
 
-
-    AngleCorrection angleCorr = AngleCorrection();
-    angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    CHECK_NOTHROW(angleCorr.calculate());
-
-    vectorSpline3dDouble splines = angleCorr.getClSpline();
     double true_flow [1]={-0.465};
-    validateFlowDirection_FlowVel(splines,true_flow);
-    
-    const char testFile[] = "/testOut/flowdirection_test_1.vtk";
-    CHECK_NOTHROW( angleCorr.writeDirectionToVtkFile(appendTestFolder(testFile)));
-    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_1.vtk"));
-    std::remove(appendTestFolder(testFile));
+    char true_output[] ="/outPutFiles/output_flowdirection_test_1.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
 
 
 
-//TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
-//{
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751_raw/US-Acq_02_20150527T125751_Velocity_";
+TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751_raw/US-Acq_02_20150527T125751_Velocity_";
     
-//    double Vnyq =  0.312;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [1]={-0.557};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_2.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_2.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    double true_flow [1]={-0.557};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_2.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
-//{
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026_raw/US-Acq_03_20150527T130026_Velocity_";
+TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026_raw/US-Acq_03_20150527T130026_Velocity_";
     
-//    double Vnyq =  0.312;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [1]={-0.534};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_3.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_3.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    double true_flow [1]={-0.534};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_3.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
-//{
+TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_04_20150527T130043_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_04_20150527T130043_raw/US-Acq_04_20150527T130043_Velocity_";
     
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_04_20150527T130043_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_04_20150527T130043_raw/US-Acq_04_20150527T130043_Velocity_";
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
     
-//    double Vnyq =  0.312;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [1]={-0.577};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_4.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_4.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double true_flow [1]={-0.577};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_4.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
-//{
+TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229_raw/US-Acq_05_20150527T130229_Velocity_";
     
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229_raw/US-Acq_05_20150527T130229_Velocity_";
-    
-//    double Vnyq =  0.312;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [2]={-0.933,0.239};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_5.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_5.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    double true_flow [2]={-0.933,0.239};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_5.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
-//{
+TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_06_20150527T130329_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_06_20150527T130329_raw/US-Acq_06_20150527T130329_Velocity_";
     
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_06_20150527T130329_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_06_20150527T130329_raw/US-Acq_06_20150527T130329_Velocity_";
-    
-//    double Vnyq =  0.312;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [2]={0.651,-2.50};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_6.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_6.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    double true_flow [2]={0.651,-2.50};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_6.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][aliasing]")
-//{
+TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][aliasing]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_07_20150527T130532_raw/US-Acq_07_20150527T130532_Velocity_";
     
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_07_20150527T130532_raw/US-Acq_07_20150527T130532_Velocity_";
+    double Vnyq =  0.156;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
     
-//    double Vnyq =  0.156;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [1]={-0.314};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_7.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_7.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double true_flow [1]={-0.314};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_7.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][aliasing]")
-//{
+TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][aliasing]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558_raw/US-Acq_08_20150527T130558_Velocity_";
     
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558_raw/US-Acq_08_20150527T130558_Velocity_";
+    double Vnyq =  0.156;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
     
-//    double Vnyq =  0.156;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [1]={0.403};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_8.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_8.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double true_flow [1]={0.403};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_8.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction]")
-//{
+TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_09_20150527T131009_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_09_20150527T131009_raw/US-Acq_09_20150527T131009_Velocity_";
     
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_09_20150527T131009_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_09_20150527T131009_raw/US-Acq_09_20150527T131009_Velocity_";
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
     
-//    double Vnyq =  0.312;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [1]={-0.625};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_9.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_9.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double true_flow [1]={-0.625};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_9.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
-//TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction]")
-//{
+TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
     
-//    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
-//    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
     
-//    double Vnyq =  0.312;
-//    double cutoff = 0.18;
-//    int nConvolutions = 6;
-//    vectorSpline3dDouble splines = angle_correction_impl(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    
-//    double true_flow [1]={0.5847};
-//    validateFlowDirection_FlowVel(splines,true_flow);
-    
-//    const char testFile[] = "/testOut/flowdirection_test_10.vtk";
-//    CHECK_NOTHROW(writeDirectionToVtkFile(appendTestFolder(testFile), splines,0.0));
-//    validateFiles(appendTestFolder(testFile), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
-//    std::remove(appendTestFolder(testFile));
-//}
+    double true_flow [1]={0.5847};
+    char true_output[] ="/outPutFiles/output_flowdirection_test_10.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+}
 
 
 //TEST_CASE("Test EstimateAngleCorrectedFlowDirection", "[angle_correction]")
