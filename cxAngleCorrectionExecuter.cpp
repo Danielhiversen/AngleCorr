@@ -14,37 +14,58 @@ namespace cx
  */
 
 AngleCorrectionExecuter::AngleCorrectionExecuter() :
-    ThreadedTimedAlgorithm<bool>("Angle correction", 5), AngleCorrection()
+    ThreadedTimedAlgorithm<bool>("Angle correction", 5)
 {
-
+    angleCorr = AngleCorrection();
+    mUseDefaultMessages = false;
 }
 
 AngleCorrectionExecuter::~AngleCorrectionExecuter()
 {
+    //angleCorr.~AngleCorrection();
 }
 
 void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-    AngleCorrection::setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions,  uncertainty_limit,  minArrowDist);
+    try {
+        angleCorr.setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions,  uncertainty_limit,  minArrowDist);
+    } catch (std::exception& e){
+        reportError("std::exception in angle correction algorithm during setting parameters: "+qstring_cast(e.what()));
+    } catch (...){
+        reportError("Angle correction algorithm threw a unknown exception during setting parameters.");
+    }
 }
 
 
 bool AngleCorrectionExecuter::calculate()
 {
-     return  AngleCorrection::calculate();
+    report(QString("Algorithm Angle correction started"));
+    bool res= false;
+    try {
+        res= angleCorr.calculate();
+    } catch (std::exception& e){
+        reportError("std::exception in angle correction algorithm: "+qstring_cast(e.what()));
+    } catch (...){
+        reportError("Angle correction algorithm threw a unknown exception.");
+    }
+    if(res){
+        reportSuccess(QString("Algorithm Angle correction complete [%1s]").arg(this->getSecondsPassedAsString()));
+    }else{
+        reportError(QString("Algorithm Angle correction failed [%1s]").arg(this->getSecondsPassedAsString()));
+    }
+    return res;
 }
 
 
 void AngleCorrectionExecuter::postProcessingSlot()
 {
-
 }
+
 vtkSmartPointer<vtkPolyData>  AngleCorrectionExecuter::getOutput()
 {
     if(!this->isFinished()) return NULL;
     if(!this->getResult()) return NULL;
-
-    return  AngleCorrection::getOutput();
+    return  angleCorr.getOutput();
 }
 
 

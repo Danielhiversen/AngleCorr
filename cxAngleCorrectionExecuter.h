@@ -20,7 +20,7 @@ namespace cx
  * \author Daniel Hoyer Iversen
  */
 
-class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public ThreadedTimedAlgorithm<bool>,  public AngleCorrection
+class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public ThreadedTimedAlgorithm<bool>
 {
   Q_OBJECT
 public:
@@ -35,6 +35,7 @@ private slots:
 
 private:
   virtual bool calculate();
+  AngleCorrection angleCorr;
 
 };
 

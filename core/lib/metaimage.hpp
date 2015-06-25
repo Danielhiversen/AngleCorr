@@ -35,6 +35,11 @@ public:
     m_filename ="";
   }
 
+  ~MetaImage()
+  {
+
+  }
+
   /**
    * Set the filename of the MetaImage
    */
@@ -369,10 +374,10 @@ public:
    * @param prefix The prefix of the file name. File names are assumed to be of the format prefix$NUMBER.mhd
    * @return a vector containing the retrieved images
    */
-  static vector<MetaImage>
+  static vector<MetaImage>*
   readImages(const string prefix)
   {
-    vector<MetaImage> ret;
+    vector<MetaImage> *ret = new vector<MetaImage>();
 
   
     // Images are on the format prefix$NUMBER.mhd
@@ -381,8 +386,8 @@ public:
     ss << prefix << i << ".mhd";
     string filename = ss.str();
     MetaImage *curimg;
-    ret.push_back(MetaImage());
-    curimg = &(ret.back());
+    ret->push_back(MetaImage());
+    curimg = &(ret->back());
     if(!curimg->getReader()->CanReadFile(filename.c_str())){
 		reportError("ERROR: Could not read velocity data \n");
     }
@@ -392,8 +397,8 @@ public:
       curimg->setFileName(filename);
       curimg->read();
       curimg->setIdx(i);
-      ret.push_back(MetaImage());
-      curimg = &(ret.back());
+      ret->push_back(MetaImage());
+      curimg = &(ret->back());
 	
       ss.clear();
       ss.str("");

@@ -207,13 +207,11 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 
 void AngleCorrectionWidget::preprocessExecuter()
 {
-
     if(!mClDataSelectWidget->getMesh()){
         reportError("No centerline selected");
         return;
     }
     vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
-
     
     QString dataFilename = mVelFileSelectWidget->getFilename();
     if(dataFilename.length() ==0){
@@ -229,7 +227,6 @@ void AngleCorrectionWidget::preprocessExecuter()
     double uncertainty_limit = mUncertaintyLimit->getValue();
     double minArrowDist = mMinArrowDist->getValue();
 
-
     mExecuter->setInput(clData, dataFilename, Vnyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
     mRunAngleCorrButton->setEnabled(false);
 }
@@ -241,6 +238,7 @@ void AngleCorrectionWidget::runAngleCorection()
 
 void AngleCorrectionWidget::executionFinished()
 {
+    mRunAngleCorrButton->setEnabled(true);
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
     if(output==NULL)
     {
@@ -257,11 +255,6 @@ void AngleCorrectionWidget::executionFinished()
 
 	mVisServices->patientModelService->insertData(mOutData);
 	mVisServices->visualizationService->autoShowData(mOutData);
-
-    mRunAngleCorrButton->setEnabled(true);
 }
-
-
-
 
 } /* namespace cx */

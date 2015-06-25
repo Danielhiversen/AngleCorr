@@ -24,15 +24,18 @@ using namespace std;
 
 AngleCorrection::AngleCorrection(){
     mOutput = NULL;
+    mValidInput= false;
+    mVelDataPtr = new vector<MetaImage<inData_t>>();
 }
 
 
 AngleCorrection::~AngleCorrection(){
     mOutput = NULL;
+    mVelDataPtr->clear();
 }
 
 
-void AngleCorrection::setInput(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > velData, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
+void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* velData, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
     mValidInput= false;
     if (uncertainty_limit < 0.0) reportError("ERROR: uncertainty_limit must be positive ");
@@ -46,8 +49,13 @@ void AngleCorrection::setInput(vtkPolyData *vpd_centerline, vector<MetaImage<inD
  //           mCutoff!=cutoff ||
  //           mnConvolutions!=nConvolutions)
  //   {
+    cerr << "set params A" << endl;
         mClData=vpd_centerline;
-        mVelData=velData;
+    cerr << "set params B" << endl;
+        mVelDataPtr->clear();
+        mVelDataPtr=velData;
+        cerr << "set params C" << endl;
+
         mVnyq=Vnyq;
         mCutoff=cutoff;
         mnConvolutions=nConvolutions;
@@ -57,18 +65,21 @@ void AngleCorrection::setInput(vtkPolyData *vpd_centerline, vector<MetaImage<inD
   //  if(mUncertainty_limit!=uncertainty_limit ||
   //          mMinArrowDist!=minArrowDist)
   //  {
+        cerr << "set params D" << endl;
+
         mUncertainty_limit=uncertainty_limit;
         mMinArrowDist=minArrowDist;
         mUpdate2=true;
   //  }
     mValidInput= true;
+    cerr << "Succes set params" << endl;
 }
 
 
-void AngleCorrection::setInput(vtkPolyData *vpd_centerline, const  char* image_prefix , double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
+void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, const  char* image_prefix , double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
     mValidInput= false;
-    vector<MetaImage<inData_t> > velData = MetaImage<inData_t>::readImages(std::string(image_prefix));
+    vector<MetaImage<inData_t> >* velData = MetaImage<inData_t>::readImages(std::string(image_prefix));
     this->setInput(vpd_centerline,  velData,  Vnyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
 }
 
@@ -97,7 +108,7 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
     //		throw std::runtime_error("ERROR: Could not read center line data: Invalid data format, must be poly data");
     //	}
 
-    vtkPolyData *vpd_centerline = clReader->GetOutput();
+    vtkSmartPointer<vtkPolyData> vpd_centerline = clReader->GetOutput();
 
     this->setInput(vpd_centerline,  image_prefix,  Vnyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
 }
@@ -108,24 +119,24 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 bool AngleCorrection::calculate()
 {
     if(!mValidInput) return false;
+    mValidInput=false;
+
     //report(QString("Algorithm Angle correction started"));
     vectorSpline3dDouble clSplines;
     //if(mUpdate1)
    // {
         mClSplines.clear();
-        clSplines = angle_correction_impl(mClData, mVelData, mVnyq, mCutoff, mnConvolutions);
+        clSplines = angle_correction_impl(mClData, mVelDataPtr, mVnyq, mCutoff, mnConvolutions);
          mClSplines=clSplines;
     //}
-        cerr << "Finished step 1 of 2 for angle correction";
+        cerr << "Finished step 1 of 2 for angle correction" << endl;
 
     //if(mUpdate1 || mUpdate2)
     //{
-        cerr << "Step 2";
-         mOutput= flowDirection(mClSplines, mUncertainty_limit, mMinArrowDist);
+        mOutput= flowDirection(mClSplines, mUncertainty_limit, mMinArrowDist);
 
     //}
 
-    mValidInput=false;
     //mUpdate1=false;
   //  mUpdate2=false;
     return true;
@@ -172,7 +183,7 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
 
 
 }
-vectorSpline3dDouble AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> > images , double Vnyq, double cutoff,  int nConvolutions)
+vectorSpline3dDouble AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions)
 {
     bool verbose = true;
     vectorSpline3dDouble splines = Spline3D<double>::build(vpd_centerline);
@@ -204,7 +215,7 @@ vectorSpline3dDouble AngleCorrection::angle_correction_impl(vtkPolyData *vpd_cen
     int n_intersections = 0;
     for(auto &spline: splines)
     {
-        spline.findAllIntersections(images);
+        spline.findAllIntersections(*images);
         spline.getIntersections().setVelocityEstimationCutoff(cutoff,1.0);
         n_intersections += spline.getIntersections().size();
     }
@@ -260,7 +271,7 @@ vectorSpline3dDouble AngleCorrection::angle_correction_impl(vtkPolyData *vpd_cen
         }
     }
 
-    images.clear();
+    //images->clear();
 
     return splines;
 }
