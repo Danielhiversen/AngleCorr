@@ -49,13 +49,9 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
  //           mCutoff!=cutoff ||
  //           mnConvolutions!=nConvolutions)
  //   {
-    cerr << "set params A" << endl;
         mClData=vpd_centerline;
-    cerr << "set params B" << endl;
         mVelDataPtr->clear();
         mVelDataPtr=velData;
-        cerr << "set params C" << endl;
-
         mVnyq=Vnyq;
         mCutoff=cutoff;
         mnConvolutions=nConvolutions;
@@ -65,14 +61,13 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
   //  if(mUncertainty_limit!=uncertainty_limit ||
   //          mMinArrowDist!=minArrowDist)
   //  {
-        cerr << "set params D" << endl;
 
         mUncertainty_limit=uncertainty_limit;
         mMinArrowDist=minArrowDist;
         mUpdate2=true;
   //  }
     mValidInput= true;
-    cerr << "Succes set params" << endl;
+    cerr << "Successfully set params" << endl;
 }
 
 

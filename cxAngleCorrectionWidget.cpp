@@ -242,7 +242,6 @@ void AngleCorrectionWidget::executionFinished()
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
     if(output==NULL)
     {
-        reportError(QString("Angle correction failed!"));
         return;
     }
 
