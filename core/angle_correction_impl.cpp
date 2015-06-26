@@ -152,14 +152,13 @@ bool AngleCorrection::calculate()
 
     if(mUpdate1)
     {
-    mClSplinesPtr->clear();
-    mClSplinesPtr = angle_correction_impl(mClData, mVelDataPtr, mVnyq, mCutoff, mnConvolutions);
+        angle_correction_impl(mClData, mVelDataPtr, mVnyq, mCutoff, mnConvolutions);
     }
     cerr << "Finished step 1 of 2 for angle correction" << endl;
 
     if(mUpdate1 || mUpdate2)
     {
-    mOutput= flowDirection(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
+        mOutput= flowDirection(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
     }
 
     mUpdate1=false;
@@ -208,79 +207,53 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
 
 
 }
-vectorSpline3dDoublePtr AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions)
+void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions)
 {
     bool verbose = true;
+    int n_intersections = 0;
+    int n_splines =0;
 
-    vectorSpline3dDoublePtr splines = Spline3D<double>::build(vpd_centerline);
+    mClSplinesPtr->clear();
+    vectorSpline3dDoublePtr mClSplinesPtr = Spline3D<double>::build(vpd_centerline);
 
-    for(Spline3D<double>& spline : *splines)
-    {
-        spline.setTransform(true);
-        spline.setAxis(1);
-    }
+ //   for(Spline3D<double>& spline : *splines)
+ //   {
+ //       spline.setTransform(true);
+ //       spline.setAxis(1);
+ //   }
 
 
     // Smooth the splines
-    for(auto &spline: *splines)
+    for(auto &spline: *mClSplinesPtr)
     {
+        n_splines++;
         for(int j = 0; j < nConvolutions; j++)
         {
             spline.applyConvolution({0.25, 0.50, 0.25 });
         }
 
-    }
-
-    // Compute control points for splines
-    for(auto &spline: *splines)
-    {
+        // Compute control points for splines
         spline.compute();
-    }
 
-    // Find all the intersections
-    int n_intersections = 0;
-    for(auto &spline: *splines)
-    {
+        // Find all the intersections
         spline.findAllIntersections(*images);
         spline.getIntersections().setVelocityEstimationCutoff(cutoff,1.0);
         n_intersections += spline.getIntersections().size();
-    }
-    if (verbose)
-    {
-        cerr << "Found " << n_intersections << " intersections\n";
-
-    }
-
-
-    // Now that we know the intersection points,
-    // we can go through all the image planes and do the region growing.
-    for(auto &spline: *splines)
-    {
+   
+        // Now that we know the intersection points,
+        // we can go through all the image planes and do the region growing.
         for_each(spline.getIntersections().begin(), spline.getIntersections().end(),[](Intersection<double> &it){it.regionGrow();});
-    }
 
-
-    // We may now do the direction vector estimation
-
-    for(auto &spline: *splines)
-    {
+        // We may now do the direction vector estimation
         // Using the default parameters set in IntersectionSet constructor
         spline.getIntersections().estimateDirection();
-    }
-
-
-
-    // Do aliasing correction
-    if (Vnyq > 0){
-        for(auto &spline: *splines)
-        {
+    
+        // Do aliasing correction  
+        if (Vnyq > 0){
             spline.getIntersections().correctAliasing(Vnyq);
         }
-    }
-
-    // Least squares velocity estimates
-    for(auto &spline: *splines)
-    {
+    
+        // Least squares velocity estimates
         spline.getIntersections().estimateVelocityLS();
     }
 
@@ -297,9 +270,10 @@ vectorSpline3dDoublePtr AngleCorrection::angle_correction_impl(vtkPolyData *vpd_
         }
     }
 
-    //images->clear();
-
-    return splines;
+    if (verbose)
+    {
+        cerr << "Found " << n_intersections << " intersections in " << n_splines << " splines.\n";
+    }
 }
 
 
@@ -375,12 +349,8 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::flowDirection( vectorSpline3dDoubl
             dir_uncertainty->InsertNextTupleValue(&abs_dir);
             velocitydata->InsertNextTupleValue(&abs_vessel_vel);
         }
-
     }
-
-
     // Put it all inside a vtkPolyData
-
     vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
     vtkSmartPointer<vtkPointData> pointdata = polydata->GetPointData();
     polydata->SetPoints(pointarray);
@@ -388,10 +358,8 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::flowDirection( vectorSpline3dDoubl
     pointdata->AddArray(flowdirection);
     pointdata->AddArray(dir_uncertainty);
     pointdata->AddArray(velocitydata);
-
     if (num_uncertainty_limit){
         cerr << "Removed " << num_uncertainty_limit << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
     }
-
     return polydata;
 }

@@ -26,7 +26,7 @@ template<typename T>
 class Spline3D {
 public:
 
-    typedef  QuadraticSplineFitter<T> QSP_t;
+ //   typedef  QuadraticSplineFitter<T> QSP_t;
 
     /**
    * Constructor

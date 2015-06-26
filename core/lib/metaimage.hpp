@@ -47,6 +47,8 @@ public:
     setFileName(const string filename)
     {
         m_filename = filename;
+        m_reader->SetFileName(m_filename.c_str());
+        m_reader->Update();
 
 
     }
@@ -57,10 +59,6 @@ public:
     void
     read()
     {
-
-        m_reader->SetFileName(m_filename.c_str());
-        m_reader->Update();
-
         vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
         m_reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
         m_reader->AddObserver(vtkCommand::WarningEvent,errorObserver);

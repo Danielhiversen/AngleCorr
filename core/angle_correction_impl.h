@@ -23,7 +23,7 @@ public:
     void writeDirectionToVtkFile(const char* filename);
 private:
     vtkSmartPointer<vtkPolyData> flowDirection( vectorSpline3dDoublePtr splines, double uncertainty_limit, double minArrowDist);
-    vectorSpline3dDoublePtr angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions);
+    void angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions);
 
     vtkSmartPointer<vtkPolyData> mClData;
     vector<MetaImage<inData_t> > * mVelDataPtr;
