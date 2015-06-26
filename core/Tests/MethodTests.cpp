@@ -392,12 +392,6 @@ CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
-
-
-
-
-
-
  
 }
 
