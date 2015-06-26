@@ -223,6 +223,12 @@ void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<
  //   }
 
 
+//#pragma omp parallel for
+//find_package(OpenMP)
+//if (OPENMP_FOUND)
+  //  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  //  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+//endif()
     // Smooth the splines
     for(auto &spline: *mClSplinesPtr)
     {
@@ -255,16 +261,11 @@ void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<
     
         // Least squares velocity estimates
         spline.getIntersections().estimateVelocityLS();
-    }
 
-
-    // Output direction and LS velocity
-    if (verbose)
-    {
-        int i = 0;
-        for(auto &spline: *splines)
+        // Output direction and LS velocity
+        if (verbose)
         {
-            cerr << "Spline " << i++ << " gave direction "
+            cerr << "Spline " << n_splines << " gave direction "
                  << spline.getIntersections().getEstimatedDirection()
                  << " LS velocity " << spline.getIntersections().getEstimatedVelocity() << endl;
         }

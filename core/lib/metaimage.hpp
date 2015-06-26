@@ -325,9 +325,15 @@ public:
             cur = ptstack.back();
 
             ptstack.pop_back();
-            curpt = imagedata[cur.first + cur.second*getXSize()];
             const int img_x = cur.first;
             const int img_y = cur.second;
+
+            if(!inImage(img_x, img_y))
+            {
+                continue;
+            }
+            curpt = imagedata[img_x + img_y*getXSize()];
+
 
             // Is this point in?
             if(curpt != 0)

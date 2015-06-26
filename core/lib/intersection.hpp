@@ -110,8 +110,8 @@ public:
   inline void
   setPoints(vector<T>&& points)
   {
-    m_avg_computed = false;
     m_points = std::move(points);
+    m_avg_computed = false;
   }
 
   /**
@@ -173,6 +173,7 @@ public:
   setMetaImage(const MetaImage<inData_t>* img)
   {
     m_img = img;
+    m_avg_computed = false;
   }
   
   /**
