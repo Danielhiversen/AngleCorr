@@ -357,11 +357,48 @@ cerr << "test3\n" ;
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     
     validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
-
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
 
     std::remove(appendTestFolder(filename_a));
     std::remove(appendTestFolder(filename_b));
+
+    cutoff = 0.1;
+    CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    CHECK_NOTHROW(res = angleCorr.calculate());
+    REQUIRE(res);
+
+
+    cutoff = 0.18;
+CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    CHECK_NOTHROW(res = angleCorr.calculate());
+    REQUIRE(res);
+
+    angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    std::remove(appendTestFolder(filename_b));
+
+
+    minArrowDist = 5.0;
+    CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    CHECK_NOTHROW(res = angleCorr.calculate());
+    REQUIRE(res);
+
+
+    minArrowDist = 1.0;
+CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    CHECK_NOTHROW(res = angleCorr.calculate());
+    REQUIRE(res);
+
+    angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    std::remove(appendTestFolder(filename_b));
+
+
+
+
+
+
+ 
 }
 
 
