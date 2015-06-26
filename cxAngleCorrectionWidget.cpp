@@ -129,11 +129,11 @@ void AngleCorrectionWidget::cLDataChangedSlot()
         return;
     }
     mVelFileSelectWidget->setFilename("");
-    QString clUid = mClDataSelectWidget->getMesh()->getUid();
+    QString clUid = mClDataSelectWidget->getMesh()->getUid().section("_",1,2 );
     QStringList files=mVelFileSelectWidget->getAllFiles();
     for (int i = 0; i < files.size(); ++i)
     {
-        if(files.at(i).contains(clUid.section("_",1,2 )))
+        if(files.at(i).contains(clUid))
         {
         	  mVelFileSelectWidget->setFilename(files.at(i));
               break;
@@ -233,7 +233,7 @@ void AngleCorrectionWidget::preprocessExecuter()
 
 void AngleCorrectionWidget::runAngleCorection()
 {
-	mExecuter->execute();
+    mExecuter->execute();
 }
 
 void AngleCorrectionWidget::executionFinished()

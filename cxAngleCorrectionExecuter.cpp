@@ -14,9 +14,10 @@ namespace cx
  */
 
 AngleCorrectionExecuter::AngleCorrectionExecuter() :
-    ThreadedTimedAlgorithm<bool>("Angle correction", 5)
+    ThreadedTimedAlgorithm<bool>("Angle correction", 5),
+    AngleCorrection()
 {
-    angleCorr = AngleCorrection();
+  //  mAngleCorrPtr=new AngleCorrection();
     mUseDefaultMessages = false;
 }
 
@@ -28,7 +29,7 @@ AngleCorrectionExecuter::~AngleCorrectionExecuter()
 void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
     try {
-        angleCorr.setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions,  uncertainty_limit,  minArrowDist);
+        AngleCorrection::setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions,  uncertainty_limit,  minArrowDist);
     } catch (std::exception& e){
         reportError("std::exception in angle correction algorithm during setting parameters: "+qstring_cast(e.what()));
     } catch (...){
@@ -42,7 +43,7 @@ bool AngleCorrectionExecuter::calculate()
     report(QString("Algorithm Angle correction started"));
     bool res= false;
     try {
-        res= angleCorr.calculate();
+        res=AngleCorrection::calculate();
     } catch (std::exception& e){
         reportError("std::exception in angle correction algorithm: "+qstring_cast(e.what()));
     } catch (...){
@@ -65,7 +66,7 @@ vtkSmartPointer<vtkPolyData>  AngleCorrectionExecuter::getOutput()
 {
     if(!this->isFinished()) return NULL;
     if(!this->getResult()) return NULL;
-    return  angleCorr.getOutput();
+    return AngleCorrection::getOutput();
 }
 
 

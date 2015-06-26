@@ -5,6 +5,8 @@
 
 
 typedef vector<Spline3D<double> > vectorSpline3dDouble;
+typedef vectorSpline3dDouble* vectorSpline3dDoublePtr;
+
 
 
 class AngleCorrection
@@ -20,11 +22,12 @@ public:
     vectorSpline3dDouble getClSpline();
     void writeDirectionToVtkFile(const char* filename);
 private:
-    vtkSmartPointer<vtkPolyData> flowDirection( vectorSpline3dDouble splines, double uncertainty_limit, double minArrowDist);
-    vectorSpline3dDouble angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions);
+    vtkSmartPointer<vtkPolyData> flowDirection( vectorSpline3dDoublePtr splines, double uncertainty_limit, double minArrowDist);
+    vectorSpline3dDoublePtr angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions);
 
     vtkSmartPointer<vtkPolyData> mClData;
     vector<MetaImage<inData_t> > * mVelDataPtr;
+    std::string mVelImagePrefix;
     double mVnyq;
     double mCutoff;
     int mnConvolutions;
@@ -33,7 +36,7 @@ private:
 
     vtkSmartPointer<vtkPolyData> mOutput;
 
-    vectorSpline3dDouble mClSplines;
+    vectorSpline3dDoublePtr mClSplinesPtr;
     bool mUpdate1;
     bool mUpdate2;
     bool mValidInput;

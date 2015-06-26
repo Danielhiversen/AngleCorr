@@ -47,8 +47,7 @@ public:
     setFileName(const string filename)
     {
         m_filename = filename;
-        m_reader->SetFileName(filename.c_str());
-        m_reader->Update();
+
 
     }
 
@@ -58,6 +57,9 @@ public:
     void
     read()
     {
+
+        m_reader->SetFileName(m_filename.c_str());
+        m_reader->Update();
 
         vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
         m_reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
@@ -388,6 +390,7 @@ public:
         ret->push_back(MetaImage());
         curimg = &(ret->back());
         if(!curimg->getReader()->CanReadFile(filename.c_str())){
+            cerr << filename.c_str() << endl;
             reportError("ERROR: Could not read velocity data \n");
         }
         while(curimg->getReader()->CanReadFile(filename.c_str()))

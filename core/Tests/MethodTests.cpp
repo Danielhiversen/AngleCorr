@@ -3,6 +3,7 @@
 #include "angle_correction_impl.h"
 #include <vtkPolyDataWriter.h>
 #include <cstdio>
+#include <time.h>
 
 #include "catch.hpp"
 
@@ -332,7 +333,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     bool res = false;
     AngleCorrection angleCorr = AngleCorrection();
 
-
+cerr << "test1\n" ;
     CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     CHECK_NOTHROW(res = angleCorr.calculate());
     REQUIRE(res);
@@ -341,12 +342,14 @@ TEST_CASE("Test several runs", "[angle_correction]")
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
     std::remove(appendTestFolder(filename_b));
-    
+
+cerr << "test2\n" ;
     CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline2), appendTestFolder(image_prefix2), Vnyq2, cutoff2, nConvolutions2));
     CHECK_NOTHROW(res = angleCorr.calculate());
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_6.vtk"));
+cerr << "test3\n" ;
 
     CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     CHECK_NOTHROW(res = angleCorr.calculate());
@@ -359,4 +362,33 @@ TEST_CASE("Test several runs", "[angle_correction]")
 
     std::remove(appendTestFolder(filename_a));
     std::remove(appendTestFolder(filename_b));
+}
+
+
+
+
+TEST_CASE("Timing", "[angle_correction_time]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026_raw/US-Acq_03_20150527T130026_Velocity_";
+
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    clock_t start, stop;
+    double run_time = 0.0;
+    start = clock();
+
+    AngleCorrection angleCorr = AngleCorrection();
+
+
+    angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
+    bool res = angleCorr.calculate();
+
+    stop = clock();
+    run_time = (double) (stop-start)/CLOCKS_PER_SEC;
+    REQUIRE(run_time<10);
+
+    printf("Run time: %f\n", run_time);
 }
