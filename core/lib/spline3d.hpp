@@ -295,7 +295,7 @@ public:
     {
         if(!m_initialized )
         {
-            cerr << "Spline not initialized \n";
+            reportError("ERROR: Spline3d not initialized");
             return;
         }
 
