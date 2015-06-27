@@ -46,12 +46,6 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
     if (nConvolutions < 0.0) reportError("ERROR: nConvolutions must be positive ");
 
 
-//    if(mVelDataPtr->size() == 0)
-//    {
-
-//    }
-
-
     if((velData->size() > 0 && mVelDataPtr!=velData) || mVelImagePrefix.size()==0)
     {
         mVelDataPtr->clear();
@@ -214,25 +208,12 @@ void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<
     int n_splines =0;
 
     mClSplinesPtr->clear();
-    vectorSpline3dDoublePtr mClSplinesPtr = Spline3D<double>::build(vpd_centerline);
+    mClSplinesPtr = Spline3D<double>::build(vpd_centerline);
 
- //   for(Spline3D<double>& spline : *splines)
- //   {
- //       spline.setTransform(true);
- //       spline.setAxis(1);
- //   }
-
-
-//#pragma omp parallel for
-//find_package(OpenMP)
-//if (OPENMP_FOUND)
-  //  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  //  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-//endif()
-    // Smooth the splines
     for(auto &spline: *mClSplinesPtr)
     {
         n_splines++;
+        // Smooth the splines
         for(int j = 0; j < nConvolutions; j++)
         {
             spline.applyConvolution({0.25, 0.50, 0.25 });
@@ -245,7 +226,7 @@ void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<
         spline.findAllIntersections(*images);
         spline.getIntersections().setVelocityEstimationCutoff(cutoff,1.0);
         n_intersections += spline.getIntersections().size();
-   
+
         // Now that we know the intersection points,
         // we can go through all the image planes and do the region growing.
         for_each(spline.getIntersections().begin(), spline.getIntersections().end(),[](Intersection<double> &it){it.regionGrow();});
@@ -253,12 +234,12 @@ void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<
         // We may now do the direction vector estimation
         // Using the default parameters set in IntersectionSet constructor
         spline.getIntersections().estimateDirection();
-    
-        // Do aliasing correction  
+
+        // Do aliasing correction
         if (Vnyq > 0){
             spline.getIntersections().correctAliasing(Vnyq);
         }
-    
+
         // Least squares velocity estimates
         spline.getIntersections().estimateVelocityLS();
 
