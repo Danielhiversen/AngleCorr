@@ -293,6 +293,12 @@ public:
     void
     evaluateSingle(T t, T point[3]) const
     {
+        if(!m_initialized )
+        {
+            cerr << "Spline not initialized \n";
+            return;
+        }
+
         // Align with m_points (curve(0) == m_points[0])
         t += 1.5;
         int pos = t;
