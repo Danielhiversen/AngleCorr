@@ -142,16 +142,16 @@ bool AngleCorrection::calculate()
         mVelDataPtr = MetaImage<inData_t>::readImages(mVelImagePrefix);
     }
 
-    cerr << "step 1" << endl;
 
     if(mUpdate1)
     {
+        cerr << "started step 1 of 2 " << mnConvolutions<< endl;
         angle_correction_impl(mClData, mVelDataPtr, mVnyq, mCutoff, mnConvolutions);
     }
-    cerr << "Finished step 1 of 2 for angle correction" << endl;
 
     if(mUpdate1 || mUpdate2)
     {
+        cerr << "started step 2 of 2" << endl;
         mOutput= computeVtkPolyData(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
     }
 
