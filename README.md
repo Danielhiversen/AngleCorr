@@ -19,10 +19,11 @@ libvtk
 libeigen3
 libsuperlu
 g++-4.7
+cmake
 ninja (or make)
 
 These can be installed on a Debian GNU/Linux machine by issuing (as root)
-apt-get install libvtk5-dev libeigen3-dev libsuperlu3-dev g++-4.7 ninja
+apt-get install libvtk5-dev libeigen3-dev libsuperlu3-dev g++-4.7 ninja-build cmake cmake-qt-gui
 
 When all the required programs have been installed, the source may be built by simply issuing
 ninja from the app directory. A binary file called angle_correction should be produced.
