@@ -65,7 +65,7 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
         mCutoff=cutoff;
         mnConvolutions=nConvolutions;
         mUpdate1=true;
-   }
+    }
 
     if(mUncertainty_limit!=uncertainty_limit ||
             mMinArrowDist!=minArrowDist)
@@ -152,7 +152,7 @@ bool AngleCorrection::calculate()
 
     if(mUpdate1 || mUpdate2)
     {
-        mOutput= flowDirection(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
+        mOutput= computeVtkPolyData(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
     }
 
     mUpdate1=false;
@@ -260,7 +260,7 @@ void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<
 
 
 
-vtkSmartPointer<vtkPolyData> AngleCorrection::flowDirection( vectorSpline3dDoublePtr splines, double uncertainty_limit, double minArrowDist)
+vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3dDoublePtr splines, double uncertainty_limit, double minArrowDist)
 {
     vtkSmartPointer<vtkPoints> pointarray = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkDoubleArray> flowdirection = vtkSmartPointer<vtkDoubleArray>::New();
