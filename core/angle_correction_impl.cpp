@@ -26,6 +26,7 @@ AngleCorrection::AngleCorrection(){
     mValidInput= false;
     mClSplinesPtr = new vectorSpline3dDouble();
     mVelDataPtr = new vector<MetaImage<inData_t>>();
+    mClData=vtkSmartPointer<vtkPolyData>::New();
     mVelImagePrefix="";
 }
 
@@ -60,7 +61,7 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
             mCutoff!=cutoff ||
             mnConvolutions!=nConvolutions)
     {
-        mClData=vpd_centerline;
+        mClData->DeepCopy(vpd_centerline);
         mVnyq=Vnyq;
         mCutoff=cutoff;
         mnConvolutions=nConvolutions;
