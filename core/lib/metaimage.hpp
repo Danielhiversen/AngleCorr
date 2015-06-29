@@ -9,7 +9,8 @@
 #include <vtkPointData.h>
 #include <map>
 #include "ErrorHandler.hpp"
-
+#include <iostream>
+#include <thread>
 
 /**
  * A class to represent a MetaImage. This includes reading it and
@@ -59,6 +60,7 @@ public:
     void
     read()
     {
+
         vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
         m_reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
         m_reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
@@ -224,6 +226,8 @@ public:
 
         std::ifstream infile(m_filename);
         std::string line;
+        int found =0;
+        int numToFind =2;
         while (std::getline(infile, line))
         {
 
@@ -239,6 +243,8 @@ public:
                     m_transform(i++,3)=std::stod(buf);
                 }
                 m_transform(3,3)=1;
+                found++;
+                if(found >=numToFind) return;
 
             }else if(line.find("TransformMatrix")!=std::string::npos)
             {
@@ -256,6 +262,8 @@ public:
                     }
                     m_transform(i++,j)=std::stod(buf);
                 }
+                found++;
+                if(found >=numToFind) return;
             }
         }
 
@@ -374,6 +382,7 @@ public:
         return m_idx;
     }
 
+
     /**
    * Factory function to get a bunch of images by reading them from disk.
    * @param prefix The prefix of the file name. File names are assumed to be of the format prefix$NUMBER.mhd
@@ -382,36 +391,46 @@ public:
     static vector<MetaImage>*
     readImages(const string prefix)
     {
-        vector<MetaImage> *ret = new vector<MetaImage>();
-
-
         // Images are on the format prefix$NUMBER.mhd
         int i = 0;
         ostringstream ss;
         ss << prefix << i << ".mhd";
         string filename = ss.str();
-        MetaImage *curimg;
-        ret->push_back(MetaImage());
-        curimg = &(ret->back());
-        if(!curimg->getReader()->CanReadFile(filename.c_str())){
+        MetaImage curimg = MetaImage();
+        if(!curimg.getReader()->CanReadFile(filename.c_str())){
             cerr << filename.c_str() << endl;
             reportError("ERROR: Could not read velocity data \n");
         }
-        while(curimg->getReader()->CanReadFile(filename.c_str()))
-        {
 
-            curimg->setFileName(filename);
-            curimg->read();
-            curimg->setIdx(i);
+        vector<MetaImage> *ret = new vector<MetaImage>();
+        while(curimg.getReader()->CanReadFile(filename.c_str()))
+        {
             ret->push_back(MetaImage());
-            curimg = &(ret->back());
+            ret->at(i).setFileName(filename);
+            ret->at(i).setIdx(i);
+ //          ret->at(i).read();
 
             ss.clear();
             ss.str("");
             ss << prefix << ++i << ".mhd";
             filename = ss.str();
-
         }
+
+
+        std::vector<std::thread> workers;
+        for (int i = 0; i < ret->size(); i++)
+        {
+            workers.push_back(std::thread([i,ret]()
+            {
+                ret->at(i).read();
+            }));
+        }
+
+        std::for_each(workers.begin(), workers.end(), [](std::thread &t)
+        {
+            t.join();
+        });
+
         return ret;
     }
 

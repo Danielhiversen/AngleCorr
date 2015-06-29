@@ -75,7 +75,6 @@ find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
 
-
 AngleCorrection_add_sources(
     angle_correction_impl.h
     angle_correction_impl.cpp

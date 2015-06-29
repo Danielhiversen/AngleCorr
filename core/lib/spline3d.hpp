@@ -525,7 +525,6 @@ public:
             intersection = findIntersection(&imgs[i]);
             if(intersection.isValid())
             {
-
                 m_intersections.push_back(intersection);
 
             }
