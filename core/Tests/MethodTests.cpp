@@ -543,9 +543,146 @@ TEST_CASE("Timing", "[angle_correction_time]")
     start = clock();
 
     AngleCorrection angleCorr = AngleCorrection();
-
     angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
     bool res = angleCorr.calculate();
+
+    stop = clock();
+    run_time = (double) (stop-start)/CLOCKS_PER_SEC;
+    REQUIRE(run_time<10);
+
+    printf("Run time: %f\n", run_time);
+}
+
+
+
+
+TEST_CASE("Benchmark", "[Benchmark]")
+{
+    clock_t start, stop;
+    double run_time = 0.0;
+    start = clock();
+
+    bool res;
+
+    char centerline1[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
+    char image_prefix1[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
+    double Vnyq1 =  0.312;
+    double cutoff1 = 0.18;
+    int nConvolutions1 = 6;
+
+    AngleCorrection angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline1), appendTestFolder(image_prefix1), Vnyq1, cutoff1, nConvolutions1);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+
+    char centerline2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
+    char image_prefix2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751_raw/US-Acq_02_20150527T125751_Velocity_";
+    double Vnyq2 =  0.312;
+    double cutoff2 = 0.18;
+    int nConvolutions2 = 6;
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline2), appendTestFolder(image_prefix2), Vnyq2, cutoff2, nConvolutions2);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+
+    char centerline3[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
+    char image_prefix3[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026_raw/US-Acq_03_20150527T130026_Velocity_";
+    double Vnyq3 =  0.312;
+    double cutoff3 = 0.18;
+    int nConvolutions3 = 6;
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq3, cutoff3, nConvolutions3);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+
+    char centerline4[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_04_20150527T130043_Angio_1_tsf_cl1.vtk";
+    char image_prefix4[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_04_20150527T130043_raw/US-Acq_04_20150527T130043_Velocity_";
+    double Vnyq4 =  0.312;
+    double cutoff4 = 0.18;
+    int nConvolutions4 = 6;
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline4), appendTestFolder(image_prefix4), Vnyq4, cutoff4, nConvolutions4);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+
+    char centerline5[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
+    char image_prefix5[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229_raw/US-Acq_05_20150527T130229_Velocity_";
+    double Vnyq5 =  0.312;
+    double cutoff5 = 0.18;
+    int nConvolutions5 = 6;
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline5), appendTestFolder(image_prefix5), Vnyq5, cutoff5, nConvolutions5);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+
+    char centerline6[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_06_20150527T130329_Angio_1_tsf_cl1.vtk";
+    char image_prefix6[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_06_20150527T130329_raw/US-Acq_06_20150527T130329_Velocity_";
+    double Vnyq6 =  0.312;
+    double cutoff6 = 0.18;
+    int nConvolutions6 = 6;
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline6), appendTestFolder(image_prefix6), Vnyq6, cutoff6, nConvolutions6);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+
+    char centerline7[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
+    char image_prefix7[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_07_20150527T130532_raw/US-Acq_07_20150527T130532_Velocity_";
+    double Vnyq7 =  0.156;
+    double cutoff7 = 0.18;
+    int nConvolutions7 = 6;
+
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline7), appendTestFolder(image_prefix7), Vnyq7, cutoff7, nConvolutions7);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+    char centerline8[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
+    char image_prefix8[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558_raw/US-Acq_08_20150527T130558_Velocity_";
+    double Vnyq8 =  0.156;
+    double cutoff8 = 0.18;
+    int nConvolutions8 = 6;
+
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline8), appendTestFolder(image_prefix8), Vnyq8, cutoff8, nConvolutions8);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+    char centerline9[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_09_20150527T131009_Angio_1_tsf_cl1.vtk";
+    char image_prefix9[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_09_20150527T131009_raw/US-Acq_09_20150527T131009_Velocity_";
+    double Vnyq9 =  0.312;
+    double cutoff9 = 0.18;
+    int nConvolutions9 = 6;
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline9), appendTestFolder(image_prefix9), Vnyq9, cutoff9, nConvolutions9);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+
+    char centerline10[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
+    char image_prefix10[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055_raw/US-Acq_10_20150527T131055_Velocity_";
+    double Vnyq10 =  0.312;
+    double cutoff10 = 0.18;
+    int nConvolutions10 = 6;
+
+
+    angleCorr = AngleCorrection();
+    angleCorr.setInput(appendTestFolder(centerline10), appendTestFolder(image_prefix10), Vnyq10, cutoff10, nConvolutions10);
+    res = angleCorr.calculate();
+    REQUIRE(res);
 
     stop = clock();
     run_time = (double) (stop-start)/CLOCKS_PER_SEC;
