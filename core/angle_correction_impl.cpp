@@ -56,10 +56,10 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
 
 
 
-    if(mClData!=vpd_centerline ||
-            mVnyq!=Vnyq ||
+    if(mVnyq!=Vnyq ||
             mCutoff!=cutoff ||
-            mnConvolutions!=nConvolutions)
+            mnConvolutions!=nConvolutions ||
+            !EqualVtkPolyData(mClData,vpd_centerline))
     {
         mClData->DeepCopy(vpd_centerline);
         mVnyq=Vnyq;
@@ -202,7 +202,7 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
 
 
 }
-void AngleCorrection::angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions)
+void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions)
 {
     bool verbose = true;
     int n_intersections = 0;
@@ -345,4 +345,33 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
         cerr << "Removed " << num_uncertainty_limit << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
     }
     return polydata;
+}
+
+
+
+bool AngleCorrection::EqualVtkPolyData( vtkSmartPointer<vtkPolyData> leftHandSide, vtkSmartPointer<vtkPolyData> rightHandSide)
+{
+    if( leftHandSide->GetNumberOfCells()!=rightHandSide->GetNumberOfCells()) return false;
+    if( leftHandSide->GetNumberOfVerts()!=rightHandSide->GetNumberOfVerts()) return false;
+    if( leftHandSide->GetNumberOfLines()!=rightHandSide->GetNumberOfLines()) return false;
+    if( leftHandSide->GetNumberOfPolys()!=rightHandSide->GetNumberOfPolys()) return false;
+    if( leftHandSide->GetNumberOfStrips()!=rightHandSide->GetNumberOfStrips()) return false;
+    unsigned int numberOfPointsRight = rightHandSide->GetNumberOfPoints();
+    unsigned int numberOfPointsLeft = leftHandSide->GetNumberOfPoints();
+    if(numberOfPointsLeft!=numberOfPointsRight) return false;
+
+    bool tester = (numberOfPointsLeft==numberOfPointsRight);
+    double pointOne[3];
+    double pointTwo[3];
+    for( unsigned int i( 0 ); i < numberOfPointsRight; i++ )
+    {
+        rightHandSide->GetPoint(i, pointOne);
+        leftHandSide->GetPoint(i, pointTwo);
+        double x = pointOne[0] - pointTwo[0];
+        double y = pointOne[1] - pointTwo[1];
+        double z = pointOne[2] - pointTwo[2];
+        double distance = x*x + y*y + z*z;
+        if( distance > 0.001 ) return false;
+    }
+     return true;
 }

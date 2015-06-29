@@ -321,7 +321,7 @@ public:
    * @return a set of 3D splines
    */
     static vector<Spline3D<T> >*
-    build(vtkPolyData *data)
+    build(vtkSmartPointer<vtkPolyData> data)
     {
         // Algorithm:
         // 1. Make a data structure for each point that holds what line it belongs to (adjacency list)

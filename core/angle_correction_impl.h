@@ -22,8 +22,9 @@ public:
     vectorSpline3dDouble getClSpline();
     void writeDirectionToVtkFile(const char* filename);
 private:
-    void angle_correction_impl(vtkPolyData *vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions);
+    void angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions);
     vtkSmartPointer<vtkPolyData> computeVtkPolyData( vectorSpline3dDoublePtr splines, double uncertainty_limit, double minArrowDist);
+    bool EqualVtkPolyData( vtkSmartPointer<vtkPolyData> leftHandSide, vtkSmartPointer<vtkPolyData> rightHandSide);
 
     vtkSmartPointer<vtkPolyData> mClData;
     vector<MetaImage<inData_t> > * mVelDataPtr;
