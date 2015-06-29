@@ -558,6 +558,7 @@ TEST_CASE("Timing", "[angle_correction_time]")
 
 TEST_CASE("Benchmark", "[Benchmark]")
 {
+    auto start_wall = std::chrono::system_clock::now();
     clock_t start, stop;
     double run_time = 0.0;
     start = clock();
@@ -688,5 +689,10 @@ TEST_CASE("Benchmark", "[Benchmark]")
     run_time = (double) (stop-start)/CLOCKS_PER_SEC;
     REQUIRE(run_time<10);
 
-    printf("Run time: %f\n", run_time);
+    auto end_wall = std::chrono::system_clock::now();
+    auto elapsed =     std::chrono::duration_cast<std::chrono::seconds>(end_wall - start_wall);
+
+    cerr << "Run time: " <<  run_time <<"\n";
+    cerr << "Elapsed time: " <<  elapsed.count() <<"\n";
+
 }
