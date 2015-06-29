@@ -1,15 +1,10 @@
 #ifndef METAIMAGE_HPP
 #define METAIMAGE_HPP
 
-#include <vtkPolyDataReader.h>
-#include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkMetaImageReader.h>
 #include <vtkImageData.h>
-#include <vtkPointData.h>
-#include <map>
 #include "ErrorHandler.hpp"
-#include <iostream>
 #include <thread>
 
 /**

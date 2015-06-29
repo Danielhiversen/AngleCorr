@@ -5,7 +5,10 @@
 #include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
 
+#include <vtkPolyDataReader.h>
+#include <vtkPolyData.h>
 #include <vtkPolyDataWriter.h>
+#include <vtkPointData.h>
 
 using namespace std;
 
