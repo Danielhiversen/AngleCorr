@@ -282,11 +282,10 @@ public:
                 ret->at(i).setIdx(i);
                 ret->at(i).m_img = reader->GetOutput();
 
-
-    #if VTK_MAJOR_VERSION <= 5
-            ret->at(i).m_img->Update();
-    #else
-    #endif
+#if VTK_MAJOR_VERSION <= 5
+                ret->at(i).m_img->Update();
+#else
+#endif
 
             if (errorObserver->GetError())
             {
@@ -310,43 +309,43 @@ public:
 
             std::ifstream infile(filename);
             std::string line;
-            int found =0;
-            int numToFind =2;
+            //int found =0;
+            //int numToFind =2;
             while (std::getline(infile, line))
             {
                 if(line.find("Offset")!=std::string::npos)
                 {
                     string buf;
                     stringstream ss(line);
-                    int i=0;
+                    int k=0;
                     ss >> buf;
                     ss >> buf;
                     while (ss >> buf)
                     {
-                        ret->at(i).m_transform(i++,3)=std::stod(buf);
+                        ret->at(i).m_transform(k++,3)=std::stod(buf);
                     }
                     ret->at(i).m_transform(3,3)=1;
-                    found++;
-                    if(found >=numToFind) break;
+               //     found++;
+               //     if(found >=numToFind) break;
 
                 }else if(line.find("TransformMatrix")!=std::string::npos)
                 {
                     string buf;
                     stringstream ss(line);
-                    int i=0;
+                    int k=0;
                     int j=0;
                     ss >> buf;
                     ss >> buf;
                     while (ss >> buf)
                     {
-                        if(i >2){
-                            i=0;
+                        if(k >2){
+                            k=0;
                             j++;
                         }
-                        ret->at(i).m_transform(i++,j)=std::stod(buf);
+                        ret->at(i).m_transform(k++,j)=std::stod(buf);
                     }
-                    found++;
-                    if(found >=numToFind) break;
+              //      found++;
+             //       if(found >=numToFind) break;
                 }
             }
 
