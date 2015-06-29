@@ -26,9 +26,13 @@ These can be installed on a Debian GNU/Linux machine by issuing (as root)
 apt-get install libvtk5-dev libeigen3-dev libsuperlu3-dev g++-4.7 ninja-build cmake cmake-qt-gui
 
 To build the program as a standalone algorithm:
+
 git clone  git@github.com:SINTEFMedtek/AngleCorr.git angelCorr
+
 mkdir -p build; cd build
+
 cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DANGLECORRECTION_TEST_DATA_DIR=../testData/ ../angelCorr/core/
+
 ninja
 
 
