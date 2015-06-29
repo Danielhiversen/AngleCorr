@@ -360,7 +360,6 @@ bool AngleCorrection::EqualVtkPolyData( vtkSmartPointer<vtkPolyData> leftHandSid
     unsigned int numberOfPointsLeft = leftHandSide->GetNumberOfPoints();
     if(numberOfPointsLeft!=numberOfPointsRight) return false;
 
-    bool tester = (numberOfPointsLeft==numberOfPointsRight);
     double pointOne[3];
     double pointTwo[3];
     for( unsigned int i( 0 ); i < numberOfPointsRight; i++ )
