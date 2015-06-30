@@ -22,7 +22,7 @@ public:
     {
         m_xsize = 0;
         m_ysize = 0;
-        m_img = NULL;
+        m_img = vtkSmartPointer<vtkImageData>::New();
         m_xspacing = 0.0;
         m_yspacing = 0.0;
         m_transform = Matrix4::Zero();
@@ -280,7 +280,7 @@ public:
             {
                 ret->push_back(MetaImage());
                 ret->at(i).setIdx(i);
-                ret->at(i).m_img = reader->GetOutput();
+                ret->at(i).m_img->DeepCopy(reader->GetOutput());
 
 #if VTK_MAJOR_VERSION <= 5
                 ret->at(i).m_img->Update();
