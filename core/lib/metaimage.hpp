@@ -193,7 +193,6 @@ public:
         memset(visited,0,sizeof(bool)*makehash(getXSize(),getYSize()));
 
         // Go!
-
         while(!ptstack.empty())
         {
             cur = ptstack.back();
@@ -207,7 +206,6 @@ public:
                 continue;
             }
             curpt = imagedata[img_x + img_y*getXSize()];
-
 
             // Is this point in?
             if(curpt != 0)
@@ -225,7 +223,6 @@ public:
             }
             visited[makehash(img_x, img_y)] = true;
         }
-
     }
 
     /**
@@ -257,33 +254,33 @@ public:
     static vector<MetaImage>*
     readImages(const string prefix)
     {
-            // Images are on the format prefix$NUMBER.mhd
-            vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();
-            vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
-            reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-            reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
+        // Images are on the format prefix$NUMBER.mhd
+        vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();
+        vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+        reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+        reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
-            int i = 0;
-            ostringstream ss;
-            ss << prefix << i << ".mhd";
-            string filename = ss.str();
-            reader->SetFileName(filename.c_str());
-            reader->Update();
+        int i = 0;
+        ostringstream ss;
+        ss << prefix << i << ".mhd";
+        string filename = ss.str();
+        reader->SetFileName(filename.c_str());
+        reader->Update();
 
-            if(!reader->CanReadFile(filename.c_str())){
-                cerr << filename.c_str() << endl;
-                reportError("ERROR: Could not read velocity data \n");
-            }
+        if(!reader->CanReadFile(filename.c_str())){
+            cerr << filename.c_str() << endl;
+            reportError("ERROR: Could not read velocity data \n");
+        }
 
-            vector<MetaImage> *ret = new vector<MetaImage>();
-            while(reader->CanReadFile(filename.c_str()))
-            {
-                ret->push_back(MetaImage());
-                ret->at(i).setIdx(i);
-                ret->at(i).m_img->DeepCopy(reader->GetOutput());
+        vector<MetaImage> *ret = new vector<MetaImage>();
+        while(reader->CanReadFile(filename.c_str()))
+        {
+            ret->push_back(MetaImage());
+            ret->at(i).setIdx(i);
+            ret->at(i).m_img->DeepCopy(reader->GetOutput());
 
 #if VTK_MAJOR_VERSION <= 5
-                ret->at(i).m_img->Update();
+            ret->at(i).m_img->Update();
 #else
 #endif
 
@@ -309,8 +306,8 @@ public:
 
             std::ifstream infile(filename);
             std::string line;
-            //int found =0;
-            //int numToFind =2;
+            int found =0;
+            int numToFind =2;
             while (std::getline(infile, line))
             {
                 if(line.find("Offset")!=std::string::npos)
@@ -325,8 +322,8 @@ public:
                         ret->at(i).m_transform(k++,3)=std::stod(buf);
                     }
                     ret->at(i).m_transform(3,3)=1;
-               //     found++;
-               //     if(found >=numToFind) break;
+                    found++;
+                    if(found >=numToFind) break;
 
                 }else if(line.find("TransformMatrix")!=std::string::npos)
                 {
@@ -344,11 +341,10 @@ public:
                         }
                         ret->at(i).m_transform(k++,j)=std::stod(buf);
                     }
-              //      found++;
-             //       if(found >=numToFind) break;
+                    found++;
+                    if(found >=numToFind) break;
                 }
             }
-
             ss.clear();
             ss.str("");
             ss << prefix << ++i << ".mhd";
@@ -356,8 +352,6 @@ public:
             reader->SetFileName(filename.c_str());
             reader->Update();
         }
-
-
         return ret;
     }
 
