@@ -240,9 +240,11 @@ void AngleCorrectionWidget::executionFinished()
 {
     mRunAngleCorrButton->setEnabled(true);
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
-    if(output==NULL) return;
-    //output->GetPointData()->Get
-
+    if(output==NULL)
+    {
+        reportError("Invalid output from anglecorrection algorithm");
+        return;
+    }
 
     QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1";
 	QString name = mClDataSelectWidget->getMesh()->getName()+" angleCorr%1";

@@ -31,6 +31,8 @@ AngleCorrection::AngleCorrection(){
     mVelDataPtr = new vector<MetaImage<inData_t>>();
     mClData=vtkSmartPointer<vtkPolyData>::New();
     mVelImagePrefix="";
+    mIntersections =  0;
+    mBloodVessels = 0;
 }
 
 
@@ -136,6 +138,7 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
+    mOutput =NULL;
     if(!mValidInput) return false;
     mValidInput=false;
 
@@ -157,10 +160,13 @@ bool AngleCorrection::calculate()
     {
         cerr << "started step 2 of 2" << endl;
         mOutput= computeVtkPolyData(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
+    }else{
+        return false;
     }
 
     mUpdate1=false;
     mUpdate2=false;
+    if(mBloodVessels<1 || mIntersections<1) return false;
     return true;
 }
 
@@ -256,6 +262,8 @@ void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_cen
         }
     }
 
+    mIntersections =  n_intersections;
+    mBloodVessels =n_splines ;
     if (verbose)
     {
         cerr << "Found " << n_intersections << " intersections in " << n_splines << " splines.\n";
