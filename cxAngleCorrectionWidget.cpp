@@ -88,7 +88,7 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     mOutDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
     mOutDataSelectWidget->setUidRegexp("angleCorr"); 
 	mOutDataSelectWidget->setValueName("Output: ");
-	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mOutDataSelectWidget));
+    mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mOutDataSelectWidget));
 
     mExecuter.reset(new AngleCorrectionExecuter());
 	connect(mExecuter.get(), SIGNAL(finished()), this, SLOT(executionFinished()));
@@ -240,12 +240,11 @@ void AngleCorrectionWidget::executionFinished()
 {
     mRunAngleCorrButton->setEnabled(true);
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
-    if(output==NULL)
-    {
-        return;
-    }
+    if(output==NULL) return;
+    //output->GetPointData()->Get
 
-    QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1"; 
+
+    QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1";
 	QString name = mClDataSelectWidget->getMesh()->getName()+" angleCorr%1";
     mOutData = mVisServices->patientModelService->createSpecificData<Mesh>(uid, name);
 	mOutData->setVtkPolyData(output);
@@ -253,7 +252,8 @@ void AngleCorrectionWidget::executionFinished()
     mOutData->get_rMd_History()->setParentSpace(mClDataSelectWidget->getMesh()->getUid());
 
 	mVisServices->patientModelService->insertData(mOutData);
-	mVisServices->visualizationService->autoShowData(mOutData);
+    mVisServices->visualizationService->autoShowData(mOutData);
+    mOutDataSelectWidget->setValue(mOutData->getUid());
 }
 
 } /* namespace cx */
