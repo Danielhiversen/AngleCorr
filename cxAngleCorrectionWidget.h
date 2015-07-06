@@ -68,16 +68,18 @@ class AngleCorrectionWidget : public BaseWidget
 public:
     AngleCorrectionWidget(VisServicesPtr visServices, QWidget* parent) ;
 	virtual ~AngleCorrectionWidget();
+    void setInput();
 public slots:
 	void runAngleCorection();
     void patientChangedSlot();    
     void selectVelData(QString filename);
 	void toggleDetailsSlot();
     void cLDataChangedSlot();
-    void toggleShowOutputData();
 private slots:
 	void preprocessExecuter();
 	void executionFinished();
+    void step1ParamChangedSlot();
+    void step2ParamChangedSlot();
 private:
 
     bool execute();
@@ -105,6 +107,9 @@ private:
 
 	AngleCorrectionExecuterPtr mExecuter;
 
+    QString mUid;
+    QString mName;
+    bool mStep1ParamChanged;
 };
 
 } /* namespace cx */

@@ -30,13 +30,14 @@ public:
   virtual ~AngleCorrectionExecuter();
   void setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist);
   vtkSmartPointer<vtkPolyData> getOutput();
-
-
+  int getNumOfStepsRan(){return AngleCorrection::getNumOfStepsRan();}
+  virtual bool calculate(bool reportOutSuccess);
+  virtual bool calculate(){return calculate(true);}
 private slots:
   virtual void postProcessingSlot();
 
 private:
-  virtual bool calculate();
+
 };
 
 }//namespace

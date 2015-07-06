@@ -33,6 +33,8 @@ AngleCorrection::AngleCorrection(){
     mVelImagePrefix="";
     mIntersections =  0;
     mBloodVessels = 0;
+    mNumOfStepsRan=0;
+
 }
 
 
@@ -138,7 +140,6 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
-    mOutput =NULL;
     if(!mValidInput) return false;
     mValidInput=false;
 
@@ -149,24 +150,23 @@ bool AngleCorrection::calculate()
         mVelDataPtr = MetaImage<inData_t>::readImages(mVelImagePrefix);
     }
 
-
+    mNumOfStepsRan=0;
     if(mUpdate1)
     {
+        mNumOfStepsRan++;
         cerr << "started step 1 of 2 " << mnConvolutions<< endl;
         angle_correction_impl(mClData, mVelDataPtr, mVnyq, mCutoff, mnConvolutions);
     }
 
     if(mUpdate1 || mUpdate2)
     {
+         mNumOfStepsRan++;
         cerr << "started step 2 of 2" << endl;
         mOutput= computeVtkPolyData(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
-    }else{
-        return false;
     }
 
     mUpdate1=false;
     mUpdate2=false;
-    if(mBloodVessels<1 || mIntersections<1) return false;
     return true;
 }
 

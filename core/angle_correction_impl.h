@@ -23,6 +23,7 @@ public:
 
     int getIntersections(){return mIntersections;}
     int getBloodVessels(){return mBloodVessels;}
+    int getNumOfStepsRan(){return mNumOfStepsRan;}
 private:
     // not tested as public:
     void setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* velData, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit=0.0, double minArrowDist= 1.0);
@@ -48,5 +49,7 @@ private:
 
     int mIntersections;
     int mBloodVessels;
+    int mNumOfStepsRan;
+
 };
 #endif /* ANGLE_CORRECTION_IMPL_H */

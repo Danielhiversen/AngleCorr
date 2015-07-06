@@ -38,7 +38,7 @@ void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QStr
 }
 
 
-bool AngleCorrectionExecuter::calculate()
+bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
 {
     report(QString("Algorithm Angle correction started."));
     bool res= false;
@@ -50,11 +50,13 @@ bool AngleCorrectionExecuter::calculate()
         reportError("Angle correction algorithm threw a unknown exception.");
     }
     if(res){
-        reportSuccess(QString("Algorithm Angle correction complete [%1s].").arg(this->getSecondsPassedAsString()));
-    }else{
-        QString text =QString("Algorithm Angle correction failed [%1s].").arg(this->getSecondsPassedAsString());
+        QString text =QString("Algorithm Angle correction complete [%1s].").arg(this->getSecondsPassedAsString());
         if(getBloodVessels() <1) text.append("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(QString(getBloodVessels()));
         if(getIntersections() <1) text.append("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(QString(getIntersections()));
+        if(getNumOfStepsRan() <1) text.append("\n Same input as previous. No new data generated.");
+        if(reportOutSuccess) reportSuccess(text);
+    }else{
+        QString text =QString("Algorithm Angle correction failed [%1s].").arg(this->getSecondsPassedAsString());
         reportError(text);
     }
     return res;

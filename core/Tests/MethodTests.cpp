@@ -512,6 +512,22 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
+
+    angleCorr.setInput(vpd_centerline1, appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
+    vpd_centerline1=vtkSmartPointer<vtkPolyData>::New();
+    res = angleCorr.calculate();
+    REQUIRE(res);
+    angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    std::remove(appendTestFolder(filename_b));
+
+    vpd_centerline1=vtkSmartPointer<vtkPolyData>::New();
+    angleCorr.setInput(vpd_centerline1, appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+    angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    std::remove(appendTestFolder(filename_b));
 }
 
 
