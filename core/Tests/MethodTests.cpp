@@ -417,7 +417,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
 }
 
 
-TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
+TEST_CASE("Test several runs cl pointer input", "[angle_correction2]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
@@ -522,40 +522,13 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     std::remove(appendTestFolder(filename_b));
 
     vpd_centerline1=vtkSmartPointer<vtkPolyData>::New();
-    angleCorr.setInput(vpd_centerline1, appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
+    CHECK_THROWS(angleCorr.setInput(vpd_centerline1, appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     res = angleCorr.calculate();
-    REQUIRE(res);
+    REQUIRE(!res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_b));
 }
-
-
-
-TEST_CASE("Timing", "[angle_correction_time]")
-{
-    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
-    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026_raw/US-Acq_03_20150527T130026_Velocity_";
-
-    double Vnyq =  0.312;
-    double cutoff = 0.18;
-    int nConvolutions = 6;
-
-    clock_t start, stop;
-    double run_time = 0.0;
-    start = clock();
-
-    AngleCorrection angleCorr = AngleCorrection();
-    angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions);
-    bool res = angleCorr.calculate();
-
-    stop = clock();
-    run_time = (double) (stop-start)/CLOCKS_PER_SEC;
-    REQUIRE(run_time<10);
-
-    printf("Run time: %f\n", run_time);
-}
-
 
 
 
@@ -690,7 +663,7 @@ TEST_CASE("Benchmark", "[Benchmark]")
 
     stop = clock();
     run_time = (double) (stop-start)/CLOCKS_PER_SEC;
-    REQUIRE(run_time<10);
+    REQUIRE(run_time<2);
 
     auto end_wall = std::chrono::system_clock::now();
     auto elapsed =     std::chrono::duration_cast<std::chrono::seconds>(end_wall - start_wall);

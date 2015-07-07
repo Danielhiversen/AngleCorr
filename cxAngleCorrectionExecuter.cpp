@@ -28,6 +28,7 @@ AngleCorrectionExecuter::~AngleCorrectionExecuter()
 
 void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
+    cerr << clData->GetNumberOfPoints() <<endl;
     try {
         AngleCorrection::setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions,  uncertainty_limit,  minArrowDist);
     } catch (std::exception& e){
