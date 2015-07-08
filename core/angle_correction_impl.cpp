@@ -12,7 +12,12 @@
 
 using namespace std;
 
+
 /**
+* Implementation of AngleCorrection
+*
+* \author Daniel Hoyer Iversen
+*
 * EstimateAngleCorrectedFlowDirection
 * @param centerline - centerline of the blood vessels
 * @param images - 2D velocity frames
@@ -368,7 +373,7 @@ bool AngleCorrection::EqualVtkPolyData( vtkSmartPointer<vtkPolyData> leftHandSid
     if( leftHandSide->GetNumberOfVerts()!=rightHandSide->GetNumberOfVerts()) return false;
     if( leftHandSide->GetNumberOfLines()!=rightHandSide->GetNumberOfLines()) return false;
     if( leftHandSide->GetNumberOfPolys()!=rightHandSide->GetNumberOfPolys()) return false;
-    if( leftHandSide->GetNumberOfStrips()!=rightHandSide->GetNumberOfStrips()) return false;
+    if(leftHandSide->GetNumberOfStrips()!=rightHandSide->GetNumberOfStrips())return false;
     unsigned int numberOfPointsRight = rightHandSide->GetNumberOfPoints();
     unsigned int numberOfPointsLeft = leftHandSide->GetNumberOfPoints();
     if(numberOfPointsLeft!=numberOfPointsRight) return false;

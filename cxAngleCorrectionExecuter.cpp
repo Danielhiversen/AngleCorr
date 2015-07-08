@@ -17,13 +17,11 @@ AngleCorrectionExecuter::AngleCorrectionExecuter() :
     ThreadedTimedAlgorithm<bool>("Angle correction", 5),
     AngleCorrection()
 {
-  //  mAngleCorrPtr=new AngleCorrection();
     mUseDefaultMessages = false;
 }
 
 AngleCorrectionExecuter::~AngleCorrectionExecuter()
 {
-    //angleCorr.~AngleCorrection();
 }
 
 void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)

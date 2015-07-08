@@ -142,7 +142,7 @@ void AngleCorrectionWidget::cLDataChangedSlot()
         if(files.at(i).contains(clUid))
         {
         	  mVelFileSelectWidget->setFilename(files.at(i));
-              break;
+              return;
         }
     }
 }
@@ -156,7 +156,6 @@ void AngleCorrectionWidget::step1ParamChangedSlot()
 void AngleCorrectionWidget::step2ParamChangedSlot()
 {
     if(mStep1ParamChanged) return;
-    report("run");
     setInput();
     if(!mExecuter->calculate(false)) return;
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
@@ -279,16 +278,13 @@ void AngleCorrectionWidget::executionFinished()
         reportError("Invalid output from anglecorrection algorithm");
         return;
     }
-    if (mExecuter->getNumOfStepsRan() < 2)
+    if (mExecuter->getNumOfStepsRan() > 1)
     {
-        //mOutData =
-    }else
-    {   mUid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1";
+        mUid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1";
         mName = mClDataSelectWidget->getMesh()->getName()+" angleCorr%1";
         mOutData = mVisServices->patientModelService->createSpecificData<Mesh>(mUid, mName);
         mOutData->get_rMd_History()->setParentSpace(mClDataSelectWidget->getMesh()->getUid());
     }
-
 
 	mOutData->setVtkPolyData(output);
 

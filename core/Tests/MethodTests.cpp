@@ -1,3 +1,11 @@
+/**
+* Tests for AngleCorrection
+*
+* \author Daniel Hoyer Iversen
+*
+*
+*/
+
 #include <vector>
 #include <vtkSmartPointer.h>
 #include "angle_correction_impl.h"
@@ -663,7 +671,7 @@ TEST_CASE("Benchmark", "[Benchmark]")
 
     stop = clock();
     run_time = (double) (stop-start)/CLOCKS_PER_SEC;
-    REQUIRE(run_time<2);
+    REQUIRE(run_time<10);
 
     auto end_wall = std::chrono::system_clock::now();
     auto elapsed =     std::chrono::duration_cast<std::chrono::seconds>(end_wall - start_wall);
