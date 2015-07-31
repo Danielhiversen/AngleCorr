@@ -64,11 +64,8 @@ nConvolutions 	 - the number of times to run the smoothAll algorithm
 Output
 -----------------------------------------------------------------------------
 
-An output file are generated.
+An output file are generated: output.vtk
 
-
-output.vtk
----------------------------------
 output.vtk is a file that may be visualized by ParaView, and contains the center line as a point set, with one point at every point it intersects an image. Each of those points are annotated with the following data:
 
 The flow direction (normalized gradient of the center line curve)
