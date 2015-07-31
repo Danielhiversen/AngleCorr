@@ -42,17 +42,22 @@ Using
 
 Running the program angle_correction without any arguments gives a short help text:
 
-$ ./angle_correction \n
+$ ./angle_correction 
+
 Usage: ./angle_correction centerline.vtk image_prefix Vnyq cutoff nConvolutions
 
 
 As indicated, the program must be run with 6 parameters:
 
-centerline.vtk 	 - the center line\n
+centerline.vtk 	 - the center line
+
 image_prefix 	 - the prefix of the images. The suffix $NUMBER.mhd will be appended to it, 
 		   where $NUMBER starts at 0 and progresses until no more files are found.
+
 Vnyq 		 - Nyquist velocity used when acquiring the images
+
 cutoff 		 - The lower cutoff value for abs(cos(theta)), used for the velocity estimation algorithms
+
 nConvolutions 	 - the number of times to run the smoothAll algorithm
 
 -----------------------------------------------------------------------------
