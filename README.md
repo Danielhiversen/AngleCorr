@@ -42,13 +42,13 @@ Using
 
 Running the program angle_correction without any arguments gives a short help text:
 
-$ ./angle_correction 
+$ ./angle_correction \n
 Usage: ./angle_correction centerline.vtk image_prefix Vnyq cutoff nConvolutions
 
 
 As indicated, the program must be run with 6 parameters:
 
-centerline.vtk 	 - the center line
+centerline.vtk 	 - the center line\n
 image_prefix 	 - the prefix of the images. The suffix $NUMBER.mhd will be appended to it, 
 		   where $NUMBER starts at 0 and progresses until no more files are found.
 Vnyq 		 - Nyquist velocity used when acquiring the images
