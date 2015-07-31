@@ -2,7 +2,9 @@
 #define SPLINE_FITTER_HPP
 #include <vector>
 #include <Eigen/Sparse>
-#include <Eigen/SuperLUSupport>
+//#include <Eigen/SuperLUSupport>
+#include <Eigen/SparseLU>
+
 #include <Eigen/Dense>
 
 
@@ -80,11 +82,12 @@ public:
      
     // Now solve the linear system using linear least squares
     Eigen::Matrix<T, Eigen::Dynamic, 1> x(n);
-    Eigen::SuperLU<Eigen::SparseMatrix<T> > solver;
+
+    Eigen::SparseLU<Eigen::SparseMatrix<T> > solver;
+   //Eigen::SuperLU<Eigen::SparseMatrix<T> > solver;
+   
     solver.compute(A);
     x = solver.solve(b);
-
-      
 
     //     printVector(x,n);
     // Copy back to std::vector
