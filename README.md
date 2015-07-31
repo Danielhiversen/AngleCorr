@@ -1,8 +1,6 @@
 # Angle Correction
 
-
-
-NOT UPDATED
+The algorithm is explained here: http://dx.doi.org/10.1109/TMI.2013.2261536
 
 ----------------------------------------------------------------------------
 Building
@@ -66,7 +64,7 @@ Output
 
 An output file are generated: output.vtk
 
-output.vtk is a file that may be visualized by ParaView, and contains the center line as a point set, with one point at every point it intersects an image. Each of those points are annotated with the following data:
+output.vtk is a file that may be visualized by ParaView or CustuX, and contains the center line as a point set, with one point at every point it intersects an image. Each of those points are annotated with the following data:
 
 The flow direction (normalized gradient of the center line curve)
 The estimated flow velocity (simple estimate)
