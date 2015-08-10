@@ -44,7 +44,6 @@ set(PLUGIN_target_libraries
 	cxLogicManager
 	cxGUIExtenderService
 	org_custusx_acquisition
-    ${SUPERLU_LIBRARIES}
     )
 
 set(PLUGIN_OUTPUT_DIR "")
@@ -86,7 +85,6 @@ target_include_directories(org_custusx_anglecorrection
     PUBLIC
     .
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${SUPERLU_INCLUDE_DIR}
 )
 
 
