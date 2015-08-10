@@ -542,7 +542,6 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction2]")
 
 TEST_CASE("Benchmark", "[Benchmark]")
 {
-    auto start_wall = std::chrono::system_clock::now();
     clock_t start, stop;
     double run_time = 0.0;
     start = clock();
@@ -673,12 +672,7 @@ TEST_CASE("Benchmark", "[Benchmark]")
     run_time = (double) (stop-start)/CLOCKS_PER_SEC;
     REQUIRE(run_time<10);
 
-    auto end_wall = std::chrono::system_clock::now();
-    auto elapsed =     std::chrono::duration_cast<std::chrono::seconds>(end_wall - start_wall);
-
     cerr << "Run time: " <<  run_time <<"\n";
-    cerr << "Elapsed time: " <<  elapsed.count() <<"\n";
-
 }
 
 

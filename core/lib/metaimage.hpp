@@ -5,7 +5,6 @@
 #include <vtkMetaImageReader.h>
 #include <vtkImageData.h>
 #include "ErrorHandler.hpp"
-#include <thread>
 
 /**
  * A class to represent a MetaImage. This includes reading it and
