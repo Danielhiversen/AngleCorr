@@ -62,7 +62,6 @@ find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 
-
 ## Eigen
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
@@ -85,8 +84,6 @@ if(hasParent)
     set (AngleCorrection_INCLUDE_DIRS ${AngleCorrection_INCLUDE_DIRS} PARENT_SCOPE)
     set (AngleCorrection_TEST_SOURCE_FILES ${AngleCorrection_TEST_SOURCE_FILES} PARENT_SCOPE)
     set (ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR}  PARENT_SCOPE)
-    set (SUPERLU_LIBRARIES ${SUPERLU_LIBRARIES}  PARENT_SCOPE)
-    set (SUPERLU_INCLUDE_DIR ${SUPERLU_INCLUDE_DIR}  PARENT_SCOPE)
 endif()
 
 #### Enable C++11
