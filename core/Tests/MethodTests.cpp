@@ -425,7 +425,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
 }
 
 
-TEST_CASE("Test several runs cl pointer input", "[angle_correction2]")
+TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
@@ -540,7 +540,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction2]")
 
 
 
-TEST_CASE("Benchmark", "[Benchmark]")
+TEST_CASE("Benchmark", "[angle_correction][Benchmark]")
 {
     clock_t start, stop;
     double run_time = 0.0;
