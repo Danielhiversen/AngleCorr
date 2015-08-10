@@ -65,7 +65,7 @@ char * appendTestFolder(const char * filename){
 }
 
 void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions,double *true_flow, char true_output[]){
-    const char testFile[] = "/testOut/flowdirection_test_1.vtk";
+    const char testFile[] = "/flowdirection_test_1.vtk";
 
     AngleCorrection angleCorr = AngleCorrection();
     CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions));
@@ -92,7 +92,7 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
     int nConvolutions = 6;
 
     double true_flow [1]={-0.465};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_1.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_1.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -109,7 +109,7 @@ TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
     int nConvolutions = 6;
 
     double true_flow [1]={-0.557};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_2.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_2.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -125,7 +125,7 @@ TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
     int nConvolutions = 6;
 
     double true_flow [1]={-0.534};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_3.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_3.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -141,7 +141,7 @@ TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
     int nConvolutions = 6;
     
     double true_flow [1]={-0.577};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_4.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_4.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -157,7 +157,7 @@ TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
     int nConvolutions = 6;
 
     double true_flow [2]={-0.933,0.239};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_5.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_5.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -173,7 +173,7 @@ TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
     int nConvolutions = 6;
 
     double true_flow [2]={0.651,-2.50};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_6.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_6.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -189,7 +189,7 @@ TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][alia
     int nConvolutions = 6;
     
     double true_flow [1]={-0.314};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_7.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_7.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -205,7 +205,7 @@ TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][alia
     int nConvolutions = 6;
     
     double true_flow [1]={0.403};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_8.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_8.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -221,7 +221,7 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
     int nConvolutions = 6;
     
     double true_flow [1]={-0.625};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_9.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_9.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -237,7 +237,7 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
     int nConvolutions = 6;
     
     double true_flow [1]={0.5847};
-    char true_output[] ="/outPutFiles/output_flowdirection_test_10.vtk";
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
 }
@@ -340,8 +340,8 @@ TEST_CASE("Test several runs", "[angle_correction]")
     double cutoff2 = 0.18;
     int nConvolutions2 = 6;
     
-    const char* filename_a ="/testOut/flowdirection_test_11_a.vtk";
-    const char* filename_b ="/testOut/flowdirection_test_11_b.vtk";
+    const char* filename_a ="/flowdirection_test_11_a.vtk";
+    const char* filename_b ="/flowdirection_test_11_b.vtk";
     
     bool res = false;
     AngleCorrection angleCorr = AngleCorrection();
@@ -359,7 +359,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_6.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_6.vtk"));
   
     angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
     res = angleCorr.calculate();
@@ -367,7 +367,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     
     validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
 
     std::remove(appendTestFolder(filename_a));
     std::remove(appendTestFolder(filename_b));
@@ -377,7 +377,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a));
-    validateFiles(appendTestFolder(filename_a), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    validateFiles(appendTestFolder(filename_a), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_a));
 
 
@@ -386,7 +386,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
     nConvolutions = 50;
@@ -394,7 +394,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a));
-    validateFiles(appendTestFolder(filename_a), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    validateFiles(appendTestFolder(filename_a), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_a));
 
     nConvolutions = 6;
@@ -402,7 +402,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
     minArrowDist = 5.0;
@@ -410,7 +410,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a));
-    validateFiles(appendTestFolder(filename_a), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    validateFiles(appendTestFolder(filename_a), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_a));
 
     minArrowDist = 1.0;
@@ -418,7 +418,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
 }
@@ -440,8 +440,8 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     clReader1->SetFileName(appendTestFolder(centerline));
     clReader1->Update();
     vtkSmartPointer<vtkPolyData> vpd_centerline1 = clReader1->GetOutput();
-    const char* filename_a ="/testOut/flowdirection_test_11_a.vtk";
-    const char* filename_b ="/testOut/flowdirection_test_11_b.vtk";
+    const char* filename_a ="/flowdirection_test_11_a.vtk";
+    const char* filename_b ="/flowdirection_test_11_b.vtk";
     
     bool res = false;
     AngleCorrection angleCorr = AngleCorrection();
@@ -467,7 +467,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
 
     validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
 
     std::remove(appendTestFolder(filename_a));
     std::remove(appendTestFolder(filename_b));
@@ -477,7 +477,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a));
-    validateFiles(appendTestFolder(filename_a), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    validateFiles(appendTestFolder(filename_a), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_a));
 
     cutoff = 0.18;
@@ -485,7 +485,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
     nConvolutions = 50;
@@ -493,7 +493,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a));
-    validateFiles(appendTestFolder(filename_a), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    validateFiles(appendTestFolder(filename_a), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_a));
 
     nConvolutions = 6;
@@ -501,7 +501,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
     minArrowDist = 5.0;
@@ -509,7 +509,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a));
-    validateFiles(appendTestFolder(filename_a), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    validateFiles(appendTestFolder(filename_a), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_a));
 
     minArrowDist = 1.0;
@@ -517,7 +517,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
     angleCorr.setInput(vpd_centerline1, appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
@@ -525,7 +525,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"));
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
     vpd_centerline1=vtkSmartPointer<vtkPolyData>::New();
@@ -533,7 +533,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
     res = angleCorr.calculate();
     REQUIRE(!res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    validateFiles(appendTestFolder(filename_b), appendTestFolder("/outPutFiles/output_flowdirection_test_10.vtk"),false);
+    validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_b));
 }
 
@@ -693,8 +693,8 @@ TEST_CASE("Test several runs cl pointer input simple", "[angle_correction][simpl
     clReader1->SetFileName(appendTestFolder(centerline));
     clReader1->Update();
     vtkSmartPointer<vtkPolyData> vpd_centerline1 = clReader1->GetOutput();
-    const char* filename_a ="/testOut/flowdirection_test_11_a.vtk";
-    const char* filename_b ="/testOut/flowdirection_test_11_b.vtk";
+    const char* filename_a ="/flowdirection_test_11_a.vtk";
+    const char* filename_b ="/flowdirection_test_11_b.vtk";
     
     bool res = false;
     AngleCorrection angleCorr = AngleCorrection();

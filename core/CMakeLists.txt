@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(AngleCorrection)
+get_directory_property(hasParent PARENT_DIRECTORY)
+if(hasParent)
 option(BUILD_TESTS "Build tests." ON)
+endif()
 set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
@@ -79,7 +82,6 @@ AngleCorrection_add_subdirectories(lib Tests)
 #### Set include dirs
 include_directories(${AngleCorrection_INCLUDE_DIRS})
 
-get_directory_property(hasParent PARENT_DIRECTORY)
 if(hasParent)
     set (AngleCorrection_INCLUDE_DIRS ${AngleCorrection_INCLUDE_DIRS} PARENT_SCOPE)
     set (AngleCorrection_TEST_SOURCE_FILES ${AngleCorrection_TEST_SOURCE_FILES} PARENT_SCOPE)
@@ -105,7 +107,7 @@ endif()
 
 
 
-if(BUILD_TESTS)
+if(BUILD_TESTS AND NOT hasParent)
     add_executable(test ${AngleCorrection_TEST_SOURCE_FILES} ${AngleCorrection_SOURCE_FILES})
     target_link_libraries(test ${LIBRARIES})
 endif()
@@ -114,8 +116,4 @@ if(NOT hasParent)
     add_executable(angle_correction main.cpp ${AngleCorrection_SOURCE_FILES})
     target_link_libraries(angle_correction ${LIBRARIES})
 endif()
-
-
-
-
 
