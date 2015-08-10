@@ -15,13 +15,12 @@ To build the program, you will first need the following packages (with developme
 
 libvtk
 libeigen3
-libsuperlu
 g++-4.7
 cmake
 ninja (or make)
 
 These can be installed on a Debian GNU/Linux machine by issuing (as root)
-apt-get install libvtk5-dev libeigen3-dev libsuperlu3-dev g++-4.7 ninja-build cmake cmake-qt-gui
+apt-get install libvtk5-dev libeigen3-dev g++-4.7 ninja-build cmake cmake-qt-gui git
 
 To build the program as a standalone algorithm:
 
@@ -64,7 +63,7 @@ Output
 
 An output file are generated: output.vtk
 
-output.vtk is a file that may be visualized by ParaView or CustuX, and contains the center line as a point set, with one point at every point it intersects an image. Each of those points are annotated with the following data:
+output.vtk is a file that may be visualized by ParaView or CustuX, and contains the center line as a point set. Each point is annotated with the following data:
 
 The flow direction (normalized gradient of the center line curve)
 The estimated flow velocity (simple estimate)
