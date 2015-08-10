@@ -52,7 +52,6 @@ AngleCorrection::~AngleCorrection(){
 
 void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* velData, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-    cerr << vpd_centerline->GetNumberOfPoints() <<endl;
     mValidInput= false;
     if (uncertainty_limit < 0.0) reportError("ERROR: uncertainty_limit must be positive ");
     if (minArrowDist < 0.0) reportError("ERROR: minArrowDist must be positive ");
@@ -88,15 +87,11 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
         mUpdate2=true;
     }
     mValidInput= true;
-    cerr << "Successfully set params" << endl;
-    cerr << mClData->GetNumberOfPoints() <<endl;
 }
 
 
 void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, const  char* velImagePrefix , double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
-    cerr << vpd_centerline->GetNumberOfPoints() <<endl;
-
     if(mVelImagePrefix!=std::string(velImagePrefix))
     {
         mVelImagePrefix=std::string(velImagePrefix);
@@ -144,16 +139,12 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
-    cerr << mClData->GetNumberOfPoints() <<endl;
-
     if(!mValidInput)
     {
         mOutput = NULL;
         return false;
     }
     mValidInput=false;
-
-    cerr << mClData->GetNumberOfPoints() <<endl;
 
     if(mVelDataPtr->size() == 0)
     {
@@ -166,7 +157,7 @@ bool AngleCorrection::calculate()
     if(mUpdate1)
     {
         mNumOfStepsRan++;
-        cerr << "started step 1 of 2 " << mnConvolutions<< endl;
+        cerr << "started step 1 of 2 "<< endl;
         angle_correction_impl(mClData, mVelDataPtr, mVnyq, mCutoff, mnConvolutions);
     }
 
@@ -225,7 +216,7 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
 
 void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions)
 {
-    bool verbose = true;
+    bool verbose = false;
 
     mClSplinesPtr->clear();
     mClSplinesPtr = Spline3D<double>::build(vpd_centerline);
