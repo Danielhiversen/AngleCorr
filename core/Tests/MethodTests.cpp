@@ -64,7 +64,6 @@ char * appendTestFolder(const char * filename){
     return newArray;
 }
 
-
 void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions,double *true_flow, char true_output[]){
     const char testFile[] = "/testOut/flowdirection_test_1.vtk";
 

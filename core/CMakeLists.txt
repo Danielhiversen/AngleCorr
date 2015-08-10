@@ -60,14 +60,7 @@ set(AngleCorrection_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 ## VTK
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
-message("-- Enabling VTK")
 set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
-
-
-## SuperLU
-find_package(SuperLU REQUIRED)
-include_directories(${SUPERLU_INCLUDE_DIR})
-set(LIBRARIES ${LIBRARIES} ${SUPERLU_LIBRARIES})
 
 
 ## Eigen
