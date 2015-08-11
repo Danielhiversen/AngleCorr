@@ -5,11 +5,19 @@
 #include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
 
+#include <vtkPolyDataReader.h>
+#include <vtkPolyData.h>
 #include <vtkPolyDataWriter.h>
+#include <vtkPointData.h>
 
 using namespace std;
 
+
 /**
+* Implementation of AngleCorrection
+*
+* \author Daniel Hoyer Iversen
+*
 * EstimateAngleCorrectedFlowDirection
 * @param centerline - centerline of the blood vessels
 * @param images - 2D velocity frames
@@ -28,6 +36,10 @@ AngleCorrection::AngleCorrection(){
     mVelDataPtr = new vector<MetaImage<inData_t>>();
     mClData=vtkSmartPointer<vtkPolyData>::New();
     mVelImagePrefix="";
+    mIntersections =  0;
+    mBloodVessels = 0;
+    mNumOfStepsRan=0;
+
 }
 
 
@@ -45,7 +57,8 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
     if (minArrowDist < 0.0) reportError("ERROR: minArrowDist must be positive ");
     if (Vnyq < 0.0) reportError("ERROR: vNyquist must be positive ");
     if (nConvolutions < 0.0) reportError("ERROR: nConvolutions must be positive ");
-
+    if (vpd_centerline->GetNumberOfPoints()<=0) reportError("ERROR: No points found in the center line ");
+    if (vpd_centerline->GetNumberOfLines()<=0) reportError("ERROR: No lines found in the center line, the center line must be a linked list ");
 
     if((velData->size() > 0 && mVelDataPtr!=velData) || mVelImagePrefix.size()==0)
     {
@@ -53,8 +66,6 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
         mVelDataPtr=velData;
         mUpdate1=true;
     }
-
-
 
     if(mVnyq!=Vnyq ||
             mCutoff!=cutoff ||
@@ -76,7 +87,6 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vect
         mUpdate2=true;
     }
     mValidInput= true;
-    cerr << "Successfully set params" << endl;
 }
 
 
@@ -119,10 +129,6 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
         cerr << "Caught warning while reading center line data \n! " << errorObserver->GetWarningMessage();
     }
 
-    //	if(!clReader->IsFilePolyData()){
-    //		throw std::runtime_error("ERROR: Could not read center line data: Invalid data format, must be poly data");
-    //	}
-
     vtkSmartPointer<vtkPolyData> vpd_centerline = clReader->GetOutput();
 
     setInput(vpd_centerline,  image_prefix,  Vnyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
@@ -133,7 +139,11 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
-    if(!mValidInput) return false;
+    if(!mValidInput)
+    {
+        mOutput = NULL;
+        return false;
+    }
     mValidInput=false;
 
     if(mVelDataPtr->size() == 0)
@@ -143,15 +153,17 @@ bool AngleCorrection::calculate()
         mVelDataPtr = MetaImage<inData_t>::readImages(mVelImagePrefix);
     }
 
-
+    mNumOfStepsRan=0;
     if(mUpdate1)
     {
-        cerr << "started step 1 of 2 " << mnConvolutions<< endl;
+        mNumOfStepsRan++;
+        cerr << "started step 1 of 2 "<< endl;
         angle_correction_impl(mClData, mVelDataPtr, mVnyq, mCutoff, mnConvolutions);
     }
 
     if(mUpdate1 || mUpdate2)
     {
+        mNumOfStepsRan++;
         cerr << "started step 2 of 2" << endl;
         mOutput= computeVtkPolyData(mClSplinesPtr, mUncertainty_limit, mMinArrowDist);
     }
@@ -178,6 +190,8 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
 {
 
     vtkSmartPointer<vtkPolyData> polydata = getOutput();
+    if(!polydata) polydata=vtkSmartPointer<vtkPolyData>::New();
+
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
     vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
     writer->AddObserver(vtkCommand::ErrorEvent,errorObserver);
@@ -191,7 +205,6 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
 #endif
     writer->Write();
 
-
     if (errorObserver->GetError())
     {
         reportError("ERROR: Could not write file to disk \n"+ errorObserver->GetErrorMessage());
@@ -199,21 +212,18 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
     if (errorObserver->GetWarning()){
         cerr << "Caught warning while not writing file to disk! \n " << errorObserver->GetWarningMessage();
     }
-
-
 }
+
 void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions)
 {
-    bool verbose = true;
-    int n_intersections = 0;
-    int n_splines =0;
+    bool verbose = false;
 
     mClSplinesPtr->clear();
     mClSplinesPtr = Spline3D<double>::build(vpd_centerline);
 
     for(auto &spline: *mClSplinesPtr)
     {
-        n_splines++;
+        mBloodVessels++;
         // Smooth the splines
         for(int j = 0; j < nConvolutions; j++)
         {
@@ -226,7 +236,7 @@ void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_cen
         // Find all the intersections
         spline.findAllIntersections(*images);
         spline.getIntersections().setVelocityEstimationCutoff(cutoff,1.0);
-        n_intersections += spline.getIntersections().size();
+        mIntersections += spline.getIntersections().size();
 
         // Now that we know the intersection points,
         // we can go through all the image planes and do the region growing.
@@ -247,15 +257,14 @@ void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_cen
         // Output direction and LS velocity
         if (verbose)
         {
-            cerr << "Spline " << n_splines << " gave direction "
+            cerr << "Spline " << mBloodVessels << " gave direction "
                  << spline.getIntersections().getEstimatedDirection()
                  << " LS velocity " << spline.getIntersections().getEstimatedVelocity() << endl;
         }
     }
-
     if (verbose)
     {
-        cerr << "Found " << n_intersections << " intersections in " << n_splines << " splines.\n";
+        cerr << "Found " << mIntersections << " intersections in " << mBloodVessels << " splines.\n";
     }
 }
 
@@ -355,7 +364,7 @@ bool AngleCorrection::EqualVtkPolyData( vtkSmartPointer<vtkPolyData> leftHandSid
     if( leftHandSide->GetNumberOfVerts()!=rightHandSide->GetNumberOfVerts()) return false;
     if( leftHandSide->GetNumberOfLines()!=rightHandSide->GetNumberOfLines()) return false;
     if( leftHandSide->GetNumberOfPolys()!=rightHandSide->GetNumberOfPolys()) return false;
-    if( leftHandSide->GetNumberOfStrips()!=rightHandSide->GetNumberOfStrips()) return false;
+    if(leftHandSide->GetNumberOfStrips()!=rightHandSide->GetNumberOfStrips())return false;
     unsigned int numberOfPointsRight = rightHandSide->GetNumberOfPoints();
     unsigned int numberOfPointsLeft = leftHandSide->GetNumberOfPoints();
     if(numberOfPointsLeft!=numberOfPointsRight) return false;

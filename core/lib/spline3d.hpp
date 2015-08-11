@@ -53,7 +53,7 @@ public:
    * Destructor
    * Frees the splines and does cleanup
    */
-    ~Spline3D() { };
+    ~Spline3D() { }
 
     /**
    * Set a point to interpolate

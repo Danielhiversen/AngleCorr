@@ -1,16 +1,10 @@
 #ifndef METAIMAGE_HPP
 #define METAIMAGE_HPP
 
-#include <vtkPolyDataReader.h>
-#include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkMetaImageReader.h>
 #include <vtkImageData.h>
-#include <vtkPointData.h>
-#include <map>
 #include "ErrorHandler.hpp"
-#include <iostream>
-#include <thread>
 
 /**
  * A class to represent a MetaImage. This includes reading it and
@@ -27,73 +21,16 @@ public:
     {
         m_xsize = 0;
         m_ysize = 0;
-        m_img = NULL;
+        m_img = vtkSmartPointer<vtkImageData>::New();
         m_xspacing = 0.0;
         m_yspacing = 0.0;
-        m_reader = vtkSmartPointer<vtkMetaImageReader>::New();
         m_transform = Matrix4::Zero();
         m_idx = -1;
-        m_filename ="";
     }
 
     ~MetaImage()
     {
 
-    }
-
-    /**
-   * Set the filename of the MetaImage
-   */
-    void
-    setFileName(const string filename)
-    {
-        m_filename = filename;
-        m_reader->SetFileName(m_filename.c_str());
-        m_reader->Update();
-
-
-    }
-
-    /**
-   * Read the metaimage
-   */
-    void
-    read()
-    {
-
-        vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
-        m_reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-        m_reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
-
-        m_img = m_reader->GetOutput();
-
-
-#if VTK_MAJOR_VERSION <= 5
-        m_img->Update();
-#else
-#endif
-
-        if (errorObserver->GetError())
-        {
-            reportError("ERROR: Could not read velocity data \n"+ errorObserver->GetErrorMessage());
-        }
-        if (errorObserver->GetWarning()){
-            cerr << "Caught warning while reading velocity data! \n " << errorObserver->GetWarningMessage();
-        }
-
-        if ( m_reader->GetFileDimensionality() != 2){
-            reportError("ERROR: Can only read 2-D data");
-        }
-
-
-        m_xsize = m_reader->GetWidth();
-        m_ysize = m_reader->GetHeight();
-        double *spacing;
-        spacing = m_reader->GetPixelSpacing();
-        m_xspacing = spacing[0];
-        m_yspacing = spacing[1];
-
-        setTransform();
     }
 
     /**
@@ -139,14 +76,6 @@ public:
         return x + getXSize()*y;
     }
 
-    /**
-   * @return the vtkMetaImageReader that read this image
-   */
-    vtkSmartPointer<vtkMetaImageReader>
-    getReader()
-    {
-        return m_reader;
-    }
 
     /**
    * @return the pointer to the pixel data
@@ -207,70 +136,6 @@ public:
 
     }
 
-    /**
-   * Set the transformation matrix for this image. The transformation matrix is the matrix that transforms from
-   * image coordinates to world coordinates.
-   * @param transform Transformation matrix
-
-  void
-  setTransform(Matrix4 transform)
-  {
-    m_transform = transform;
-  }
-     */
-
-
-    void
-    setTransform()
-    {
-
-        std::ifstream infile(m_filename);
-        std::string line;
-        int found =0;
-        int numToFind =2;
-        while (std::getline(infile, line))
-        {
-
-            if(line.find("Offset")!=std::string::npos)
-            {
-                string buf;
-                stringstream ss(line);
-                int i=0;
-                ss >> buf;
-                ss >> buf;
-                while (ss >> buf)
-                {
-                    m_transform(i++,3)=std::stod(buf);
-                }
-                m_transform(3,3)=1;
-                found++;
-                if(found >=numToFind) return;
-
-            }else if(line.find("TransformMatrix")!=std::string::npos)
-            {
-                string buf;
-                stringstream ss(line);
-                int i=0;
-                int j=0;
-                ss >> buf;
-                ss >> buf;
-                while (ss >> buf)
-                {
-                    if(i >2){
-                        i=0;
-                        j++;
-                    }
-                    m_transform(i++,j)=std::stod(buf);
-                }
-                found++;
-                if(found >=numToFind) return;
-            }
-        }
-
-    }
-
-
-
 
 
     /**
@@ -327,7 +192,6 @@ public:
         memset(visited,0,sizeof(bool)*makehash(getXSize(),getYSize()));
 
         // Go!
-
         while(!ptstack.empty())
         {
             cur = ptstack.back();
@@ -341,7 +205,6 @@ public:
                 continue;
             }
             curpt = imagedata[img_x + img_y*getXSize()];
-
 
             // Is this point in?
             if(curpt != 0)
@@ -359,7 +222,6 @@ public:
             }
             visited[makehash(img_x, img_y)] = true;
         }
-
     }
 
     /**
@@ -392,45 +254,103 @@ public:
     readImages(const string prefix)
     {
         // Images are on the format prefix$NUMBER.mhd
+        vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();
+        vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+        reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+        reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
+
         int i = 0;
         ostringstream ss;
         ss << prefix << i << ".mhd";
         string filename = ss.str();
-        MetaImage curimg = MetaImage();
-        if(!curimg.getReader()->CanReadFile(filename.c_str())){
+        reader->SetFileName(filename.c_str());
+        reader->Update();
+
+        if(!reader->CanReadFile(filename.c_str())){
             cerr << filename.c_str() << endl;
             reportError("ERROR: Could not read velocity data \n");
         }
 
         vector<MetaImage> *ret = new vector<MetaImage>();
-        while(curimg.getReader()->CanReadFile(filename.c_str()))
+        while(reader->CanReadFile(filename.c_str()))
         {
             ret->push_back(MetaImage());
-            ret->at(i).setFileName(filename);
             ret->at(i).setIdx(i);
- //          ret->at(i).read();
+            ret->at(i).m_img->DeepCopy(reader->GetOutput());
 
+#if VTK_MAJOR_VERSION <= 5
+            ret->at(i).m_img->Update();
+#else
+#endif
+
+            if (errorObserver->GetError())
+            {
+                reportError("ERROR: Could not read velocity data \n"+ errorObserver->GetErrorMessage());
+            }
+            if (errorObserver->GetWarning()){
+                cerr << "Caught warning while reading velocity data! \n " << errorObserver->GetWarningMessage();
+            }
+
+            if ( reader->GetFileDimensionality() != 2){
+                reportError("ERROR: Can only read 2-D data");
+            }
+
+
+            ret->at(i).m_xsize = reader->GetWidth();
+            ret->at(i).m_ysize = reader->GetHeight();
+            double *spacing;
+            spacing = reader->GetPixelSpacing();
+            ret->at(i).m_xspacing = spacing[0];
+            ret->at(i).m_yspacing = spacing[1];
+
+            std::ifstream infile(filename);
+            std::string line;
+            int found =0;
+            int numToFind =2;
+            while (std::getline(infile, line))
+            {
+                if(line.find("Offset")!=std::string::npos)
+                {
+                    string buf;
+                    stringstream ss(line);
+                    int k=0;
+                    ss >> buf;
+                    ss >> buf;
+                    while (ss >> buf)
+                    {
+                        ret->at(i).m_transform(k++,3)=std::stod(buf);
+                    }
+                    ret->at(i).m_transform(3,3)=1;
+                    found++;
+                    if(found >=numToFind) break;
+
+                }else if(line.find("TransformMatrix")!=std::string::npos)
+                {
+                    string buf;
+                    stringstream ss(line);
+                    int k=0;
+                    int j=0;
+                    ss >> buf;
+                    ss >> buf;
+                    while (ss >> buf)
+                    {
+                        if(k >2){
+                            k=0;
+                            j++;
+                        }
+                        ret->at(i).m_transform(k++,j)=std::stod(buf);
+                    }
+                    found++;
+                    if(found >=numToFind) break;
+                }
+            }
             ss.clear();
             ss.str("");
             ss << prefix << ++i << ".mhd";
             filename = ss.str();
+            reader->SetFileName(filename.c_str());
+            reader->Update();
         }
-
-
-        std::vector<std::thread> workers;
-        for (int i = 0; i < ret->size(); i++)
-        {
-            workers.push_back(std::thread([i,ret]()
-            {
-                ret->at(i).read();
-            }));
-        }
-
-        std::for_each(workers.begin(), workers.end(), [](std::thread &t)
-        {
-            t.join();
-        });
-
         return ret;
     }
 
@@ -457,8 +377,6 @@ private:
     double m_xspacing;
     double m_yspacing;
     Matrix4 m_transform;
-    vtkSmartPointer<vtkMetaImageReader> m_reader;
-    string m_filename;
 };
 
 #endif //METAIMAGE_HPP

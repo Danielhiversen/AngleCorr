@@ -1,3 +1,10 @@
+/**
+* Main for AngleCorrection
+*
+* \author Daniel Hoyer Iversen
+*
+*/
+
 #include "angle_correction_impl.h"
 
 using namespace std;
