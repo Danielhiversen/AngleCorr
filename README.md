@@ -1,6 +1,6 @@
 # Angle Correction
 
-The algorithm is explained here: http://dx.doi.org/10.1109/TMI.2013.2261536
+The algorithm is described here: http://dx.doi.org/10.1109/TMI.2013.2261536
 
 ----------------------------------------------------------------------------
 Building
