@@ -44,9 +44,21 @@ AngleCorrection::AngleCorrection(){
 
 
 AngleCorrection::~AngleCorrection(){
-    mOutput = NULL;
     mClSplinesPtr->clear();
+    delete mClSplinesPtr;
+
     mVelDataPtr->clear();
+    delete mVelDataPtr;
+
+    mOutput = NULL;
+    mValidInput= false;
+    mClSplinesPtr = new vectorSpline3dDouble();
+    mVelDataPtr = new vector<MetaImage<inData_t>>();
+    mClData=vtkSmartPointer<vtkPolyData>::New();
+    mVelImagePrefix="";
+    mIntersections =  0;
+    mBloodVessels = 0;
+    mNumOfStepsRan=0;
 }
 
 
