@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(AngleCorrection)
 get_directory_property(hasParent PARENT_DIRECTORY)
-if(hasParent)
+if(NOT hasParent)
 option(BUILD_TESTS "Build tests." ON)
 endif()
 set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
