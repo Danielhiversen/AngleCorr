@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8.9)
 project(AngleCorrection)
 get_directory_property(hasParent PARENT_DIRECTORY)
 if(NOT hasParent)
-option(BUILD_TESTS "Build tests." ON)
+    option(BUILD_TESTS "Build tests." ON)
+    set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
 endif()
-set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
 
@@ -52,23 +52,28 @@ macro (AngleCorrection_add_subdirectories)
 endmacro()
 
 
-# Remove any existing "
-string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
-message("-- ANGLECORRECTION test data directory set to: \"${ANGLECORRECTION_TEST_DATA_DIR}\"")
-add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
+if(NOT hasParent)
+    # Remove any existing "
+    string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
+    message("-- ANGLECORRECTION test data directory set to: \"${ANGLECORRECTION_TEST_DATA_DIR}\"")
+    add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
+endif()
 
 #### Set up library dependencies
 set(AngleCorrection_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-## VTK
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
-set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
+if(NOT hasParent)
+    ## VTK
+    find_package(VTK REQUIRED)
+    include(${VTK_USE_FILE})
+    set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 
-## Eigen
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
+    ## Eigen
+    find_package(Eigen3 REQUIRED)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+    set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
+endif()
+
 
 AngleCorrection_add_sources(
     angle_correction_impl.h
@@ -85,7 +90,6 @@ include_directories(${AngleCorrection_INCLUDE_DIRS})
 if(hasParent)
     set (AngleCorrection_INCLUDE_DIRS ${AngleCorrection_INCLUDE_DIRS} PARENT_SCOPE)
     set (AngleCorrection_TEST_SOURCE_FILES ${AngleCorrection_TEST_SOURCE_FILES} PARENT_SCOPE)
-    set (ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR}  PARENT_SCOPE)
 endif()
 
 #### Enable C++11
@@ -104,8 +108,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
         message(ERROR "Compiler does not support --std=c++11 or --std=c++0x.")
     endif()
 endif()
-
-
 
 if(BUILD_TESTS AND NOT hasParent)
     add_executable(test ${AngleCorrection_TEST_SOURCE_FILES} ${AngleCorrection_SOURCE_FILES})

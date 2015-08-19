@@ -227,7 +227,7 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
 }
 
 
-TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction10]")
+TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-Acq_10_20150527T131055_Velocity_";

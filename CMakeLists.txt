@@ -13,8 +13,6 @@ set(PLUGIN_SRCS
   core/angle_correction_impl.h
 )
 
-
-
 add_subdirectory(core) 
 include_directories(${AngleCorrection_INCLUDE_DIRS}) 
 
@@ -33,7 +31,6 @@ set(PLUGIN_UI_FORMS
 # QRC Files which should be compiled into the plugin
 set(PLUGIN_resources
 )
-
 
 #Compute the plugin dependencies
 ctkFunctionGetTargetLibraries(PLUGIN_target_libraries)
@@ -89,23 +86,19 @@ target_include_directories(org_custusx_anglecorrection
 
 
 if(BUILD_TESTING)
-    string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
-    add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
+   add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${CX_LARGE_DATA_ROOT}/testing\"")
 
-    foreach (_src ${AngleCorrection_TEST_SOURCE_FILES})
-        list (APPEND CX_TEST_PLUGINANGLECORR_SOURCE_FILES "core/${_src}")
-        message("-- ANGLECORRECTION core/${_src}")
-
-    endforeach()
-
-
-    set(CXTEST_SOURCES_TO_MOC
+   set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES
+    )
+    set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
+        ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES}
+        core/Tests/MethodTests.cpp
+        core/angle_correction_impl.cpp
+        core/angle_correction_impl.h
     )
 
-    qt5_wrap_cpp(CXTEST_SOURCES_TO_MOC ${CXTEST_SOURCES_TO_MOC})
-
-
-    add_library(cxtest_org_custusx_anglecorrection ${CX_TEST_PLUGINANGLECORR_SOURCE_FILES} ${CXTEST_SOURCES_TO_MOC})
+    qt5_wrap_cpp(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES})
+    add_library(cxtest_org_custusx_anglecorrection ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES} ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES})
     include(GenerateExportHeader)
     generate_export_header(cxtest_org_custusx_anglecorrection)
     target_include_directories(cxtest_org_custusx_anglecorrection
@@ -113,8 +106,7 @@ if(BUILD_TESTING)
         .
         ${CMAKE_CURRENT_BINARY_DIR}
     )
-    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE  org_custusx_anglecorrection cxCatch)
+    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)
     cx_add_tests_to_catch(cxtest_org_custusx_anglecorrection)
-
 
 endif(BUILD_TESTING)
