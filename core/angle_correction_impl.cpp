@@ -101,8 +101,17 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, cons
 
     std::string filename=std::string(velImagePrefix);
     filename.append("0.mhd");
-    if(access( filename.c_str(), F_OK ) == -1)
-    {
+
+    vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();
+    vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+    reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
+
+    reader->SetFileName(filename.c_str());
+    reader->Update();
+
+    if(!reader->CanReadFile(filename.c_str())){
+        cerr << filename.c_str() << endl;
         reportError("ERROR: Could not read velocity data \n");
     }
 

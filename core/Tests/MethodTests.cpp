@@ -669,7 +669,7 @@ TEST_CASE("Benchmark", "[angle_correction][Benchmark]")
 
     stop = clock();
     run_time = (double) (stop-start)/CLOCKS_PER_SEC;
-    REQUIRE(run_time<10);
+    REQUIRE(run_time<15);
 
     cerr << "Run time: " <<  run_time <<"\n";
 }
