@@ -321,7 +321,7 @@ TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]"
 }
 
 
-TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][unit]")
+TEST_CASE("AngleCorrection: Test several runs", "[angle_correction]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-Acq_10_20150527T131055_Velocity_";
@@ -539,7 +539,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correct
 
 
 
-TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][unit][Benchmark]")
+TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][Benchmark]")
 {
     clock_t start, stop;
     double run_time = 0.0;
@@ -677,7 +677,7 @@ TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][unit][Benchmark]")
 
 
 
-TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_correction][unit][simple]")
+TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_correction][simple]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
