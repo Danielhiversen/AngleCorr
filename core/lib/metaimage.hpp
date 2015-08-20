@@ -70,7 +70,7 @@ public:
    * Map a pixel position to an integer
    * @return an unique integer for the position x,y
    */
-    int
+    const int
     makehash(const int x, const int y) const
     {
         return x + getXSize()*y;
@@ -171,6 +171,8 @@ public:
     void regionGrow(vector<Dt>& ret, int imgx, int imgy) const
     {
 
+        if (getXSize()== 0 || getYSize()==0) return;
+
         vector<pair<int,int> > ptstack;
 
         // Get image data
@@ -187,7 +189,7 @@ public:
         ret.push_back(curpt);
 
         // Use a bool array instead of unordered_map, it's just faster even though we might need a little more memory
-        bool visited[makehash(getXSize(),getYSize())];
+        bool visited[makehash( getXSize(), getYSize())];
 
         memset(visited,0,sizeof(bool)*makehash(getXSize(),getYSize()));
 

@@ -111,7 +111,6 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, cons
     reader->Update();
 
     if(!reader->CanReadFile(filename.c_str())){
-        cerr << filename.c_str() << endl;
         reportError("ERROR: Could not read velocity data \n");
     }
 
