@@ -1,8 +1,7 @@
 #ifndef CXANGLECORRECTIONEXECUTER_H
 #define CXANGLECORRECTIONEXECUTER_H
 
-#include "cxMathBase.h"
-
+#include "cxVector3D.h"
 #include "org_custusx_anglecorrection_Export.h"
 
 #include "cxForwardDeclarations.h"
