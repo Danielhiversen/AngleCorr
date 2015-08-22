@@ -63,15 +63,17 @@ endif()
 #### Set up library dependencies
 set(AngleCorrection_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-## VTK
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
-set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
+if(NOT hasParent)
+    ## VTK
+    find_package(VTK REQUIRED)
+    include(${VTK_USE_FILE})
+    set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 
-## Eigen
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
+    ## Eigen
+    find_package(Eigen3 REQUIRED)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+    set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
+endif()
 
 
 AngleCorrection_add_sources(
