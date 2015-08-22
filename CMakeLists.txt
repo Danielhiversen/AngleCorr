@@ -4,17 +4,19 @@ project(org_custusx_anglecorrection)
 set(PLUGIN_export_directive "${PROJECT_NAME}_EXPORT")
 
 
+add_subdirectory(core)
+
 set(PLUGIN_SRCS
   cxAngleCorrectionPluginActivator.cpp
   cxAngleCorrectionExecuter.cpp
   cxAngleCorrectionGUIExtenderService.cpp
   cxAngleCorrectionWidget.cpp
-  core/angle_correction_impl.cpp
-  core/angle_correction_impl.h
+  ${AngleCorrection_SOURCE_FILES}
 )
 
-add_subdirectory(core) 
-include_directories(${AngleCorrection_INCLUDE_DIRS}) 
+    message("--  here\" ${AngleCorrection_INCLUDE_DIRS}\"")
+
+include_directories(${AngleCorrection_INCLUDE_DIRS})
 
 # Files which should be processed by Qts moc
 set(PLUGIN_MOC_SRCS
@@ -93,8 +95,8 @@ if(BUILD_TESTING)
     set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
         ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES}
         core/Tests/MethodTests.cpp
-        core/angle_correction_impl.cpp
-        core/angle_correction_impl.h
+    core/angle_correction_impl.h
+    core/angle_correction_impl.cpp
     )
 
     qt5_wrap_cpp(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES})
@@ -104,6 +106,7 @@ if(BUILD_TESTING)
     target_include_directories(cxtest_org_custusx_anglecorrection
         PUBLIC
         .
+        /home/dahoiv/disk/kode/cx/CX/CX/source/plugins/org.custusx.anglecorrection/core
         ${CMAKE_CURRENT_BINARY_DIR}
     )
     target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)
