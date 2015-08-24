@@ -106,7 +106,6 @@ if(BUILD_TESTING)
     target_include_directories(cxtest_org_custusx_anglecorrection
         PUBLIC
         .
-        core
         ${CMAKE_CURRENT_BINARY_DIR}
     )
     target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)
