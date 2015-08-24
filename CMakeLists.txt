@@ -93,8 +93,8 @@ if(BUILD_TESTING)
     set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
         ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES}
         core/Tests/MethodTests.cpp
-    core/Tests/testExportWinHack.h
-    core/Tests/testExportWinHack.cpp
+        core/Tests/testExportWinHack.h
+        core/Tests/testExportWinHack.cpp
     core/angle_correction_impl.h
    core/angle_correction_impl.cpp
     )
@@ -106,7 +106,7 @@ if(BUILD_TESTING)
     target_include_directories(cxtest_org_custusx_anglecorrection
         PUBLIC
         .
-        ./core/
+        core
         ${CMAKE_CURRENT_BINARY_DIR}
     )
     target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)

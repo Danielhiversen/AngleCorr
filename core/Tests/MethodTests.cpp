@@ -48,6 +48,8 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
         std::getline(file_b, line_b);
         if( line_a != line_b){
             all_equal = false;
+            cerr << line_a << endl;
+            cerr << line_b << endl;
         }
         file_a_exist = true;
     }
