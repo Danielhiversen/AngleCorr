@@ -5,7 +5,7 @@
 *
 */
 
-#include "angle_correction_impl.h"
+#include "AngleCorrection.h"
 
 using namespace std;
 
