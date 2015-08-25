@@ -24,7 +24,7 @@ apt-get install libvtk5-dev libeigen3-dev g++-4.7 ninja-build cmake cmake-qt-gui
 
 To build the program as a standalone algorithm:
 
-git clone  git@github.com:SINTEFMedtek/AngleCorr.git angelCorr
+git clone  git@github.com:SINTEFMedtek/AngleCorrection.git angelCorr
 
 mkdir -p build; cd build
 
