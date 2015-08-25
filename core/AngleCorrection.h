@@ -1,7 +1,7 @@
 #ifndef ANGLE_CORRECTION_IMPL_H
 #define ANGLE_CORRECTION_IMPL_H
 
-#include "lib/spline3d.hpp"
+#include "spline3d.hpp"
 
 
 typedef vector<Spline3D<double> > vectorSpline3dDouble;

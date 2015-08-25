@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <vtkSmartPointer.h>
-#include "angle_correction_impl.h"
+#include "AngleCorrection.h"
 #include <vtkPolyDataWriter.h>
 #include <vtkPolyDataReader.h>
 #include <vtkPolyData.h>

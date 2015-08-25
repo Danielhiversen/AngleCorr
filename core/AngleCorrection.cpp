@@ -1,7 +1,7 @@
 #include "AngleCorrection.h"
 
-#include "lib/spline3d.hpp"
-#include "lib/ErrorHandler.hpp"
+#include "spline3d.hpp"
+#include "ErrorHandler.hpp"
 #include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
 

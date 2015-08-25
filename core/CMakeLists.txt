@@ -32,25 +32,25 @@ set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
 set(AngleCorrection_SOURCE_FILES
     AngleCorrection.h
     AngleCorrection.cpp
-    lib/adjlist.hpp
-    lib/helpers.hpp
-    lib/intersection.hpp
-    lib/intersection_set.hpp
-    lib/matrix.hpp
-    lib/metaimage.hpp
-    lib/plane3d.cpp
-    lib/plane3d.hpp
-    lib/precision.hpp
-    lib/quadratic_spline_fitter.hpp
-    lib/spline3d.hpp
-    lib/ErrorHandler.hpp
+    adjlist.hpp
+    helpers.hpp
+    intersection.hpp
+    intersection_set.hpp
+    matrix.hpp
+    metaimage.hpp
+    plane3d.cpp
+    plane3d.hpp
+    precision.hpp
+    quadratic_spline_fitter.hpp
+    spline3d.hpp
+    ErrorHandler.hpp
 )
 
 
 
-add_library(angleCorrLib SHARED ${AngleCorrection_SOURCE_FILES})
-target_include_directories (angleCorrLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${PROJECT_SOURCE_DIR} "${PROJECT_SOURCE_DIR}/lib")
+add_library(AngleCorr SHARED ${AngleCorrection_SOURCE_FILES})
+target_include_directories (AngleCorr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
 
 
 if(NOT hasParent)
@@ -72,13 +72,11 @@ if(NOT hasParent)
         endif()
     endif()
 
-#    if(BUILD_TESTS)
-#   add_subdirectory(testing)
-#        add_executable(test ${AngleCorrection_TEST_SOURCE_FILES} ${AngleCorrection_SOURCE_FILES})
-#        target_link_libraries(test ${LIBRARIES})
-#    endif()
+    if(BUILD_TESTS)
+        add_subdirectory(Tests)
+    endif()
 
     add_executable(angle_correction main.cpp )
-    target_link_libraries(angle_correction  ${angleCorrLib} ${LIBRARIES})
+    target_link_libraries(angle_correction AngleCorr ${LIBRARIES})
 endif()
 
