@@ -4,17 +4,12 @@ project(org_custusx_anglecorrection)
 set(PLUGIN_export_directive "${PROJECT_NAME}_EXPORT")
 
 
-add_subdirectory(core)
-
 set(PLUGIN_SRCS
   cxAngleCorrectionPluginActivator.cpp
   cxAngleCorrectionExecuter.cpp
   cxAngleCorrectionGUIExtenderService.cpp
   cxAngleCorrectionWidget.cpp
-  ${AngleCorrection_SOURCE_FILES}
 )
-
-include_directories(${AngleCorrection_INCLUDE_DIRS})
 
 # Files which should be processed by Qts moc
 set(PLUGIN_MOC_SRCS
@@ -41,6 +36,7 @@ set(PLUGIN_target_libraries
 	cxLogicManager
 	cxGUIExtenderService
 	org_custusx_acquisition
+    AngleCorr
     )
 
 set(PLUGIN_OUTPUT_DIR "")
@@ -95,8 +91,6 @@ if(BUILD_TESTING)
         core/Tests/MethodTests.cpp
         core/Tests/testExportWinHack.h
         core/Tests/testExportWinHack.cpp
-    core/angle_correction_impl.h
-   core/angle_correction_impl.cpp
     )
 
     qt5_wrap_cpp(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES})
@@ -108,7 +102,7 @@ if(BUILD_TESTING)
         .
         ${CMAKE_CURRENT_BINARY_DIR}
     )
-    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)
+    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch AngleCorr)
     cx_add_tests_to_catch(cxtest_org_custusx_anglecorrection)
 
 endif(BUILD_TESTING)
