@@ -50,7 +50,7 @@ set(AngleCorrection_SOURCE_FILES
 
 add_library(angleCorrLib SHARED ${AngleCorrection_SOURCE_FILES})
 target_include_directories (angleCorrLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories (${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR} "${PROJECT_SOURCE_DIR}/lib")
 
 
 if(NOT hasParent)
