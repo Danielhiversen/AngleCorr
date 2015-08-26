@@ -6,17 +6,12 @@ project(AngleCorrection)
 if(NOT hasParent)
     option(BUILD_TESTS "Build tests." ON)
     set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
-endif()
 
-
-
-if(NOT hasParent)
     # Remove any existing "
     string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
     message("-- ANGLECORRECTION test data directory set to: \"${ANGLECORRECTION_TEST_DATA_DIR}\"")
     add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
 endif()
-
 
 ## VTK
 if(NOT vtkCommonCore_FOUND)
@@ -26,7 +21,6 @@ if(NOT vtkCommonCore_FOUND)
     include(${VTK_USE_FILE})
     set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 endif()
-
 
 ## Eigen
 if(NOT EIGEN_FOUND)
@@ -52,15 +46,11 @@ set(AngleCorrection_SOURCE_FILES
     ErrorHandler.hpp
 )
 
-
-
 add_library(AngleCorr SHARED ${AngleCorrection_SOURCE_FILES})
 target_include_directories (AngleCorr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 
-
 if(NOT hasParent)
-
     #### Enable C++11
     # Note that Microsoft Visual C++ compiler enables C++11 by default
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
@@ -78,11 +68,10 @@ if(NOT hasParent)
         endif()
     endif()
 
+    add_executable(angle_correction main.cpp )
+    target_link_libraries(angle_correction AngleCorr ${LIBRARIES})
+
     if(BUILD_TESTS)
         add_subdirectory(Tests)
     endif()
-
-    add_executable(angle_correction main.cpp )
-    target_link_libraries(angle_correction AngleCorr ${LIBRARIES})
 endif()
-
