@@ -3,11 +3,9 @@
 
 #include "cxMathBase.h"
 #include "org_custusx_anglecorrection_Export.h"
-
-#include "cxForwardDeclarations.h"
 #include "cxThreadedTimedAlgorithm.h"
 
-
+#include "anglecorr_export.h"
 #include "AngleCorrection.h"
 
 namespace cx

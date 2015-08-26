@@ -1,7 +1,8 @@
 #include "cxAngleCorrectionExecuter.h"
 #include "cxLogger.h"
 
-#include "AngleCorrection.h"
+#include "cxForwardDeclarations.h"
+
 namespace cx
 {
 
