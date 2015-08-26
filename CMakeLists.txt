@@ -1,5 +1,6 @@
 project(org_custusx_anglecorrection)
 
+include(GenerateExportHeader)
 set(PLUGIN_export_directive "${PROJECT_NAME}_EXPORT")
 
 set(PLUGIN_SRCS
@@ -61,6 +62,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 add_subdirectory(core)
+generate_export_header(AngleCorr)
 
 ctkMacroBuildPlugin(
   NAME ${PROJECT_NAME}
@@ -80,6 +82,7 @@ target_include_directories(org_custusx_anglecorrection
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+
 if(BUILD_TESTING)
    add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${CX_LARGE_DATA_ROOT}/testing\"")
 
@@ -91,7 +94,6 @@ if(BUILD_TESTING)
     )
 
     add_library(cxtest_org_custusx_anglecorrection ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES})
-    include(GenerateExportHeader)
     generate_export_header(cxtest_org_custusx_anglecorrection)
     target_include_directories(cxtest_org_custusx_anglecorrection
         PUBLIC
