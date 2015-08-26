@@ -29,7 +29,7 @@ set(PLUGIN_resources
 #Compute the plugin dependencies
 ctkFunctionGetTargetLibraries(PLUGIN_target_libraries)
 set(PLUGIN_target_libraries 
-    ${PLUGIN_target_libraries}   
+        PUBLIC
 	cxResource
 	cxResourceWidgets
 	cxLogicManager
@@ -87,7 +87,6 @@ if(BUILD_TESTING)
    add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${CX_LARGE_DATA_ROOT}/testing\"")
 
     set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
-        ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES}
         core/Tests/MethodTests.cpp
         core/Tests/testExportWinHack.h
         core/Tests/testExportWinHack.cpp
@@ -101,6 +100,6 @@ if(BUILD_TESTING)
         ./core
         ${CMAKE_CURRENT_BINARY_DIR}
     )
-    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch AngleCorr)
+    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)
     cx_add_tests_to_catch(cxtest_org_custusx_anglecorrection)
 endif(BUILD_TESTING)
