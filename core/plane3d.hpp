@@ -1,6 +1,6 @@
 #ifndef PLANE3D_HPP
 #define PLANE3D_HPP
-#include <Eigen/Dense>
+#include <Eigen/Core>
 
 //#define DEBUG_PLANE
 
