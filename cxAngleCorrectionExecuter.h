@@ -8,7 +8,7 @@
 #include "cxThreadedTimedAlgorithm.h"
 
 
-#include "angle_correction_impl.h"
+#include "AngleCorrection.h"
 
 namespace cx
 {

@@ -1,20 +1,13 @@
 project(org_custusx_anglecorrection)
 
-
 set(PLUGIN_export_directive "${PROJECT_NAME}_EXPORT")
-
-
-add_subdirectory(core)
 
 set(PLUGIN_SRCS
   cxAngleCorrectionPluginActivator.cpp
   cxAngleCorrectionExecuter.cpp
   cxAngleCorrectionGUIExtenderService.cpp
   cxAngleCorrectionWidget.cpp
-  ${AngleCorrection_SOURCE_FILES}
 )
-
-include_directories(${AngleCorrection_INCLUDE_DIRS})
 
 # Files which should be processed by Qts moc
 set(PLUGIN_MOC_SRCS
@@ -41,6 +34,7 @@ set(PLUGIN_target_libraries
 	cxLogicManager
 	cxGUIExtenderService
 	org_custusx_acquisition
+        AngleCorr
     )
 
 set(PLUGIN_OUTPUT_DIR "")
@@ -66,6 +60,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
     endif()
 endif()
 
+add_subdirectory(core)
 
 ctkMacroBuildPlugin(
   NAME ${PROJECT_NAME}
@@ -81,34 +76,29 @@ ctkMacroBuildPlugin(
 target_include_directories(org_custusx_anglecorrection
     PUBLIC
     .
+    ./core
     ${CMAKE_CURRENT_BINARY_DIR}
 )
-
 
 if(BUILD_TESTING)
    add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${CX_LARGE_DATA_ROOT}/testing\"")
 
-   set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES
-    )
     set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
         ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES}
         core/Tests/MethodTests.cpp
         core/Tests/testExportWinHack.h
         core/Tests/testExportWinHack.cpp
-    core/angle_correction_impl.h
-   core/angle_correction_impl.cpp
     )
 
-    qt5_wrap_cpp(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES})
-    add_library(cxtest_org_custusx_anglecorrection ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES} ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_MOC_SOURCE_FILES})
+    add_library(cxtest_org_custusx_anglecorrection ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES})
     include(GenerateExportHeader)
     generate_export_header(cxtest_org_custusx_anglecorrection)
     target_include_directories(cxtest_org_custusx_anglecorrection
         PUBLIC
         .
+        ./core
         ${CMAKE_CURRENT_BINARY_DIR}
     )
-    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)
+    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch AngleCorr)
     cx_add_tests_to_catch(cxtest_org_custusx_anglecorrection)
-
 endif(BUILD_TESTING)
