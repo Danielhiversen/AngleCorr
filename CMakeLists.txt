@@ -87,22 +87,6 @@ target_include_directories(org_custusx_anglecorrection
 
 
 if(BUILD_TESTING)
-   add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${CX_LARGE_DATA_ROOT}/testing\"")
-
-    set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
-        core/Tests/MethodTests.cpp
-        core/Tests/testExportWinHack.h
-        core/Tests/testExportWinHack.cpp
-    )
-
-    add_library(cxtest_org_custusx_anglecorrection ${CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES})
-    generate_export_header(cxtest_org_custusx_anglecorrection)
-    target_include_directories(cxtest_org_custusx_anglecorrection
-        PUBLIC
-        .
-        ./core
-        ${CMAKE_CURRENT_BINARY_DIR}
-    )
-    target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxCatch)
-    cx_add_tests_to_catch(cxtest_org_custusx_anglecorrection)
+    option(BUILD_TESTS_CX "Build tests." ON)
+    add_subdirectory(core/Tests)
 endif(BUILD_TESTING)

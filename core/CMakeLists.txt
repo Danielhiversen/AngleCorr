@@ -7,7 +7,6 @@ if(NOT hasParent)
     option(BUILD_TESTS "Build tests." ON)
     set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
 
-    # Remove any existing "
     string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
     message("-- ANGLECORRECTION test data directory set to: \"${ANGLECORRECTION_TEST_DATA_DIR}\"")
     add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
@@ -71,7 +70,6 @@ if(NOT hasParent)
     add_executable(angle_correction main.cpp )
     target_link_libraries(angle_correction AngleCorr ${LIBRARIES})
 
-    if(BUILD_TESTS)
-        add_subdirectory(Tests)
-    endif()
+    add_subdirectory(Tests)
+
 endif()
