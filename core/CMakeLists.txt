@@ -44,7 +44,7 @@ set(AngleCorrection_SOURCE_FILES
     ErrorHandler.hpp
 )
 
-add_library(AngleCorr ${AngleCorrection_SOURCE_FILES})
+add_library(AngleCorr STATIC ${AngleCorrection_SOURCE_FILES})
 target_link_libraries(AngleCorr ${LIBRARIES})
 
 
