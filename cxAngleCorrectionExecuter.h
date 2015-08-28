@@ -5,7 +5,6 @@
 #include "org_custusx_anglecorrection_Export.h"
 #include "cxThreadedTimedAlgorithm.h"
 
-#include "anglecorr_export.h"
 #include "AngleCorrection.h"
 
 namespace cx

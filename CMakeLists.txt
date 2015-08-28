@@ -65,7 +65,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 add_subdirectory(core)
-generate_export_header(AngleCorr)
+
 
 ctkMacroBuildPlugin(
   NAME ${PROJECT_NAME}
