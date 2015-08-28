@@ -16,7 +16,9 @@ if(BUILD_TESTS_CX_ANGLECORR)
     )
     target_link_libraries(cxtest_org_custusx_anglecorrection PRIVATE org_custusx_anglecorrection cxtestUtilities cxCatch)
     cx_add_tests_to_catch(cxtest_org_custusx_anglecorrection)
+
 else()
+
     set(AngleCorrection_TEST_SOURCE_FILES
         catch.hpp
         CatchMain.cpp
@@ -24,5 +26,5 @@ else()
     )
 
     add_executable(Catch ${AngleCorrection_TEST_SOURCE_FILES})
-    target_link_libraries(Catch AngleCorr ${LIBRARIES})
+    target_link_libraries(Catch AngleCorr)
 endif(BUILD_TESTS_CX_ANGLECORR)

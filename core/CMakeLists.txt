@@ -18,15 +18,17 @@ if(NOT vtkCommonCore_FOUND)
         		vtkCommonCore
                 REQUIRED)
     include(${VTK_USE_FILE})
-    set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 endif()
+set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
+
 
 ## Eigen
 if(NOT EIGEN_FOUND)
     find_package(Eigen3 REQUIRED)
     include_directories(${EIGEN3_INCLUDE_DIR} )
-    set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
 endif()
+set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
+
 
 set(AngleCorrection_SOURCE_FILES
     AngleCorrection.h
@@ -46,6 +48,7 @@ set(AngleCorrection_SOURCE_FILES
 )
 
 add_library(AngleCorr SHARED ${AngleCorrection_SOURCE_FILES})
+target_link_libraries(AngleCorr ${LIBRARIES})
 target_include_directories (AngleCorr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 
@@ -68,7 +71,8 @@ if(NOT hasParent)
     endif()
 
     add_executable(angle_correction main.cpp )
-    target_link_libraries(angle_correction AngleCorr ${LIBRARIES})
+    target_link_libraries(angle_correction AngleCorr)
+
 
     add_subdirectory(Tests)
 endif()
