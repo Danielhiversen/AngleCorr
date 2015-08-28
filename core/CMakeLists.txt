@@ -71,5 +71,4 @@ if(NOT hasParent)
     target_link_libraries(angle_correction AngleCorr ${LIBRARIES})
 
     add_subdirectory(Tests)
-
 endif()

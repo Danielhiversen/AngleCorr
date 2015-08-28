@@ -85,8 +85,7 @@ target_include_directories(org_custusx_anglecorrection
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-
 if(BUILD_TESTING)
-    option(BUILD_TESTS_CX "Build tests." ON)
+    option(BUILD_TESTS_CX_ANGLECORR "Build cx angleCorr tests." ON)
     add_subdirectory(core/Tests)
 endif(BUILD_TESTING)

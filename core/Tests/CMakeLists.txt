@@ -1,6 +1,4 @@
-
-
-if(BUILD_TESTS_CX)
+if(BUILD_TESTS_CX_ANGLECORR)
    add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${CX_LARGE_DATA_ROOT}/testing\"")
 
     set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
@@ -27,5 +25,4 @@ else()
 
     add_executable(Catch ${AngleCorrection_TEST_SOURCE_FILES})
     target_link_libraries(Catch AngleCorr ${LIBRARIES})
-endif(BUILD_TESTS_CX)
-
+endif(BUILD_TESTS_CX_ANGLECORR)
