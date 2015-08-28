@@ -13,10 +13,8 @@ if(NOT hasParent)
 endif()
 
 ## VTK
-if(NOT vtkCommonCore_FOUND)
-    find_package(VTK COMPONENTS
-        		vtkCommonCore
-                REQUIRED)
+if(NOT VTK_FOUND)
+    find_package(VTK REQUIRED)
     include(${VTK_USE_FILE})
 endif()
 set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
@@ -27,8 +25,6 @@ if(NOT EIGEN_FOUND)
     find_package(Eigen3 REQUIRED)
     include_directories(${EIGEN3_INCLUDE_DIR} )
 endif()
-set(LIBRARIES ${LIBRARIES} ${EIGEN3_LIBRARIES})
-
 
 set(AngleCorrection_SOURCE_FILES
     AngleCorrection.h
