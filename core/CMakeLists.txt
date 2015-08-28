@@ -26,6 +26,7 @@ if(NOT EIGEN_FOUND)
     include_directories(${EIGEN3_INCLUDE_DIR} )
 endif()
 
+
 set(AngleCorrection_SOURCE_FILES
     AngleCorrection.h
     AngleCorrection.cpp
@@ -43,8 +44,10 @@ set(AngleCorrection_SOURCE_FILES
     ErrorHandler.hpp
 )
 
-add_library(AngleCorr SHARED ${AngleCorrection_SOURCE_FILES})
+add_library(AngleCorr ${AngleCorrection_SOURCE_FILES})
 target_link_libraries(AngleCorr ${LIBRARIES})
+
+
 target_include_directories (AngleCorr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 
