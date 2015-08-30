@@ -255,6 +255,7 @@ void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_cen
 
         // Find all the intersections
         spline.findAllIntersections(*images);
+        cerr << "intersections: " << spline.getIntersections().size() << "\n";
         spline.getIntersections().setVelocityEstimationCutoff(cutoff,1.0);
         mIntersections += spline.getIntersections().size();
 

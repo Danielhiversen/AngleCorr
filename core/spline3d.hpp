@@ -333,6 +333,8 @@ public:
         //    make a new spline, adding a few points from before the junction
 
 
+        cerr << "-------------------asfsa\n"  << data->GetNumberOfPoints() << "\n"<< data->GetNumberOfLines() << "\n";
+
         // Step 1
         AdjList list(data->GetNumberOfPoints());
         vector<Spline3D<T> > *ret = new vector<Spline3D<T> >();
@@ -346,8 +348,10 @@ public:
         while(lines->GetNextCell(idlist))
         {
             n_ids = idlist->GetNumberOfIds();
+            cerr << n_ids << "  asfsadf\n";
             assert(n_ids == 2);
             list.adjacent(idlist->GetId(0), idlist->GetId(1));
+            cerr << "asfsa\n";
         }
 
         // Initialize node stack

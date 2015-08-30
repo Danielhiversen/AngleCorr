@@ -49,9 +49,10 @@ bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
         reportError("Angle correction algorithm threw a unknown exception.");
     }
     if(res){
+        cerr <<"asdffsadfsadfsadfsd\n" << getBloodVessels() << endl << getIntersections() << endl ;
         QString text =QString("Algorithm Angle correction complete [%1s].").arg(this->getSecondsPassedAsString());
-        if(getBloodVessels() <1) text.append("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(QString(getBloodVessels()));
-        if(getIntersections() <1) text.append("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(QString(getIntersections()));
+        if(getBloodVessels() <1) text.append(QString("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(getBloodVessels()));
+        if(getIntersections() <1) text.append(QString("\n Found %1 interesections. Maybe <<Max angle cut off>> should be lower?").arg(getIntersections()));
         if(getNumOfStepsRan() <1) text.append("\n Same input as previous. No new data generated.");
         if(reportOutSuccess) reportSuccess(text);
     }else{
