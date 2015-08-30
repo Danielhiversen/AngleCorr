@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <vtkSmartPointer.h>
-#include "angle_correction_impl.h"
+#include "AngleCorrection.h"
 #include <vtkPolyDataWriter.h>
 #include <vtkPolyDataReader.h>
 #include <vtkPolyData.h>
@@ -38,20 +38,87 @@ void validateFlowDirection_FlowVel(vectorSpline3dDouble splines, double *true_fl
 
 
 void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeEqual = true){
-    std::ifstream file_a(filename_a);
-    std::ifstream file_b(filename_b);
-    std::string line_a,line_b;
-    bool file_a_exist = false;
-    bool all_equal = true;
-    while (std::getline(file_a, line_a))
-    {
-        std::getline(file_b, line_b);
-        if( line_a != line_b){
-            all_equal = false;
-        }
-        file_a_exist = true;
+    vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+
+    vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader2->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader2->AddObserver(vtkCommand::WarningEvent,errorObserver);
+    reader2->SetFileName(filename_b);
+    reader2->Update();
+
+    vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader1->AddObserver(vtkCommand::WarningEvent,errorObserver);
+    reader1->SetFileName(filename_a);
+    reader1->Update();
+
+   bool readFilesSuccesfully = true;
+   if (errorObserver->GetError() ||errorObserver->GetWarning()){
+         readFilesSuccesfully = false;
+
+   }
+   REQUIRE(readFilesSuccesfully);
+
+    vtkSmartPointer<vtkPolyData> leftHandSide = reader1->GetOutput();
+    vtkSmartPointer<vtkPolyData> rightHandSide = reader2->GetOutput();
+
+    unsigned int numberOfPointsRight = rightHandSide->GetNumberOfPoints();
+    unsigned int numberOfPointsLeft = leftHandSide->GetNumberOfPoints();
+    if(shouldBeEqual){
+        REQUIRE(numberOfPointsLeft==numberOfPointsRight);
     }
-    REQUIRE(file_a_exist);
+    if(!shouldBeEqual && numberOfPointsLeft!=numberOfPointsRight){
+        return;
+    }
+
+    bool all_equal = true;
+    double pointOne[3];
+    double pointTwo[3];
+    for( unsigned int i( 0 ); i < numberOfPointsRight; i++ )
+    {
+        rightHandSide->GetPoint(i, pointOne);
+        leftHandSide->GetPoint(i, pointTwo);
+
+        double x = pointOne[0] - pointTwo[0];
+        double y = pointOne[1] - pointTwo[1];
+        double z = pointOne[2] - pointTwo[2];
+        double distance = x*x + y*y + z*z;
+        if( distance > 0.001 ) all_equal=false;
+    }
+
+    unsigned int numberOfArraysRight = rightHandSide->GetPointData()->GetNumberOfArrays();
+    unsigned int numberOfArraysLeft = leftHandSide->GetPointData()->GetNumberOfArrays();
+    if(shouldBeEqual){
+        REQUIRE(numberOfArraysLeft==numberOfArraysRight);
+    }
+    if(!shouldBeEqual && numberOfArraysLeft!=numberOfArraysRight){
+        return;
+    }
+
+    unsigned int numberRight = 0;
+    unsigned int numberLeft = 0;
+    double pointRight;
+    double pointLeft;
+    for(int k=0; k <  numberOfArraysRight; k++)
+    {
+        numberRight = rightHandSide->GetPointData()->GetArray(k)->GetDataSize()/ rightHandSide->GetPointData()->GetArray(k)->GetNumberOfComponents();
+        numberLeft =  leftHandSide->GetPointData()->GetArray(k)->GetDataSize()/ leftHandSide->GetPointData()->GetArray(k)->GetNumberOfComponents();
+        if(shouldBeEqual){
+            REQUIRE(numberLeft==numberRight);
+        }
+        if(!shouldBeEqual && numberLeft!=numberRight){
+            return;
+        }
+
+
+        for(int m=0; m < rightHandSide->GetPointData()->GetArray(k)->GetNumberOfComponents() ; m++){
+            for(int l=0; l < numberRight ; l++){
+                pointRight= rightHandSide->GetPointData()->GetArray(k)->GetComponent(l,m);
+                pointLeft=   leftHandSide->GetPointData()->GetArray(k)->GetComponent(l,m);
+                if( abs(pointRight-pointLeft) > 0.001 ) all_equal=false;
+            }
+        }
+    }
     REQUIRE(all_equal== shouldBeEqual);
 }
 
@@ -82,8 +149,8 @@ void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff
 }
 
 
-TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
-{
+TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][unit][flow_dirA]")
+    {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
     
@@ -99,7 +166,7 @@ TEST_CASE("Test flow direction estimation 1", "[angle_correction][flow_dirA]")
 
 
 
-TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][unit]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751/US-Acq_02_20150527T125751_Velocity_";
@@ -115,7 +182,7 @@ TEST_CASE("Test flow direction estimation 2", "[angle_correction][flow_dir]")
 }
 
 
-TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 3", "[angle_correction][integration][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026/US-Acq_03_20150527T130026_Velocity_";
@@ -131,7 +198,7 @@ TEST_CASE("Test flow direction estimation 3", "[angle_correction][flow_dir]")
 }
 
 
-TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 4", "[angle_correction][integration][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_04_20150527T130043_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_04_20150527T130043/US-Acq_04_20150527T130043_Velocity_";
@@ -147,7 +214,7 @@ TEST_CASE("Test flow direction estimation 4", "[angle_correction][flow_dir]")
 }
 
 
-TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 5", "[angle_correction][integration][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229/US-Acq_05_20150527T130229_Velocity_";
@@ -163,7 +230,7 @@ TEST_CASE("Test flow direction estimation 5", "[angle_correction][flow_dir]")
 }
 
 
-TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 6", "[angle_correction][integration][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_06_20150527T130329_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_06_20150527T130329/US-Acq_06_20150527T130329_Velocity_";
@@ -179,7 +246,7 @@ TEST_CASE("Test flow direction estimation 6", "[angle_correction][flow_dir]")
 }
 
 
-TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][aliasing]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 7, aliasing", "[angle_correction][unit][aliasing]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_07_20150527T130532/US-Acq_07_20150527T130532_Velocity_";
@@ -195,7 +262,7 @@ TEST_CASE("Test flow direction estimation 7, aliasing", "[angle_correction][alia
 }
 
 
-TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][aliasing]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing", "[angle_correction][integration][aliasing]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558/US-Acq_08_20150527T130558_Velocity_";
@@ -211,7 +278,7 @@ TEST_CASE("Test flow direction estimation 8, aliasing", "[angle_correction][alia
 }
 
 
-TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 9, cross movement", "[angle_correction][integration]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_09_20150527T131009_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_09_20150527T131009/US-Acq_09_20150527T131009_Velocity_";
@@ -227,7 +294,7 @@ TEST_CASE("Test flow direction estimation 9, cross movement", "[angle_correction
 }
 
 
-TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correction]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 10, cross movement", "[angle_correction][unit]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-Acq_10_20150527T131055_Velocity_";
@@ -243,7 +310,7 @@ TEST_CASE("Test flow direction estimation 10, cross movement", "[angle_correctio
 }
 
 
-TEST_CASE("Test Invalid parameters", "[angle_correction]")
+TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/NonExisting.vtk";
@@ -321,7 +388,7 @@ TEST_CASE("Test Invalid parameters", "[angle_correction]")
 }
 
 
-TEST_CASE("Test several runs", "[angle_correction]")
+TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-Acq_10_20150527T131055_Velocity_";
@@ -424,7 +491,7 @@ TEST_CASE("Test several runs", "[angle_correction]")
 }
 
 
-TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
+TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][unit][A]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
@@ -539,7 +606,7 @@ TEST_CASE("Test several runs cl pointer input", "[angle_correction]")
 
 
 
-TEST_CASE("Benchmark", "[angle_correction][Benchmark]")
+TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][integration][Benchmark]")
 {
     clock_t start, stop;
     double run_time = 0.0;
@@ -677,7 +744,7 @@ TEST_CASE("Benchmark", "[angle_correction][Benchmark]")
 
 
 
-TEST_CASE("Test several runs cl pointer input simple", "[angle_correction][simple]")
+TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_correction][integration][simple]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";

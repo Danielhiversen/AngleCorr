@@ -187,9 +187,9 @@ public:
         ret.push_back(curpt);
 
         // Use a bool array instead of unordered_map, it's just faster even though we might need a little more memory
-        bool visited[makehash(getXSize(),getYSize())];
-
-        memset(visited,0,sizeof(bool)*makehash(getXSize(),getYSize()));
+        vector<bool> visited;
+        visited.resize(makehash( getXSize(), getYSize()));
+        std::fill(visited.begin(), visited.end(), false);
 
         // Go!
         while(!ptstack.empty())
@@ -209,7 +209,7 @@ public:
             // Is this point in?
             if(curpt != 0)
             {
-                if(visited[makehash(img_x, img_y)] == true)
+                if(visited.at(makehash(img_x, img_y)) )
                     continue;
 
                 ret.push_back(curpt);
@@ -220,8 +220,9 @@ public:
                     make_pair(img_x,img_y-1),
                     make_pair(img_x,img_y+1)});
             }
-            visited[makehash(img_x, img_y)] = true;
+            visited.at(makehash(img_x, img_y)) = true;
         }
+
     }
 
     /**

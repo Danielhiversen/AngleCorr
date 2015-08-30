@@ -1,13 +1,11 @@
 #ifndef CXANGLECORRECTIONEXECUTER_H
 #define CXANGLECORRECTIONEXECUTER_H
 
+#include "cxMathBase.h"
 #include "org_custusx_anglecorrection_Export.h"
-
-#include "cxForwardDeclarations.h"
 #include "cxThreadedTimedAlgorithm.h"
 
-#include "cxMathBase.h"
-#include "angle_correction_impl.h"
+#include "AngleCorrection.h"
 
 namespace cx
 {

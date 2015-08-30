@@ -1,11 +1,7 @@
 #ifndef SPLINE_FITTER_HPP
 #define SPLINE_FITTER_HPP
 #include <vector>
-#include <Eigen/Sparse>
 #include <Eigen/SparseLU>
-
-#include <Eigen/Dense>
-
 
 /**
  * Quadratic B-spline curve fitter
