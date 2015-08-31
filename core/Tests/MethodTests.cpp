@@ -149,7 +149,7 @@ void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][unit][flow_dirA]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][unit][flow_dirA][aa]")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
@@ -491,7 +491,7 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
 }
 
 
-TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][unit][A]")
+TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][unit]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";

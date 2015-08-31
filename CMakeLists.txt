@@ -88,4 +88,5 @@ target_include_directories(org_custusx_anglecorrection
 if(BUILD_TESTING)
     option(BUILD_TESTS_CX_ANGLECORR "Build cx angleCorr tests." ON)
     add_subdirectory(core/Tests)
+    add_subdirectory(testing)
 endif(BUILD_TESTING)

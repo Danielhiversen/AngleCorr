@@ -20,12 +20,11 @@ public:
     vtkSmartPointer<vtkPolyData> getOutput();
     vectorSpline3dDouble getClSpline();
     void writeDirectionToVtkFile(const char* filename);
-
     int getIntersections(){return mIntersections;}
     int getBloodVessels(){return mBloodVessels;}
     int getNumOfStepsRan(){return mNumOfStepsRan;}
+
 private:
-    // not tested as public:
     void setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* velData, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit=0.0, double minArrowDist= 1.0);
     void angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* images , double Vnyq, double cutoff,  int nConvolutions);
     vtkSmartPointer<vtkPolyData> computeVtkPolyData( vectorSpline3dDoublePtr splines, double uncertainty_limit, double minArrowDist);

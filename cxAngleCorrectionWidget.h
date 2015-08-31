@@ -60,7 +60,6 @@ namespace cx
  */
 
 
-typedef boost::shared_ptr<class AngleCorrectionExecuter> AngleCorrectionExecuterPtr;
 
 class AngleCorrectionWidget : public BaseWidget
 {

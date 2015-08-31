@@ -19,6 +19,8 @@ namespace cx
  */
 
 
+typedef boost::shared_ptr<class AngleCorrectionExecuter> AngleCorrectionExecuterPtr;
+
 
 class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public ThreadedTimedAlgorithm<bool>, private AngleCorrection
 {
@@ -31,6 +33,8 @@ public:
   int getNumOfStepsRan(){return AngleCorrection::getNumOfStepsRan();}
   virtual bool calculate(bool reportOutSuccess);
   virtual bool calculate(){return calculate(true);}
+  virtual void writeDirectionToVtkFile(const char* filename){return AngleCorrection::writeDirectionToVtkFile(filename);}
+
 private slots:
   virtual void postProcessingSlot();
 

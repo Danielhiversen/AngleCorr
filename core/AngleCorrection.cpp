@@ -159,6 +159,8 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
+    cerr << "params: " << mMinArrowDist << "      "  <<  mUncertainty_limit << "         " << mVnyq<< "      "  << mnConvolutions << "            " << mCutoff <<endl;
+
     if(!mValidInput)
     {
         mOutput = NULL;
@@ -338,7 +340,6 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
             p_temp[0]=p[0]-p_prev[0];
             p_temp[1]=p[2]-p_prev[1];
             p_temp[1]=p[2]-p_prev[2];
-
             if(length3d(p_temp)<minArrowDist){
                 continue;
             }

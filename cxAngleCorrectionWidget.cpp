@@ -239,8 +239,6 @@ void AngleCorrectionWidget::setInput()
         return;
     }
     vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
-    cerr << clData->GetNumberOfPoints() <<endl;
-
 
     QString dataFilename = mVelFileSelectWidget->getFilename();
     if(dataFilename.length() ==0){
