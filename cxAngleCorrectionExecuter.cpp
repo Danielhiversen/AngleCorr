@@ -39,7 +39,7 @@ void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QStr
 
 bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
 {
-    report(QString("Algorithm Angle correction started."));
+    if(reportOutSuccess) report(QString("Algorithm Angle correction started."));
     bool res= false;
     try {
         res=AngleCorrection::calculate();
@@ -50,7 +50,7 @@ bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
     }
     if(res){
         QString text =QString("Algorithm Angle correction complete [%1s].").arg(this->getSecondsPassedAsString());
-        if(getBloodVessels() <1) text.append(QString("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(getBloodVessels()));
+        if(getBloodVessels() <1) text.append(QString("\n Found %1 blood vessels. Maybe <<Velocity certainty cut off>> should be higher?").arg(getBloodVessels()));
         if(getIntersections() <1) text.append(QString("\n Found %1 interesections. Maybe <<Max angle cut off>> should be lower?").arg(getIntersections()));
         if(getNumOfStepsRan() <1) text.append("\n Same input as previous. No new data generated.");
         if(reportOutSuccess) reportSuccess(text);
@@ -64,6 +64,7 @@ bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
 
 void AngleCorrectionExecuter::postProcessingSlot()
 {
+
 }
 
 vtkSmartPointer<vtkPolyData>  AngleCorrectionExecuter::getOutput()

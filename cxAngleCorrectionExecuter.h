@@ -34,7 +34,6 @@ public:
   virtual bool calculate(bool reportOutSuccess);
   virtual bool calculate(){return calculate(true);}
   virtual void writeDirectionToVtkFile(const char* filename){return AngleCorrection::writeDirectionToVtkFile(filename);}
-
 private slots:
   virtual void postProcessingSlot();
 

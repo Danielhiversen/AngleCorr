@@ -94,8 +94,9 @@ public:
       T b;
       std::pair<T,T>& operator()(std::pair<T,T> &ret, Intersection<T> &i)
       {
-		if(abs(i.getCosTheta()) < a || abs(i.getCosTheta()) > b)
+        if(abs(i.getCosTheta()) < a || abs(i.getCosTheta()) > b){
 		  return ret;
+        }
 		double tmp1, tmp2;
 
 		tmp1 = i.getAverage()*i.getCosTheta();

@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   double uncertainty_limit = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
 
   AngleCorrection angleCorr = AngleCorrection();
-  angleCorr.setInput(centerline, image_prefix, Vnyq, cutoff, nConvolutions, nConvolutions,uncertainty_limit);
+  angleCorr.setInput(centerline, image_prefix, Vnyq, cutoff, nConvolutions, uncertainty_limit);
   if(angleCorr.calculate()){
       // Write output files
       angleCorr.writeDirectionToVtkFile("output_flowdirection.vtk");

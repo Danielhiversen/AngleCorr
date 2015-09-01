@@ -67,7 +67,7 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
 	
     mClDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
     mClDataSelectWidget->setUidRegexp("tsf_cl(?!.*angleCorr).*"); 
-	mClDataSelectWidget->setValueName("Centerline: ");
+    mClDataSelectWidget->setValueName("Centerline: ");
 	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClDataSelectWidget));
     connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(cLDataChangedSlot()));
     connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(step1ParamChangedSlot()));
@@ -134,7 +134,6 @@ void AngleCorrectionWidget::cLDataChangedSlot()
     if(!mClDataSelectWidget->getMesh()){
         return;
     }
-    mVelFileSelectWidget->setFilename("");
     QString clUid = mClDataSelectWidget->getMesh()->getUid().section("_",1,2 );
     QStringList files=mVelFileSelectWidget->getAllFiles();
     for (int i = 0; i < files.size(); ++i)
@@ -145,6 +144,9 @@ void AngleCorrectionWidget::cLDataChangedSlot()
               return;
         }
     }
+
+    // No velocity data found => open advanced settings
+    mOptionsWidget->setVisible(true);
 }
 
 
@@ -160,6 +162,7 @@ void AngleCorrectionWidget::step2ParamChangedSlot()
     if(!mExecuter->calculate(false)) return;
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
     mOutData->setVtkPolyData(output);
+    report(QString("Angle correction updated"));
 }
 
 void AngleCorrectionWidget::selectVelData(QString filename)
@@ -213,7 +216,7 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
     layout->addWidget(createDataWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mMaxThetaCutoff), line, 1);
 	++line;
 
-    layout->addWidget(new QLabel("Velocity certainty cut off:", this), line, 0);    
+    layout->addWidget(new QLabel("FLow direction certainty cut off:", this), line, 0);
     mUncertaintyLimit = DoubleProperty::initialize("uncertaintyLimit", " ", "Semgents with lower certainty will be ignored", 0.0, DoubleRange(0, 1, 0.1), 1, mSettings.getElement());
     mUncertaintyLimit->setGuiRepresentation(DoublePropertyBase::grSLIDER);
     connect(mUncertaintyLimit.get(), SIGNAL(changed()),          this, SLOT(step2ParamChangedSlot()));

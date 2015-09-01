@@ -159,10 +159,11 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
-    cerr << "params: " << mMinArrowDist << "      "  <<  mUncertainty_limit << "         " << mVnyq<< "      "  << mnConvolutions << "            " << mCutoff <<endl;
+    cerr << "params: " << mnConvolutions<< "      "   << mCutoff  << "      "  <<  mUncertainty_limit << "            " << mMinArrowDist << "         " << mVnyq <<endl;
 
     if(!mValidInput)
     {
+        cerr << "Invalid input " << endl;
         mOutput = NULL;
         return false;
     }
@@ -245,6 +246,7 @@ void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_cen
 
     for(auto &spline: *mClSplinesPtr)
     {
+        cerr << "spline\n";
         mBloodVessels++;
         // Smooth the splines
         for(int j = 0; j < nConvolutions; j++)
@@ -257,7 +259,6 @@ void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_cen
 
         // Find all the intersections
         spline.findAllIntersections(*images);
-        cerr << "intersections: " << spline.getIntersections().size() << "\n";
         spline.getIntersections().setVelocityEstimationCutoff(cutoff,1.0);
         mIntersections += spline.getIntersections().size();
 
