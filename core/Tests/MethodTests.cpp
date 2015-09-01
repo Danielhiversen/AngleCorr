@@ -797,7 +797,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_
 TEST_CASE("AngleCorrection: Test flow direction estimation Tumour data", "[angle_correction][unit][flow_dirA][bb]")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
-    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751/US-Acq_02_20150527T125751_Velocity_";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity_";
 
     double Vnyq =  0.0;
     double cutoff = 0;
