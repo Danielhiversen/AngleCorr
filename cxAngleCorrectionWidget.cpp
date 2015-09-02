@@ -165,13 +165,14 @@ void AngleCorrectionWidget::step2ParamChangedSlot()
     report(QString("Angle correction updated"));
 }
 
+
 void AngleCorrectionWidget::selectVelData(QString filename)
 {
-	if (filename.isEmpty())
-	{
-		reportWarning("No velocity file selected");
-		return;
-	}
+    if (filename.isEmpty())
+    {
+        reportWarning("No velocity file selected");
+        return;
+    }
     mVelFileSelectWidget->setFilename(filename);
     step1ParamChangedSlot();
 }
@@ -233,7 +234,35 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 	return retval;
 }
 
+MeshPtr AngleCorrectionWidget::getOutData() const
+{
+    return mOutData;
+}
 
+void AngleCorrectionWidget::setMinArrowDist(double value)
+{
+    mMinArrowDist->setValue(value);
+}
+
+void AngleCorrectionWidget::setUncertaintyLimit(double value)
+{
+    mUncertaintyLimit->setValue(value);
+}
+
+void AngleCorrectionWidget::setMaxThetaCutoff(double value)
+{
+    mMaxThetaCutoff->setValue(value);
+}
+
+void AngleCorrectionWidget::setClSmoothing(double value)
+{
+    mClSmoothing->setValue(value);
+}
+
+void AngleCorrectionWidget::setClData(QString value)
+{
+    mClDataSelectWidget->setValue(value);
+}
 
 void AngleCorrectionWidget::setInput()
 {

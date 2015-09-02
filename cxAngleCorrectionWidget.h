@@ -68,11 +68,18 @@ public:
     AngleCorrectionWidget(VisServicesPtr visServices, QWidget* parent) ;
 	virtual ~AngleCorrectionWidget();
     void setInput();
+    void setClSmoothing(double value);
+    void setMaxThetaCutoff(double value);
+    void setUncertaintyLimit(double value);
+    void setMinArrowDist(double value);
+    void setClData(QString value);
+    MeshPtr getOutData() const;
+
 public slots:
-	void runAngleCorection();
-    void patientChangedSlot();    
+    void runAngleCorection();
+    void patientChangedSlot();
     void selectVelData(QString filename);
-	void toggleDetailsSlot();
+    void toggleDetailsSlot();
     void cLDataChangedSlot();
 private slots:
 	void preprocessExecuter();
