@@ -165,7 +165,6 @@ void AngleCorrectionWidget::step2ParamChangedSlot()
     report(QString("Angle correction updated"));
 }
 
-
 void AngleCorrectionWidget::selectVelData(QString filename)
 {
     if (filename.isEmpty())

@@ -44,6 +44,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxPatientModelServiceProxy.h"
 #include "cxXmlOptionItem.h"
 #include "cxSelectDataStringProperty.h"
+#include "org_custusx_anglecorrection_Export.h"
+
 
 class QVBoxLayout;
 
@@ -61,7 +63,7 @@ namespace cx
 
 
 
-class AngleCorrectionWidget : public BaseWidget
+class org_custusx_anglecorrection_EXPORT AngleCorrectionWidget : public BaseWidget
 {
 	Q_OBJECT
 public:
