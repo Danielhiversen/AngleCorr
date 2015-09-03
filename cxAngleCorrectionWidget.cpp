@@ -138,6 +138,7 @@ void AngleCorrectionWidget::cLDataChangedSlot()
     QStringList files=mVelFileSelectWidget->getAllFiles();
     for (int i = 0; i < files.size(); ++i)
     {
+        report(files.at(i));
         if(files.at(i).contains(clUid))
         {
         	  mVelFileSelectWidget->setFilename(files.at(i));
@@ -238,6 +239,18 @@ MeshPtr AngleCorrectionWidget::getOutData() const
     return mOutData;
 }
 
+
+vtkSmartPointer<vtkPolyData> AngleCorrectionWidget::getOutPolyData() const
+{
+    if(mOutData!=NULL)
+    {
+        return mOutData->getVtkPolyData();
+    }else
+    {
+        return NULL;
+    }
+}
+
 void AngleCorrectionWidget::setMinArrowDist(double value)
 {
     mMinArrowDist->setValue(value);
@@ -261,6 +274,17 @@ void AngleCorrectionWidget::setClSmoothing(double value)
 void AngleCorrectionWidget::setClData(QString value)
 {
     mClDataSelectWidget->setValue(value);
+}
+
+bool AngleCorrectionWidget::isRunning(){
+    if(mExecuter)
+    {
+        mExecuter->isRunning();
+    }else
+    {
+        return false;
+    }
+
 }
 
 void AngleCorrectionWidget::setInput()

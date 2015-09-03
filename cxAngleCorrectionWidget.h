@@ -76,7 +76,9 @@ public:
     void setMinArrowDist(double value);
     void setClData(QString value);
     MeshPtr getOutData() const;
-
+    vtkSmartPointer<vtkPolyData> getOutPolyData() const;
+    VisServicesPtr getVisServicesPtr(){return mVisServices;}
+    bool isRunning();
 public slots:
     void runAngleCorection();
     void patientChangedSlot();
