@@ -3,6 +3,7 @@ if(BUILD_TESTS_CX_ANGLECORR)
 
     set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
         MethodTests.cpp
+        testHelper.cpp
         testExportWinHack.h
         testExportWinHack.cpp
     )
