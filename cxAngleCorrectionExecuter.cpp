@@ -25,10 +25,10 @@ AngleCorrectionExecuter::~AngleCorrectionExecuter()
 {
 }
 
-void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
+void AngleCorrectionExecuter::setInput(QString clFilename, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
     try {
-        AngleCorrection::setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions, uncertainty_limit, minArrowDist);
+        AngleCorrection::setInput(clFilename.toStdString().c_str(),  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions, uncertainty_limit, minArrowDist);
     } catch (std::exception& e){
         reportError("std::exception in angle correction algorithm during setting parameters: "+qstring_cast(e.what()));
     } catch (...){

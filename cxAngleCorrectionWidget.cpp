@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxViewService.h"
 #include "cxVisServices.h"
 #include "Exceptions.hpp"
+#include <QDir>
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -108,6 +109,9 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     mUid="";
     mName="";
     mStep1ParamChanged=true;
+
+    mVNyq = 0.0;
+
 }
 
 AngleCorrectionWidget::~AngleCorrectionWidget()
@@ -271,6 +275,11 @@ void AngleCorrectionWidget::setClSmoothing(double value)
     mClSmoothing->setValue(value);
 }
 
+void AngleCorrectionWidget::setVNyq(double value)
+{
+    mVNyq = value;
+}
+
 void AngleCorrectionWidget::setClData(QString value)
 {
     mClDataSelectWidget->setValue(value);
@@ -293,7 +302,9 @@ void AngleCorrectionWidget::setInput()
         reportError("No centerline selected");
         return;
     }
+    report("-------------------------------------------------------------------------------" + mClDataSelectWidget->getMesh()->getUid());
     vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
+    QString clFilename =QDir(mVisServices->patientModelService->getActivePatientFolder()).filePath(mClDataSelectWidget->getMesh()->getFilename());
 
     QString dataFilename = mVelFileSelectWidget->getFilename();
     if(dataFilename.length() ==0){
@@ -302,17 +313,17 @@ void AngleCorrectionWidget::setInput()
         return;
     }
     dataFilename.replace(".fts","_");
-    double Vnyq = 0.0;
     double cutoff = cos(mMaxThetaCutoff->getValue()/180.0*M_PI);
     int nConvolutions = (int) mClSmoothing->getValue();
     double uncertainty_limit = mUncertaintyLimit->getValue();
     double minArrowDist = mMinArrowDist->getValue();
 
-    mExecuter->setInput(clData, dataFilename, Vnyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
+    mExecuter->setInput(clFilename, dataFilename, mVNyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
 }
 
 void AngleCorrectionWidget::preprocessExecuter()
 {
+    report(" pre process");
     setInput();
     mRunAngleCorrButton->setEnabled(false);
 }
@@ -324,6 +335,8 @@ void AngleCorrectionWidget::runAngleCorection()
 
 void AngleCorrectionWidget::executionFinished()
 {
+    report("-------------------------------------------------------------------------------post process");
+
     mRunAngleCorrButton->setEnabled(true);
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
     if(output==NULL)

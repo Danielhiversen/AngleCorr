@@ -74,22 +74,26 @@ public:
     void setMaxThetaCutoff(double value);
     void setUncertaintyLimit(double value);
     void setMinArrowDist(double value);
+    void setVNyq(double value);
     void setClData(QString value);
     MeshPtr getOutData() const;
     vtkSmartPointer<vtkPolyData> getOutPolyData() const;
     VisServicesPtr getVisServicesPtr(){return mVisServices;}
     bool isRunning();
+
 public slots:
     void runAngleCorection();
     void patientChangedSlot();
     void selectVelData(QString filename);
     void toggleDetailsSlot();
     void cLDataChangedSlot();
+
 private slots:
 	void preprocessExecuter();
 	void executionFinished();
     void step1ParamChangedSlot();
     void step2ParamChangedSlot();
+
 private:
 
     bool execute();
@@ -110,6 +114,7 @@ private:
     DoublePropertyPtr mMaxThetaCutoff;
     DoublePropertyPtr mUncertaintyLimit;
     DoublePropertyPtr mMinArrowDist;
+    double mVNyq;
     MeshPtr mOutData;
 
     StringPropertySelectMeshPtr mOutDataSelectWidget;
