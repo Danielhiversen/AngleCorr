@@ -3,7 +3,6 @@ if(BUILD_TESTS_CX_ANGLECORR)
 
     set(CX_TEST_CATCH_ORG_CUSTUSX_ANGLECORRECTION_SOURCE_FILES
         MethodTests.cpp
-        testHelper.cpp
         testExportWinHack.h
         testExportWinHack.cpp
     )
@@ -21,9 +20,9 @@ if(BUILD_TESTS_CX_ANGLECORR)
 else()
 
     set(AngleCorrection_TEST_SOURCE_FILES
+        MethodTests.cpp
         catch.hpp
         CatchMain.cpp
-        MethodTests.cpp
     )
 
     add_executable(Catch ${AngleCorrection_TEST_SOURCE_FILES})

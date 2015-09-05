@@ -1,27 +1,20 @@
 ﻿
 #include "catch.hpp"
-
 #include "cxtestAngleCorr.h"
 
 #include "cxAngleCorrectionWidget.h"
-#include "cxLogicManager.h"
 #include "cxDataLocations.h"
-#include "cxMainWindow.h"
+#include "cxLogicManager.h"
 #include "cxMainWindowApplicationComponent.h"
+#include "cxMainWindow.h"
 #include "cxMesh.h"
-#include <QTimer>
-#include "cxUtilHelpers.h"
-#include "cxForwardDeclarations.h"
+#include "cxSessionStorageService.h"
+#include "cxtestUtilities.h"
+#include "cxVisServices.h"
 
 #include <vtkPolyDataReader.h>
 #include <vtkPointData.h>
-#include "cxtestUtilities.h"
-#include "cxtestDummyDataManager.h"
-#include "cxSessionStorageService.h"
-#include "cxReporter.h"
-#include "cxVisServices.h"
-
-
+#include <QTimer>
 
 namespace cxtest
 {
@@ -51,7 +44,7 @@ void TestAngleCorrFixture::setupInsideMainWindow()
 
 void TestAngleCorrFixture::runApp(int milliseconds)
 {
-//    QTimer::singleShot(milliseconds, qApp, SLOT(quit()));
+    QTimer::singleShot(milliseconds, qApp, SLOT(quit()));
     qApp->exec();
 }
 
@@ -64,7 +57,7 @@ void TestAngleCorrFixture::shutdown()
 } // namespace cxtest
 
 
-void validateData( vtkSmartPointer<vtkPolyData> leftHandSide,const char* filename_b, bool shouldBeEqual = true){
+void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeEqual = true){
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
 
     vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
@@ -73,13 +66,21 @@ void validateData( vtkSmartPointer<vtkPolyData> leftHandSide,const char* filenam
     reader2->SetFileName(filename_b);
     reader2->Update();
 
+    vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader1->AddObserver(vtkCommand::WarningEvent,errorObserver);
+    reader1->SetFileName(filename_a);
+    reader1->Update();
+
    bool readFilesSuccesfully = true;
    if (errorObserver->GetError() ||errorObserver->GetWarning()){
-         readFilesSuccesfully = false;
+        std:cerr << "Failed to read: " << filename_a << " or " << filename_b << std::endl;
+        readFilesSuccesfully = false;
 
    }
    REQUIRE(readFilesSuccesfully);
 
+    vtkSmartPointer<vtkPolyData> leftHandSide = reader1->GetOutput();
     vtkSmartPointer<vtkPolyData> rightHandSide = reader2->GetOutput();
 
     unsigned int numberOfPointsRight = rightHandSide->GetNumberOfPoints();
@@ -152,12 +153,15 @@ char * appendTestFolder(const char * filename){
 }
 
 
-void setInput(cxtest::TestAngleCorrFixture fixture, QString centerline, QString velData, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
+
+void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString velData, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist, double vNyq, QString true_output)
 {
     fixture.angleCorrWidget->setClSmoothing(nConvolutions);
     fixture.angleCorrWidget->setMaxThetaCutoff(cutoff);
     fixture.angleCorrWidget->setMinArrowDist(minArrowDist);
     fixture.angleCorrWidget->setUncertaintyLimit(uncertainty_limit);
+    fixture.angleCorrWidget->setVNyq(vNyq);
+
 
     cx::VisServicesPtr visServices = fixture.angleCorrWidget->getVisServicesPtr();
 
@@ -170,45 +174,61 @@ void setInput(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     fixture.angleCorrWidget->setClData(data->getUid());
     fixture.angleCorrWidget->selectVelData(cx::DataLocations::getLargeTestDataPath()+ "/testing"+velData);
 
+    fixture.angleCorrWidget->runAngleCorection();
+    while(fixture.angleCorrWidget->isRunning())
+    {
+        cxtest::Utilities::sleep_sec(0.5);
+    }
 
+    fixture.runApp(300);
+
+    if(fixture.angleCorrWidget->getOutData()==NULL) REQUIRE(false); //REQUIRE(fixture.angleCorrWidget->getOutData()!=NULL);
+
+    QString outpuFilepath = visServices->getPatientService()->getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
+    validateFiles(outpuFilepath.toStdString().c_str(),appendTestFolder(true_output.toStdString().c_str()));
 }
 
 // --------------------------------------------------------
 // --------------------------------------------------------
 // --------------------------------------------------------
 
-TEST_CASE("anglecorr", "[cc]")
+TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correction][integration]")
 {
     REQUIRE(true);
     cxtest::TestAngleCorrFixture fixture;
     fixture.setupInsideMainWindow();
     cx::sessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
 
-
-    QString centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
-    QString velData = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751/US-Acq_02_20150527T125751_Velocity.fts";
-    double cutoff = 0.18;
+    QString centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
+    QString velData = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity.fts";
+    QString true_output ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_1.vtk";
+    double cutoff = 79.6302402; // = acos(0.18)
     int nConvolutions = 6;
     double uncertainty_limit = 0;
     double minArrowDist = 1;
+    double vNyq = 0.312;
 
-    setInput(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
-    fixture.angleCorrWidget->runAngleCorection();
-//    REQUIRE(outData!=NULL);
+    testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output );
 
-    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_tumour.vtk";
 
-    while( fixture.angleCorrWidget->isRunning())
-    {
-        cx::sleep_ms(500);
-    }
+    centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
+    velData= "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity.fts";
+    true_output ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_tumour.vtk";
+    vNyq =  0.0;
+    cutoff = 90; //acos(0)
+    nConvolutions = 5;
 
-    cx::sleep_ms(500);
+    testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output );
 
-    cx::MeshPtr outData = fixture.angleCorrWidget->getOutData();
 
-  // outData->save(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
-   // validateData(outData->getVtkPolyData(),appendTestFolder(true_output));
+    centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
+    velData = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_07_20150527T130532/US-Acq_07_20150527T130532_Velocity.fts";
+    true_output ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_7.vtk";
+    vNyq =  0.156;
+    cutoff = 79.6302402; // = acos(0.18)
+    nConvolutions = 6;
+
+    testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output );
 
 
     fixture.shutdown();

@@ -246,7 +246,6 @@ void AngleCorrection::angle_correction_impl(vtkSmartPointer<vtkPolyData> vpd_cen
 
     for(auto &spline: *mClSplinesPtr)
     {
-        cerr << "spline\n";
         mBloodVessels++;
         // Smooth the splines
         for(int j = 0; j < nConvolutions; j++)

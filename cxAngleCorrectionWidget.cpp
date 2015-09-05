@@ -241,6 +241,7 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 MeshPtr AngleCorrectionWidget::getOutData() const
 {
     return mOutData;
+
 }
 
 

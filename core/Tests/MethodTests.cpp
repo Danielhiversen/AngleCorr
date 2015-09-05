@@ -22,10 +22,19 @@
 using namespace std;
 
 
+char * appendTestFolder(const char * filename){
+    char anglecorrection_test_data_dir[]=ANGLECORRECTION_TEST_DATA_DIR;
+    char * newArray = new char[std::strlen(anglecorrection_test_data_dir)+std::strlen(filename)+1];
+    std::strcpy(newArray,anglecorrection_test_data_dir);
+    std::strcat(newArray,filename);
+
+    return newArray;
+}
+
 void validateFlowDirection_FlowVel(vectorSpline3dDouble splines, double *true_flow){
     double flow_direction;
     double flow_vel;
-    
+
     int k=0;
     for(auto &spline: splines)
     {
@@ -35,7 +44,6 @@ void validateFlowDirection_FlowVel(vectorSpline3dDouble splines, double *true_fl
         CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
     }
 }
-
 
 void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeEqual = true){
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
@@ -122,14 +130,6 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
     REQUIRE(all_equal== shouldBeEqual);
 }
 
-char * appendTestFolder(const char * filename){
-    char anglecorrection_test_data_dir[]=ANGLECORRECTION_TEST_DATA_DIR;
-    char * newArray = new char[std::strlen(anglecorrection_test_data_dir)+std::strlen(filename)+1];
-    std::strcpy(newArray,anglecorrection_test_data_dir);
-    std::strcat(newArray,filename);
-    
-    return newArray;
-}
 
 void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions,double *true_flow, char true_output[]){
     const char testFile[] = "/flowdirection_test_1.vtk";
@@ -148,8 +148,7 @@ void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff
   //  std::remove(appendTestFolder(testFile));
 }
 
-
-TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][unit][flow_dirA][aa]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][unit][flow_dirA][")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
@@ -794,7 +793,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation Tumour data", "[angle_correction][unit][flow_dirA][bb]")
+TEST_CASE("AngleCorrection: Test flow direction estimation Tumour data", "[angle_correction][unit]")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity_";

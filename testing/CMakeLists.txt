@@ -19,12 +19,8 @@ if(BUILD_TESTING)
                 PRIVATE
                 org_custusx_anglecorrection
                 cxGui
-#        cxResourceWidgets
-                cxtestResource
                 cxtestUtilities
                 cxLogicManager
                 cxCatch)
     cx_add_tests_to_catch(cxtest_org_custusx_anglecorrection_gui)
-
-
 endif(BUILD_TESTING)
