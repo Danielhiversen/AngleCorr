@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cxViewService.h"
 #include "cxVisServices.h"
 #include "Exceptions.hpp"
+#include <QDir>
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -67,7 +68,7 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
 	
     mClDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
     mClDataSelectWidget->setUidRegexp("tsf_cl(?!.*angleCorr).*"); 
-	mClDataSelectWidget->setValueName("Centerline: ");
+    mClDataSelectWidget->setValueName("Centerline: ");
 	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClDataSelectWidget));
     connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(cLDataChangedSlot()));
     connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(step1ParamChangedSlot()));
@@ -108,6 +109,9 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     mUid="";
     mName="";
     mStep1ParamChanged=true;
+
+    mVNyq = 0.0;
+
 }
 
 AngleCorrectionWidget::~AngleCorrectionWidget()
@@ -134,17 +138,20 @@ void AngleCorrectionWidget::cLDataChangedSlot()
     if(!mClDataSelectWidget->getMesh()){
         return;
     }
-    mVelFileSelectWidget->setFilename("");
     QString clUid = mClDataSelectWidget->getMesh()->getUid().section("_",1,2 );
     QStringList files=mVelFileSelectWidget->getAllFiles();
     for (int i = 0; i < files.size(); ++i)
     {
+        report(files.at(i));
         if(files.at(i).contains(clUid))
         {
         	  mVelFileSelectWidget->setFilename(files.at(i));
               return;
         }
     }
+
+    // No velocity data found => open advanced settings
+    mOptionsWidget->setVisible(true);
 }
 
 
@@ -160,15 +167,16 @@ void AngleCorrectionWidget::step2ParamChangedSlot()
     if(!mExecuter->calculate(false)) return;
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
     mOutData->setVtkPolyData(output);
+    report(QString("Angle correction updated"));
 }
 
 void AngleCorrectionWidget::selectVelData(QString filename)
 {
-	if (filename.isEmpty())
-	{
-		reportWarning("No velocity file selected");
-		return;
-	}
+    if (filename.isEmpty())
+    {
+        reportWarning("No velocity file selected");
+        return;
+    }
     mVelFileSelectWidget->setFilename(filename);
     step1ParamChangedSlot();
 }
@@ -213,7 +221,7 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
     layout->addWidget(createDataWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mMaxThetaCutoff), line, 1);
 	++line;
 
-    layout->addWidget(new QLabel("Velocity certainty cut off:", this), line, 0);    
+    layout->addWidget(new QLabel("FLow direction certainty cut off:", this), line, 0);
     mUncertaintyLimit = DoubleProperty::initialize("uncertaintyLimit", " ", "Semgents with lower certainty will be ignored", 0.0, DoubleRange(0, 1, 0.1), 1, mSettings.getElement());
     mUncertaintyLimit->setGuiRepresentation(DoublePropertyBase::grSLIDER);
     connect(mUncertaintyLimit.get(), SIGNAL(changed()),          this, SLOT(step2ParamChangedSlot()));
@@ -230,7 +238,64 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
 	return retval;
 }
 
+MeshPtr AngleCorrectionWidget::getOutData() const
+{
+    return mOutData;
 
+}
+
+
+vtkSmartPointer<vtkPolyData> AngleCorrectionWidget::getOutPolyData() const
+{
+    if(mOutData!=NULL)
+    {
+        return mOutData->getVtkPolyData();
+    }else
+    {
+        return NULL;
+    }
+}
+
+void AngleCorrectionWidget::setMinArrowDist(double value)
+{
+    mMinArrowDist->setValue(value);
+}
+
+void AngleCorrectionWidget::setUncertaintyLimit(double value)
+{
+    mUncertaintyLimit->setValue(value);
+}
+
+void AngleCorrectionWidget::setMaxThetaCutoff(double value)
+{
+    mMaxThetaCutoff->setValue(value);
+}
+
+void AngleCorrectionWidget::setClSmoothing(double value)
+{
+    mClSmoothing->setValue(value);
+}
+
+void AngleCorrectionWidget::setVNyq(double value)
+{
+    mVNyq = value;
+}
+
+void AngleCorrectionWidget::setClData(QString value)
+{
+    mClDataSelectWidget->setValue(value);
+}
+
+bool AngleCorrectionWidget::isRunning(){
+    if(mExecuter)
+    {
+        mExecuter->isRunning();
+    }else
+    {
+        return false;
+    }
+
+}
 
 void AngleCorrectionWidget::setInput()
 {
@@ -238,9 +303,9 @@ void AngleCorrectionWidget::setInput()
         reportError("No centerline selected");
         return;
     }
+    report("-------------------------------------------------------------------------------" + mClDataSelectWidget->getMesh()->getUid());
     vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
-    cerr << clData->GetNumberOfPoints() <<endl;
-
+    QString clFilename =QDir(mVisServices->patientModelService->getActivePatientFolder()).filePath(mClDataSelectWidget->getMesh()->getFilename());
 
     QString dataFilename = mVelFileSelectWidget->getFilename();
     if(dataFilename.length() ==0){
@@ -249,17 +314,17 @@ void AngleCorrectionWidget::setInput()
         return;
     }
     dataFilename.replace(".fts","_");
-    double Vnyq = 0.0;
     double cutoff = cos(mMaxThetaCutoff->getValue()/180.0*M_PI);
     int nConvolutions = (int) mClSmoothing->getValue();
     double uncertainty_limit = mUncertaintyLimit->getValue();
     double minArrowDist = mMinArrowDist->getValue();
 
-    mExecuter->setInput(clData, dataFilename, Vnyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
+    mExecuter->setInput(clFilename, dataFilename, mVNyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
 }
 
 void AngleCorrectionWidget::preprocessExecuter()
 {
+    report(" pre process");
     setInput();
     mRunAngleCorrButton->setEnabled(false);
 }
@@ -271,6 +336,8 @@ void AngleCorrectionWidget::runAngleCorection()
 
 void AngleCorrectionWidget::executionFinished()
 {
+    report("-------------------------------------------------------------------------------post process");
+
     mRunAngleCorrButton->setEnabled(true);
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
     if(output==NULL)

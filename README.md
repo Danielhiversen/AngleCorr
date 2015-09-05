@@ -1,8 +1,6 @@
 # Angle Correction
 
-
-
-NOT UPDATED
+The algorithm is described here: http://dx.doi.org/10.1109/TMI.2013.2261536
 
 ----------------------------------------------------------------------------
 Building
@@ -17,17 +15,16 @@ To build the program, you will first need the following packages (with developme
 
 libvtk
 libeigen3
-libsuperlu
 g++-4.7
 cmake
 ninja (or make)
 
 These can be installed on a Debian GNU/Linux machine by issuing (as root)
-apt-get install libvtk5-dev libeigen3-dev libsuperlu3-dev g++-4.7 ninja-build cmake cmake-qt-gui
+apt-get install libvtk5-dev libeigen3-dev g++-4.7 ninja-build cmake cmake-qt-gui git
 
 To build the program as a standalone algorithm:
 
-git clone  git@github.com:SINTEFMedtek/AngleCorr.git angelCorr
+git clone  git@github.com:SINTEFMedtek/AngleCorrection.git angelCorr
 
 mkdir -p build; cd build
 
@@ -43,28 +40,30 @@ Using
 Running the program angle_correction without any arguments gives a short help text:
 
 $ ./angle_correction 
+
 Usage: ./angle_correction centerline.vtk image_prefix Vnyq cutoff nConvolutions
 
 
 As indicated, the program must be run with 6 parameters:
 
 centerline.vtk 	 - the center line
+
 image_prefix 	 - the prefix of the images. The suffix $NUMBER.mhd will be appended to it, 
 		   where $NUMBER starts at 0 and progresses until no more files are found.
+
 Vnyq 		 - Nyquist velocity used when acquiring the images
+
 cutoff 		 - The lower cutoff value for abs(cos(theta)), used for the velocity estimation algorithms
+
 nConvolutions 	 - the number of times to run the smoothAll algorithm
 
 -----------------------------------------------------------------------------
 Output
 -----------------------------------------------------------------------------
 
-An output file are generated.
+An output file are generated: output.vtk
 
-
-output.vtk
----------------------------------
-output.vtk is a file that may be visualized by ParaView, and contains the center line as a point set, with one point at every point it intersects an image. Each of those points are annotated with the following data:
+output.vtk is a file that may be visualized by ParaView or CustuX, and contains the center line as a point set. Each point is annotated with the following data:
 
 The flow direction (normalized gradient of the center line curve)
 The estimated flow velocity (simple estimate)

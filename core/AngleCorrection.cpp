@@ -44,9 +44,21 @@ AngleCorrection::AngleCorrection(){
 
 
 AngleCorrection::~AngleCorrection(){
-    mOutput = NULL;
     mClSplinesPtr->clear();
+    delete mClSplinesPtr;
+
     mVelDataPtr->clear();
+    delete mVelDataPtr;
+
+    mOutput = NULL;
+    mValidInput= false;
+    mClSplinesPtr = new vectorSpline3dDouble();
+    mVelDataPtr = new vector<MetaImage<inData_t>>();
+    mClData=vtkSmartPointer<vtkPolyData>::New();
+    mVelImagePrefix="";
+    mIntersections =  0;
+    mBloodVessels = 0;
+    mNumOfStepsRan=0;
 }
 
 
@@ -147,8 +159,11 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
+    cerr << "params: " << mnConvolutions<< "      "   << mCutoff  << "      "  <<  mUncertainty_limit << "            " << mMinArrowDist << "         " << mVnyq <<endl;
+
     if(!mValidInput)
     {
+        cerr << "Invalid input " << endl;
         mOutput = NULL;
         return false;
     }
@@ -325,7 +340,6 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
             p_temp[0]=p[0]-p_prev[0];
             p_temp[1]=p[2]-p_prev[1];
             p_temp[1]=p[2]-p_prev[2];
-
             if(length3d(p_temp)<minArrowDist){
                 continue;
             }
