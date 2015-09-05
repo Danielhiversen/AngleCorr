@@ -21,6 +21,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
         else()
             message(ERROR "Compiler does not support --std=c++11 or --std=c++0x.")
         endif()
+    endif()
 endif()
 add_subdirectory(core)
 
