@@ -605,7 +605,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correct
 
 
 
-TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][integration][Benchmark]")
+TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][Benchmark]")
 {
     clock_t start, stop;
     double run_time = 0.0;
