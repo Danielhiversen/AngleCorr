@@ -117,7 +117,6 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, cons
     vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
     reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
     reader->SetFileName(filename.c_str());
     reader->Update();
@@ -136,7 +135,6 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
     clReader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    clReader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
     clReader->SetFileName(centerline);
     clReader->Update();
@@ -218,7 +216,6 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
     vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
     writer->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    writer->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
     writer->SetFileName(filename);
 #if VTK_MAJOR_VERSION <= 5

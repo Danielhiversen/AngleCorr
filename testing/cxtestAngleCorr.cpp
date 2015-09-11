@@ -62,13 +62,11 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
 
     vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
     reader2->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader2->AddObserver(vtkCommand::WarningEvent,errorObserver);
     reader2->SetFileName(filename_b);
     reader2->Update();
 
     vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
     reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader1->AddObserver(vtkCommand::WarningEvent,errorObserver);
     reader1->SetFileName(filename_a);
     reader1->Update();
 

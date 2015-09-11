@@ -14,7 +14,6 @@
 #include <vtkSmartPointer.h>
 #include <vtkCommand.h>
 
-
 class ErrorObserver : public vtkCommand
 {
 public:
