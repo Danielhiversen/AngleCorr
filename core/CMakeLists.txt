@@ -42,6 +42,7 @@ set(AngleCorrection_SOURCE_FILES
     quadratic_spline_fitter.hpp
     spline3d.hpp
     ErrorHandler.hpp
+    ErrorHandler.cpp
 )
 
 add_library(AngleCorr STATIC ${AngleCorrection_SOURCE_FILES})

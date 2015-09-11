@@ -18,58 +18,17 @@
 class ErrorObserver : public vtkCommand
 {
 public:
-  ErrorObserver():
-    Error(false),
-    Warning(false),
-    ErrorMessage(""),
-    WarningMessage("") {}
-  static ErrorObserver *New()
-  {
-	  return new ErrorObserver;
-  }
-
-  bool GetError() const
-  {
-	  return this->Error;
-  }
-
-  bool GetWarning() const
-  {
-	  return this->Warning;
-  }
-
-  void Clear()
-  {
-	  this->Error = false;
-	  this->Warning = false;
-	  this->ErrorMessage = "";
-	  this->WarningMessage = "";
-  }
+  ErrorObserver();
+  static ErrorObserver *New();
+  bool GetError() const;
+  bool GetWarning() const;
+  void Clear();
   virtual void Execute(vtkObject *vtkNotUsed(caller),
                        unsigned long event,
-                       void *calldata)
-  {
-	  switch(event)
-		{
-		case vtkCommand::ErrorEvent:
-		  ErrorMessage = static_cast<char *>(calldata);
-		  this->Error = true;
-		  break;
-		case vtkCommand::WarningEvent:
-		  WarningMessage = static_cast<char *>(calldata);
-		  this->Warning = true;
-		  break;
-		}
-  }
-  std::string GetErrorMessage()
-  {
-	  return ErrorMessage;
-  }
-  std::string GetWarningMessage()
-  {
-	  return WarningMessage;
-  }
-
+                       void *calldata);
+  std::string GetErrorMessage();
+  std::string GetWarningMessage();
+  
 private:
   bool        Error;
   bool        Warning;
@@ -77,10 +36,7 @@ private:
   std::string WarningMessage;
 };
 
-static void reportError(std::string  errMsg){
-	throw std::runtime_error(errMsg);
-}
-
+void reportError(std::string  errMsg);
 
 
 
