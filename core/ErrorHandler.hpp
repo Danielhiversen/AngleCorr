@@ -30,10 +30,10 @@ public:
   std::string GetWarningMessage();
   
 private:
-  bool        Error;
-  bool        Warning;
-  std::string ErrorMessage;
-  std::string WarningMessage;
+  bool        mError;
+  bool        mWarning;
+  std::string mErrorMessage;
+  std::string mWarningMessage;
 };
 
 void reportError(std::string  errMsg);

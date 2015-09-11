@@ -2,10 +2,10 @@
 
 
 ErrorObserver::ErrorObserver():
-    Error(false),
-    Warning(false),
-    ErrorMessage(""),
-    WarningMessage("") {}
+    mError(false),
+    mWarning(false),
+    mErrorMessage(""),
+    mWarningMessage("") {}
 
   ErrorObserver* ErrorObserver::New()
   {
@@ -14,20 +14,20 @@ ErrorObserver::ErrorObserver():
 
   bool ErrorObserver::GetError() const
   {
-	  return this->Error;
+	  return mError;
   }
 
   bool ErrorObserver::GetWarning() const
   {
-	  return this->Warning;
+	  return mWarning;
   }
 
   void ErrorObserver::Clear()
   {
-	  this->Error = false;
-	  this->Warning = false;
-	  this->ErrorMessage = "";
-	  this->WarningMessage = "";
+	    mError = false;
+	    mWarning = false;
+	    mErrorMessage = "";
+	    mWarningMessage = "";
   }
   void ErrorObserver::Execute(vtkObject *vtkNotUsed(caller),
                        unsigned long event,
@@ -36,22 +36,22 @@ ErrorObserver::ErrorObserver():
 	  switch(event)
 		{
 		case vtkCommand::ErrorEvent:
-		  ErrorMessage = static_cast<char *>(calldata);
-		  this->Error = true;
+		  mErrorMessage = static_cast<char *>(calldata);
+		  mError = true;
 		  break;
 		case vtkCommand::WarningEvent:
-		  WarningMessage = static_cast<char *>(calldata);
-		  this->Warning = true;
+		  mWarningMessage = static_cast<char *>(calldata);
+		  mWarning = true;
 		  break;
 		}
   }
   std::string ErrorObserver::GetErrorMessage()
   {
-	  return ErrorMessage;
+	  return mErrorMessage;
   }
   std::string ErrorObserver::GetWarningMessage()
   {
-	  return WarningMessage;
+	  return mWarningMessage;
   }
 
 void reportError(std::string  errMsg){
