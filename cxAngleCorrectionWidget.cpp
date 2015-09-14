@@ -243,18 +243,6 @@ MeshPtr AngleCorrectionWidget::getOutData() const
 
 }
 
-
-vtkSmartPointer<vtkPolyData> AngleCorrectionWidget::getOutPolyData() const
-{
-    if(mOutData!=NULL)
-    {
-        return mOutData->getVtkPolyData();
-    }else
-    {
-        return NULL;
-    }
-}
-
 void AngleCorrectionWidget::setMinArrowDist(double value)
 {
     mMinArrowDist->setValue(value);

@@ -34,12 +34,9 @@ void TestAngleCorrFixture::setupInsideMainWindow()
     mw = dynamic_cast<cx::MainWindowApplicationComponent<cx::MainWindow>*>(mainwindow.get())->mMainWindow;
     REQUIRE(mw!=NULL);
 
-
     angleCorrWidget = mw->findChild<cx::AngleCorrectionWidget*>("AngleCorrectionWidget");
     REQUIRE(angleCorrWidget!=NULL);
     angleCorrWidget->forcePrePaint(); // explicitly populate angleCorrWidget
-
-
 }
 
 void TestAngleCorrFixture::runApp(int milliseconds)
@@ -179,6 +176,8 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     fixture.runApp(300);
 
     if(fixture.angleCorrWidget->getOutData()==NULL) REQUIRE(false); //REQUIRE(fixture.angleCorrWidget->getOutData()!=NULL);
+
+    CHECK_NOTHROW(fixture.angleCorrWidget->toggleDetailsSlot());
 
     QString outpuFilepath = visServices->getPatientService()->getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
     validateFiles(outpuFilepath.toStdString().c_str(),appendTestFolder(true_output.toStdString().c_str()));

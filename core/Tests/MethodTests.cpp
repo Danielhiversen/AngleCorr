@@ -31,20 +31,6 @@ char * appendTestFolder(const char * filename){
     return newArray;
 }
 
-void validateFlowDirection_FlowVel(vectorSpline3dDouble splines, double *true_flow){
-    double flow_direction;
-    double flow_vel;
-
-    int k=0;
-    for(auto &spline: splines)
-    {
-        flow_vel = spline.getIntersections().getEstimatedVelocity();
-        flow_direction = spline.getIntersections().getEstimatedDirection();
-        CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
-        CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
-    }
-}
-
 void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeEqual = true){
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
 
@@ -137,8 +123,7 @@ void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff
     CHECK_NOTHROW(res = angleCorr.calculate());
     REQUIRE(res);
 
-    vectorSpline3dDouble splines = angleCorr.getClSpline();
-   // validateFlowDirection_FlowVel(splines,true_flow);
+    CHECK_NOTHROW(angleCorr.getClSpline());
 
     CHECK_NOTHROW(angleCorr.writeDirectionToVtkFile(appendTestFolder(testFile)));
     validateFiles(appendTestFolder(testFile), appendTestFolder(true_output));
@@ -484,6 +469,9 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
     std::remove(appendTestFolder(filename_b));
 
+    REQUIRE(angleCorr.getBloodVessels()==8);
+    REQUIRE(angleCorr.getIntersections()==924);
+    REQUIRE(angleCorr.getNumOfStepsRan()==1);
 }
 
 
@@ -730,8 +718,6 @@ TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][Benchmark]")
 }
 
 
-
-
 TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_correction][integration][simple]")
 {
     
@@ -803,4 +789,29 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_tumour.vtk";
 
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+
+
+    AngleCorrection angleCorr = AngleCorrection();
+
+    double uncertainty_limit = 0;
+    double minArrowDist =2;
+
+    angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
+    bool res = angleCorr.calculate();
+    REQUIRE(res);
+
+    REQUIRE(angleCorr.getBloodVessels()==219);
+    REQUIRE(angleCorr.getIntersections()==1420);
+    REQUIRE(angleCorr.getNumOfStepsRan()==2);
+
+
+    uncertainty_limit = 0.5;
+
+    angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
+    res = angleCorr.calculate();
+    REQUIRE(res);
+
+    REQUIRE(angleCorr.getBloodVessels()==120);
+    REQUIRE(angleCorr.getIntersections()==1420);
+    REQUIRE(angleCorr.getNumOfStepsRan()==1);
 }

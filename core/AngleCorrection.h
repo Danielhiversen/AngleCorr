@@ -21,7 +21,7 @@ public:
     vectorSpline3dDouble getClSpline();
     void writeDirectionToVtkFile(const char* filename);
     int getIntersections(){return mIntersections;}
-    int getBloodVessels(){return mBloodVessels;}
+    int getBloodVessels(){return mBloodVessels-mBloodVesselsRemoved;}
     int getNumOfStepsRan(){return mNumOfStepsRan;}
 
 private:
@@ -49,6 +49,7 @@ private:
     int mIntersections;
     int mBloodVessels;
     int mNumOfStepsRan;
+    int mBloodVesselsRemoved;
 
 };
 #endif /* ANGLE_CORRECTION_IMPL_H */

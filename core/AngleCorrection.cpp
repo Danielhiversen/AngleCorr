@@ -44,6 +44,7 @@ AngleCorrection::AngleCorrection(){
     mnConvolutions=0;
     mUncertainty_limit=0;
     mMinArrowDist=0;
+    mBloodVesselsRemoved = 0;
     mUpdate1=true;
     mUpdate2=true;
 }
@@ -314,7 +315,7 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
     double flow_vector_n[3];
     double abs_dir;
     double abs_vessel_vel;
-    int num_uncertainty_limit = 0;
+    mBloodVesselsRemoved = 0;
     for(auto &spline: *splines)
     {
 
@@ -325,7 +326,7 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
 
 
         if( abs_dir< uncertainty_limit){
-            num_uncertainty_limit++;
+            mBloodVesselsRemoved++;
             continue;
         }
         if(std::isnan(abs_dir) || std::isnan(abs_vessel_vel) ){
@@ -374,8 +375,8 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
     pointdata->AddArray(flowdirection);
     pointdata->AddArray(dir_uncertainty);
     pointdata->AddArray(velocitydata);
-    if (num_uncertainty_limit){
-        cerr << "Removed " << num_uncertainty_limit << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
+    if (mBloodVesselsRemoved){
+        cerr << "Removed " << mBloodVesselsRemoved << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
     }
     return polydata;
 }
