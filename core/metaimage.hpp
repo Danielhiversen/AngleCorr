@@ -258,7 +258,6 @@ public:
         vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();
         vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
         reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-        reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
         int i = 0;
         ostringstream ss;

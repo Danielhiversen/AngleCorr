@@ -142,7 +142,6 @@ void AngleCorrectionWidget::cLDataChangedSlot()
     QStringList files=mVelFileSelectWidget->getAllFiles();
     for (int i = 0; i < files.size(); ++i)
     {
-        report(files.at(i));
         if(files.at(i).contains(clUid))
         {
         	  mVelFileSelectWidget->setFilename(files.at(i));
@@ -303,7 +302,6 @@ void AngleCorrectionWidget::setInput()
         reportError("No centerline selected");
         return;
     }
-    report("-------------------------------------------------------------------------------" + mClDataSelectWidget->getMesh()->getUid());
     vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
     QString clFilename =QDir(mVisServices->patientModelService->getActivePatientFolder()).filePath(mClDataSelectWidget->getMesh()->getFilename());
 
@@ -324,7 +322,6 @@ void AngleCorrectionWidget::setInput()
 
 void AngleCorrectionWidget::preprocessExecuter()
 {
-    report(" pre process");
     setInput();
     mRunAngleCorrButton->setEnabled(false);
 }
@@ -336,8 +333,6 @@ void AngleCorrectionWidget::runAngleCorection()
 
 void AngleCorrectionWidget::executionFinished()
 {
-    report("-------------------------------------------------------------------------------post process");
-
     mRunAngleCorrButton->setEnabled(true);
     vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
     if(output==NULL)

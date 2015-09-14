@@ -50,13 +50,11 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
 
     vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
     reader2->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader2->AddObserver(vtkCommand::WarningEvent,errorObserver);
     reader2->SetFileName(filename_b);
     reader2->Update();
 
     vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
     reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader1->AddObserver(vtkCommand::WarningEvent,errorObserver);
     reader1->SetFileName(filename_a);
     reader1->Update();
 
@@ -605,7 +603,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correct
 
 
 
-TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][integration][Benchmark]")
+TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][Benchmark]")
 {
     clock_t start, stop;
     double run_time = 0.0;
@@ -793,7 +791,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation Tumour data", "[angle_correction][unit]")
+TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle_correction][unit]")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity_";
