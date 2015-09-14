@@ -29,15 +29,11 @@ public:
     m_nodes = vector<vector<int> >(nodes);
     m_visited = vector<bool>(nodes);
 
-    for(visititer i = m_visited.begin();
-	i != m_visited.end();
-	i++) 
+    for(visititer i = m_visited.begin(); i != m_visited.end();i++)
     {
       *i = false;
     }
-    for(nodeiter i = m_nodes.begin();
-	i != m_nodes.end();
-	i++)
+    for(nodeiter i = m_nodes.begin(); i != m_nodes.end(); i++)
     {
       (*i) = vector<int>();
     }

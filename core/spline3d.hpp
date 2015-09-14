@@ -578,29 +578,21 @@ protected:
 
         for(int dim = 0; dim < 3; dim++)
         {
-            T a_tmp = 0.0;
-            T b_tmp = 0.0;
-            T c_tmp = 0.0;
-
-
-            a_tmp
-                    = m_cpoints[dim][p-1]*0.5
+            T a_tmp = m_cpoints[dim][p-1]*0.5
                     - m_cpoints[dim][p]
                     + m_cpoints[dim][p+1]*0.5;
             a_tmp *= plane.getCoefficient(dim);
 
             a += a_tmp;
 
-            b_tmp
-                    = - m_cpoints[dim][p-1]
+            T b_tmp = - m_cpoints[dim][p-1]
                     + m_cpoints[dim][p];
             b_tmp *= plane.getCoefficient(dim);
 
             b += b_tmp;
 
-            c_tmp
-                    = m_cpoints[dim][p-1]*0.5
-                    + m_cpoints[dim][p]*0.5;
+            T c_tmp = m_cpoints[dim][p-1]*0.5
+                  + m_cpoints[dim][p]*0.5;
             c_tmp *= plane.getCoefficient(dim);
 
             c += c_tmp;
