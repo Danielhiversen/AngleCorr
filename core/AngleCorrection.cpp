@@ -39,7 +39,13 @@ AngleCorrection::AngleCorrection(){
     mIntersections =  0;
     mBloodVessels = 0;
     mNumOfStepsRan=0;
-
+    mVnyq=0;
+    mCutoff=0;
+    mnConvolutions=0;
+    mUncertainty_limit=0;
+    mMinArrowDist=0;
+    mUpdate1=true;
+    mUpdate2=true;
 }
 
 
