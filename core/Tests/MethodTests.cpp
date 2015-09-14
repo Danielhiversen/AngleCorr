@@ -101,14 +101,13 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
         return;
     }
 
-    unsigned int numberRight = 0;
-    unsigned int numberLeft = 0;
+
     double pointRight;
     double pointLeft;
     for(int k=0; k <  numberOfArraysRight; k++)
     {
-        numberRight = rightHandSide->GetPointData()->GetArray(k)->GetDataSize()/ rightHandSide->GetPointData()->GetArray(k)->GetNumberOfComponents();
-        numberLeft =  leftHandSide->GetPointData()->GetArray(k)->GetDataSize()/ leftHandSide->GetPointData()->GetArray(k)->GetNumberOfComponents();
+        unsigned int numberRight = rightHandSide->GetPointData()->GetArray(k)->GetDataSize()/ rightHandSide->GetPointData()->GetArray(k)->GetNumberOfComponents();
+        unsigned int numberLeft =  leftHandSide->GetPointData()->GetArray(k)->GetDataSize()/ leftHandSide->GetPointData()->GetArray(k)->GetNumberOfComponents();
         if(shouldBeEqual){
             REQUIRE(numberLeft==numberRight);
         }

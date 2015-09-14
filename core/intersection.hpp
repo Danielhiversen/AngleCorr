@@ -30,6 +30,8 @@ public:
     m_points = vector<T>();
     m_valid = false;
     m_img = NULL;
+    m_avg_computed = 0;
+    m_avgValue = 0;
   }      
   /**
    * Retrieve the intersecting spline curve 

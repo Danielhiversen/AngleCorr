@@ -312,14 +312,13 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
     double p_temp[3];
     double flow_vector[3];
     double flow_vector_n[3];
-    double flow_direction;
     double abs_dir;
     double abs_vessel_vel;
     int num_uncertainty_limit = 0;
     for(auto &spline: *splines)
     {
 
-        flow_direction = spline.getIntersections().getEstimatedDirection();
+        double flow_direction = spline.getIntersections().getEstimatedDirection();
         abs_dir = flow_direction*sgn(flow_direction);
         abs_vessel_vel = spline.getIntersections().getEstimatedVelocity();
         abs_vessel_vel = abs_vessel_vel*sgn(abs_vessel_vel);
