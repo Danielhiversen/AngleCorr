@@ -120,7 +120,7 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
         if(shouldBeEqual){
             REQUIRE(numberLeft==numberRight);
         }
-        if(!shouldBeEqual && numberLeft!=numberRight){
+        else if(!shouldBeEqual && numberLeft!=numberRight){
             return;
         }
 
@@ -206,8 +206,7 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     double uncertainty_limit = 0;
     double minArrowDist = 1;
     double vNyq = 0.312;
-
-    testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output );
+    CHECK_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
 
 
     centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
@@ -216,8 +215,7 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     vNyq =  0.0;
     cutoff = 90; //acos(0)
     nConvolutions = 5;
-
-    testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output );
+    CHECK_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
 
 
     centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
@@ -226,8 +224,7 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     vNyq =  0.156;
     cutoff = 79.6302402; // = acos(0.18)
     nConvolutions = 6;
-
-    testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output );
+    CHECK_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
 
 
     fixture.shutdown();
