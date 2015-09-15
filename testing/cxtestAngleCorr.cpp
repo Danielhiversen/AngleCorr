@@ -24,7 +24,7 @@ namespace cxtest
 
 TestAngleCorrFixture::TestAngleCorrFixture() : mw(NULL), angleCorrWidget(NULL)
 {
-
+    setupInsideMainWindow();
 }
 
 void TestAngleCorrFixture::setupInsideMainWindow()
@@ -43,6 +43,8 @@ void TestAngleCorrFixture::setupInsideMainWindow()
 
     logger = cx::MessageListener::create();
     logger->setMessageQueueMaxSize(200);
+
+    cx::sessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
 }
 
 void TestAngleCorrFixture::runApp(int milliseconds)
@@ -213,8 +215,8 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
 TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correction_gui][angle_correction][integration]")
 {
     cxtest::TestAngleCorrFixture fixture;
-    fixture.setupInsideMainWindow();
-    cx::sessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
+
+
 
     CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
     REQUIRE(fixture.logContains("Algorithm Angle correction started"));
