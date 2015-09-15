@@ -204,8 +204,8 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
 
     CHECK_NOTHROW(fixture.angleCorrWidget->toggleDetailsSlot());
 
-    QString outpuFilepath = visServices->getPatientService()->getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
-    validateFiles(outpuFilepath.toStdString().c_str(),appendTestFolder(true_output.toStdString().c_str()));
+    QString outputFilepath = visServices->getPatientService()->getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
+    validateFiles(outputFilepath.toStdString().c_str(),appendTestFolder(true_output.toStdString().c_str()));
 }
 
 // --------------------------------------------------------
@@ -215,8 +215,6 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
 TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correction_gui][angle_correction][integration]")
 {
     cxtest::TestAngleCorrFixture fixture;
-
-
 
     CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
     REQUIRE(fixture.logContains("Algorithm Angle correction started"));
