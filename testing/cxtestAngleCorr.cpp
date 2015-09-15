@@ -164,10 +164,10 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     QString filename = cx::DataLocations::getLargeTestDataPath()+"/testing"+centerline;
     cx::DataPtr data = visServices->getPatientService()->importData(filename, dummy);
     REQUIRE(data);
-    fixture.angleCorrWidget->setClData(data->getUid());
-    fixture.angleCorrWidget->selectVelData(cx::DataLocations::getLargeTestDataPath()+ "/testing"+velData);
+    CHECK_NOTHROW(fixture.angleCorrWidget->setClData(data->getUid()));
+    CHECK_NOTHROW(fixture.angleCorrWidget->selectVelData(cx::DataLocations::getLargeTestDataPath()+ "/testing"+velData));
 
-    fixture.angleCorrWidget->runAngleCorection();
+    CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
     while(fixture.angleCorrWidget->isRunning())
     {
         cxtest::Utilities::sleep_sec(0.5);
@@ -193,6 +193,10 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     cxtest::TestAngleCorrFixture fixture;
     fixture.setupInsideMainWindow();
     cx::sessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
+
+
+    CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
+
 
     QString centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     QString velData = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity.fts";
