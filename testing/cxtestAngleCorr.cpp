@@ -41,8 +41,8 @@ void TestAngleCorrFixture::setupInsideMainWindow()
     REQUIRE(angleCorrWidget!=NULL);
     angleCorrWidget->forcePrePaint(); // explicitly populate angleCorrWidget
 
-    listener = cx::MessageListener::create();
-    listener->setMessageQueueMaxSize(200);
+    logger = cx::MessageListener::create();
+    logger->setMessageQueueMaxSize(200);
 }
 
 void TestAngleCorrFixture::runApp(int milliseconds)
@@ -53,17 +53,17 @@ void TestAngleCorrFixture::runApp(int milliseconds)
 
 bool TestAngleCorrFixture::logContains(QString testString)
 {
-    cxtest::waitForQueuedSignal(listener.get(), SIGNAL(newMessage(Message)), 10, true);
-    return listener->containsText(testString);
+    cxtest::waitForQueuedSignal(logger.get(), SIGNAL(newMessage(Message)), 10, true);
+    return logger->containsText(testString);
 }
 
 void TestAngleCorrFixture::clearLog()
 {
-    int temp =listener->getMessageQueueMaxSize();
-    listener->setMessageQueueMaxSize(0);
+    int temp =logger->getMessageQueueMaxSize();
+    logger->setMessageQueueMaxSize(0);
     std::cerr << "" << std::endl;
-    cxtest::waitForQueuedSignal(listener.get(), SIGNAL(newMessage(Message)), 10, true);
-    listener->setMessageQueueMaxSize(temp);
+    cxtest::waitForQueuedSignal(logger.get(), SIGNAL(newMessage(Message)), 10, true);
+    logger->setMessageQueueMaxSize(temp);
 }
 
 

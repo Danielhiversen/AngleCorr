@@ -25,7 +25,7 @@ public:
 
     cx::MainWindow* mw;
     cx::AngleCorrectionWidget* angleCorrWidget;
-    cx::MessageListenerPtr listener;
+    cx::MessageListenerPtr logger;
 };
 
 }
