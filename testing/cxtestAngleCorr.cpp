@@ -61,8 +61,6 @@ void TestAngleCorrFixture::clearLog()
 {
     int temp =logger->getMessageQueueMaxSize();
     logger->setMessageQueueMaxSize(0);
-    std::cerr << "" << std::endl;
-    cxtest::waitForQueuedSignal(logger.get(), SIGNAL(newMessage(Message)), 10, true);
     logger->setMessageQueueMaxSize(temp);
 }
 
