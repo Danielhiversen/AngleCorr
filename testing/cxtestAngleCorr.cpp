@@ -40,6 +40,9 @@ void TestAngleCorrFixture::setupInsideMainWindow()
     angleCorrWidget = mw->findChild<cx::AngleCorrectionWidget*>("AngleCorrectionWidget");
     REQUIRE(angleCorrWidget!=NULL);
     angleCorrWidget->forcePrePaint(); // explicitly populate angleCorrWidget
+
+    listener = cx::MessageListener::create();
+    listener->setMessageQueueMaxSize(200);
 }
 
 void TestAngleCorrFixture::runApp(int milliseconds)
@@ -47,6 +50,22 @@ void TestAngleCorrFixture::runApp(int milliseconds)
     QTimer::singleShot(milliseconds, qApp, SLOT(quit()));
     qApp->exec();
 }
+
+bool TestAngleCorrFixture::logContains(QString testString)
+{
+    cxtest::waitForQueuedSignal(listener.get(), SIGNAL(newMessage(Message)), 10, true);
+    return listener->containsText(testString);
+}
+
+void TestAngleCorrFixture::clearLog()
+{
+    int temp =listener->getMessageQueueMaxSize();
+    listener->setMessageQueueMaxSize(0);
+    std::cerr << "" << std::endl;
+    cxtest::waitForQueuedSignal(listener.get(), SIGNAL(newMessage(Message)), 10, true);
+    listener->setMessageQueueMaxSize(temp);
+}
+
 
 
 void TestAngleCorrFixture::shutdown()
@@ -152,8 +171,7 @@ char * appendTestFolder(const char * filename){
 
 void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString velData, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist, double vNyq, QString true_output)
 {
-    cx::MessageListenerPtr listener = cx::MessageListener::create();
-    listener->setMessageQueueMaxSize(10);
+    fixture.clearLog();
 
     fixture.angleCorrWidget->setClSmoothing(nConvolutions);
     fixture.angleCorrWidget->setMaxThetaCutoff(cutoff);
@@ -178,8 +196,7 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     {
         cxtest::Utilities::sleep_sec(0.5);
     }
-    cxtest::waitForQueuedSignal(listener.get(), SIGNAL(newMessage(Message)), 200, true);
-    REQUIRE(listener->containsText("Algorithm Angle correction complete"));
+    REQUIRE(fixture.logContains("Algorithm Angle correction complete"));
 
     fixture.runApp(300);
 
@@ -201,12 +218,9 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     fixture.setupInsideMainWindow();
     cx::sessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
 
-
-    cx::MessageListenerPtr listener = cx::MessageListener::create();
-    listener->setMessageQueueMaxSize(10);
     CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
-    cxtest::waitForQueuedSignal(listener.get(), SIGNAL(newMessage(Message)), 200, true);
-    REQUIRE(listener->containsText("Algorithm Angle correction failed"));
+    REQUIRE(fixture.logContains("Algorithm Angle correction started"));
+    REQUIRE(fixture.logContains("Algorithm Angle correction failed"));
 
 
     QString centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
