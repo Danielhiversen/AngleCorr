@@ -114,7 +114,7 @@ public:
    * @param projected Projected point will be returned here
    * @param pt Point to project
    */
-  void projectOnto(double projected[3], double const pt[3] ) const;
+ // void projectOnto(double projected[3], double const pt[3] ) const; DELETED
       
 protected:
   /**

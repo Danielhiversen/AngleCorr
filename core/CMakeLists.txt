@@ -36,7 +36,6 @@ set(AngleCorrection_SOURCE_FILES
     intersection_set.hpp
     matrix.hpp
     metaimage.hpp
-    plane3d.cpp
     plane3d.hpp
     precision.hpp
     quadratic_spline_fitter.hpp
