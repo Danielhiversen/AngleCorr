@@ -2,6 +2,7 @@
 #define CXTESTANGLECORR_H
 
 #include "cxMessageListener.h"
+#include "cxLogicManager.h"
 
 
 namespace cx
@@ -17,10 +18,11 @@ class TestAngleCorrFixture
 {
 public:
     TestAngleCorrFixture();
-    void setupInsideMainWindow();
     void runApp(int milliseconds = 300);
     bool logContains(QString testString);
     void clearLog();
+    QString getActivePatientFolder();
+    cx::DataPtr importData(QString fileName);
     void shutdown();
 
     cx::MainWindow* mw;

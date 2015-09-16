@@ -24,11 +24,6 @@ namespace cxtest
 
 TestAngleCorrFixture::TestAngleCorrFixture() : mw(NULL), angleCorrWidget(NULL)
 {
-    setupInsideMainWindow();
-}
-
-void TestAngleCorrFixture::setupInsideMainWindow()
-{
     cx::DataLocations::setTestMode();
 
     cx::ApplicationComponentPtr mainwindow(new cx::MainWindowApplicationComponent<cx::MainWindow>());
@@ -66,6 +61,16 @@ void TestAngleCorrFixture::clearLog()
     logger->setMessageQueueMaxSize(temp);
 }
 
+QString TestAngleCorrFixture::getActivePatientFolder()
+{
+    return cx::logicManager()->getPatientModelService()->getActivePatientFolder();
+}
+
+cx::DataPtr TestAngleCorrFixture::importData(QString fileName)
+{
+    QString dummy;
+    return cx::logicManager()->getPatientModelService()->importData(fileName,dummy);
+}
 
 
 void TestAngleCorrFixture::shutdown()
@@ -179,14 +184,8 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     fixture.angleCorrWidget->setUncertaintyLimit(uncertainty_limit);
     fixture.angleCorrWidget->setVNyq(vNyq);
 
-
-    cx::VisServicesPtr visServices = fixture.angleCorrWidget->getVisServicesPtr();
-
-
-    QString dummy;
-
     QString filename = cx::DataLocations::getLargeTestDataPath()+"/testing"+centerline;
-    cx::DataPtr data = visServices->getPatientService()->importData(filename, dummy);
+    cx::DataPtr data = fixture.importData(filename);
     REQUIRE(data);
     CHECK_NOTHROW(fixture.angleCorrWidget->setClData(data->getUid()));
     CHECK_NOTHROW(fixture.angleCorrWidget->selectVelData(cx::DataLocations::getLargeTestDataPath()+ "/testing"+velData));
@@ -204,7 +203,7 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
 
     CHECK_NOTHROW(fixture.angleCorrWidget->toggleDetailsSlot());
 
-    QString outputFilepath = visServices->getPatientService()->getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
+    QString outputFilepath = fixture.getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
     validateFiles(outputFilepath.toStdString().c_str(),appendTestFolder(true_output.toStdString().c_str()));
 }
 

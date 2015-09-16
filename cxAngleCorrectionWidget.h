@@ -77,7 +77,6 @@ public:
     void setVNyq(double value);
     void setClData(QString value);
     MeshPtr getOutData() const;
-    VisServicesPtr getVisServicesPtr(){return mVisServices;}
     bool isRunning();
 
 public slots:
