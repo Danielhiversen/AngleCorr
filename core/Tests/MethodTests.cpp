@@ -130,7 +130,7 @@ void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff
   //  std::remove(appendTestFolder(testFile));
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][unit][flow_dirA][")
+TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][flow_dirA][")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
@@ -275,7 +275,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 9, cross movement", "
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 10, cross movement", "[angle_correction][unit]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 10, cross movement", "[angle_correction]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-Acq_10_20150527T131055_Velocity_";
