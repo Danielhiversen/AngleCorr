@@ -21,13 +21,12 @@ public:
   /**
    * Initialize everything to 0, false or NULL
    */
-  Intersection()
+  Intersection():m_points()
   {
     m_spline = NULL;
     m_intersection_pos = 0.0;
     m_cosTheta = 0.0;
     m_origAvgValue = 0.0;
-    m_points = vector<T>();
     m_valid = false;
     m_img = NULL;
     m_avg_computed = 0;

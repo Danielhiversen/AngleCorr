@@ -251,8 +251,7 @@ public:
    * @param prefix The prefix of the file name. File names are assumed to be of the format prefix$NUMBER.mhd
    * @return a vector containing the retrieved images
    */
-    static vector<MetaImage>*
-    readImages(const string prefix)
+    static vector<MetaImage>* readImages(const string prefix)
     {
         // Images are on the format prefix$NUMBER.mhd
         vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();

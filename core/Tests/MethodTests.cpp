@@ -132,14 +132,11 @@ void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff
 
 void validateFlowDirection_FlowVel(vectorSpline3dDouble splines, double *true_flow)
 {
-    double flow_direction;
-    double flow_vel;
-
     int k=0;
     for(auto &spline: splines)
     {
-        flow_vel = spline.getIntersections().getEstimatedVelocity();
-        flow_direction = spline.getIntersections().getEstimatedDirection();
+        double flow_vel = spline.getIntersections().getEstimatedVelocity();
+        double flow_direction = spline.getIntersections().getEstimatedDirection();
         REQUIRE( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
         REQUIRE(sgn(flow_direction) == sgn(true_flow[k++]));
     }
@@ -462,7 +459,7 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
     const char* filename_a ="/flowdirection_test_11_a.vtk";
     const char* filename_b ="/flowdirection_test_11_b.vtk";
 
-    bool res = false;
+    bool res;
     AngleCorrection angleCorr = AngleCorrection();
 
     angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);

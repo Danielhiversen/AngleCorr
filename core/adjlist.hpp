@@ -24,11 +24,8 @@ public:
    * Initialize an adjacency list and initialize all nodes to unvisited with no neighbours
    * @param nodes Number of nodes in graph
    */
-  AdjList(int nodes)
+  AdjList(int nodes):m_nodes(nodes),  m_visited(nodes)
   {
-    m_nodes = vector<vector<int> >(nodes);
-    m_visited = vector<bool>(nodes);
-
     for(visititer i = m_visited.begin(); i != m_visited.end();i++)
     {
       *i = false;
