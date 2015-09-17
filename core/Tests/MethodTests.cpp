@@ -114,7 +114,7 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
 }
 
 
-void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions,double *true_flow, char true_output[]){
+void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions, char true_output[]){
     const char testFile[] = "/flowdirection_test_1.vtk";
 
     AngleCorrection angleCorr = AngleCorrection();
@@ -127,27 +127,68 @@ void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff
 
     CHECK_NOTHROW(angleCorr.writeDirectionToVtkFile(appendTestFolder(testFile)));
     validateFiles(appendTestFolder(testFile), appendTestFolder(true_output));
-  //  std::remove(appendTestFolder(testFile));
+    std::remove(appendTestFolder(testFile));
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction][flow_dirA][")
+void validateFlowDirection_FlowVel(vectorSpline3dDouble splines, double *true_flow)
+{
+    double flow_direction;
+    double flow_vel;
+
+    int k=0;
+    for(auto &spline: splines)
+    {
+        flow_vel = spline.getIntersections().getEstimatedVelocity();
+        flow_direction = spline.getIntersections().getEstimatedDirection();
+        CHECK( (flow_vel) == Approx(true_flow[k]).epsilon(0.005));
+        CHECK(sgn(flow_direction) == sgn(true_flow[k++]));
+    }
+}
+
+void testFlowDirection_FlowVel(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions, double *true_flow){
+    AngleCorrection angleCorr = AngleCorrection();
+    CHECK_NOTHROW(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions));
+    bool res = false;
+    CHECK_NOTHROW(res = angleCorr.calculate());
+    REQUIRE(res);
+
+    validateFlowDirection_FlowVel(angleCorr.getClSpline(), true_flow);
+}
+
+
+
+
+TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction]")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
-    
+
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_1.vtk";
+
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
+}
+
+TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_correction][unit]")
+    {
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
+
     double Vnyq =  0.312;
     double cutoff = 0.18;
     int nConvolutions = 6;
 
     double true_flow [1]={-0.465};
-    char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_1.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlowDirection_FlowVel(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions,true_flow);
 }
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][unit]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][integration]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751/US-Acq_02_20150527T125751_Velocity_";
@@ -159,7 +200,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correctio
     double true_flow [1]={-0.557};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_2.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
 
@@ -175,7 +216,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 3", "[angle_correctio
     double true_flow [1]={-0.534};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_3.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
 
@@ -191,7 +232,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 4", "[angle_correctio
     double true_flow [1]={-0.577};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_4.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
 
@@ -207,8 +248,24 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 5", "[angle_correctio
     double true_flow [2]={-0.933,0.239};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_5.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
+
+
+TEST_CASE("AngleCorrection: Test flow direction estimation 5 unit", "[angle_correction][unit][flow_dir]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229/US-Acq_05_20150527T130229_Velocity_";
+
+    double Vnyq =  0.312;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    double true_flow [2]={-0.933,0.239};
+
+    testFlowDirection_FlowVel(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions,true_flow);
+}
+
 
 
 TEST_CASE("AngleCorrection: Test flow direction estimation 6", "[angle_correction][integration][flow_dir]")
@@ -223,11 +280,11 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 6", "[angle_correctio
     double true_flow [2]={0.651,-2.50};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_6.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 7, aliasing", "[angle_correction][unit][aliasing]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 7, aliasing", "[angle_correction][integration][aliasing]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_07_20150527T130532/US-Acq_07_20150527T130532_Velocity_";
@@ -239,7 +296,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 7, aliasing", "[angle
     double true_flow [1]={-0.314};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_7.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
 
@@ -255,8 +312,24 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing", "[angle
     double true_flow [1]={0.403};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_8.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
+
+TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing, unit", "[angle_correction][unit][aliasing]")
+{
+    char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
+    char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558/US-Acq_08_20150527T130558_Velocity_";
+
+    double Vnyq =  0.156;
+    double cutoff = 0.18;
+    int nConvolutions = 6;
+
+    double true_flow [1]={0.403};
+
+    testFlowDirection_FlowVel(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions,true_flow);
+}
+
+
 
 
 TEST_CASE("AngleCorrection: Test flow direction estimation 9, cross movement", "[angle_correction][integration]")
@@ -271,7 +344,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 9, cross movement", "
     double true_flow [1]={-0.625};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_9.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
 
@@ -287,7 +360,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 10, cross movement", 
     double true_flow [1]={0.5847};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
 
@@ -373,24 +446,24 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-Acq_10_20150527T131055_Velocity_";
-    
+
     double Vnyq =  0.312;
     double cutoff = 0.18;
     int nConvolutions = 6;
     double uncertainty_limit = 0.5;
     double minArrowDist = 1.0;
-    
-    
+
+
     char centerline2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_06_20150527T130329_Angio_1_tsf_cl1.vtk";
     char image_prefix2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_06_20150527T130329/US-Acq_06_20150527T130329_Velocity_";
-    
+
     double Vnyq2 =  0.312;
     double cutoff2 = 0.18;
     int nConvolutions2 = 6;
-    
+
     const char* filename_a ="/flowdirection_test_11_a.vtk";
     const char* filename_b ="/flowdirection_test_11_b.vtk";
-    
+
     bool res = false;
     AngleCorrection angleCorr = AngleCorrection();
 
@@ -408,12 +481,12 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_6.vtk"));
-  
+
     angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
     res = angleCorr.calculate();
     REQUIRE(res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
-    
+
     validateFiles(appendTestFolder(filename_a), appendTestFolder(filename_b));
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"));
 
@@ -475,7 +548,9 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
 }
 
 
-TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][unit]")
+
+
+TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][integration]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
@@ -776,7 +851,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle_correction][unit]")
+TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle_correction][integration]")
     {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity_";
@@ -788,7 +863,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle
     double true_flow [4]={0.082484, 0.146338,  0.119538, 0.322488};
     char true_output[] ="/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_tumour.vtk";
 
-    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_flow, true_output);
+    testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 
 
     AngleCorrection angleCorr = AngleCorrection();
