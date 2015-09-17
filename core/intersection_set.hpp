@@ -75,7 +75,7 @@ public:
     m_have_direction = true;
     if(std::isnan(m_direction))
     {
-    	m_direction = 0.0;
+        m_direction = 0.0;
     }
   }
   
@@ -119,7 +119,7 @@ public:
 
     if(std::isnan(m_velocity_ls ))
     {
-    	m_velocity_ls = 0.0;
+        m_velocity_ls = 0.0;
     }
   }
   
