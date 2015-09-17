@@ -923,6 +923,9 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "
     CHECK_NOTHROW(out = angleCorr.getOutput());
     if(out ==NULL) REQUIRE(false);
 
+    vectorSpline3dDouble outSpline;
+    CHECK_NOTHROW(outSpline = angleCorr.getClSpline());
+
     const char* filename_a ="/flowdirection_test_11_a.vtk";
     CHECK_NOTHROW(angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a)));
     std::remove(appendTestFolder(filename_a));
