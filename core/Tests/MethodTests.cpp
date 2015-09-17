@@ -159,7 +159,7 @@ void testFlowDirection_FlowVel(char centerline[], char image_prefix[], double Vn
 
 
 TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correction]")
-    {
+ {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
 
@@ -173,7 +173,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correctio
 }
 
 TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_correction][unit]")
-    {
+{
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
 
@@ -328,8 +328,6 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing, unit", "
 
     testFlowDirection_FlowVel(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions,true_flow);
 }
-
-
 
 
 TEST_CASE("AngleCorrection: Test flow direction estimation 9, cross movement", "[angle_correction][integration]")
@@ -548,8 +546,6 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
 }
 
 
-
-
 TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][integration]")
 {
     
@@ -662,7 +658,6 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correct
     validateFiles(appendTestFolder(filename_b), appendTestFolder("/2015-05-27_12-02_AngelCorr_tets.cx3/trueOutputAngleCorr/output_flowdirection_test_10.vtk"),false);
     std::remove(appendTestFolder(filename_b));
 }
-
 
 
 TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][Benchmark]")
@@ -847,8 +842,6 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a));
     std::remove(appendTestFolder(filename_a));
 }
-
-
 
 
 TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle_correction][integration]")
