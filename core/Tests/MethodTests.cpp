@@ -919,4 +919,12 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "
     REQUIRE(angleCorr.getIntersections()==1420);
     REQUIRE(angleCorr.getNumOfStepsRan()==1);
 
+    vtkSmartPointer<vtkPolyData> out;
+    CHECK_NOTHROW(out = angleCorr.getOutput());
+    if(out ==NULL) REQUIRE(false);
+
+    const char* filename_a ="/flowdirection_test_11_a.vtk";
+    CHECK_NOTHROW(angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a)));
+    std::remove(appendTestFolder(filename_a));
+
 }
