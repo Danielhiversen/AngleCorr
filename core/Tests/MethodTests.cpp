@@ -883,7 +883,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle
     REQUIRE(angleCorr.getNumOfStepsRan()==1);
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "[angle_correction][unit1]")
+TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "[angle_correction][unit]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity_";
