@@ -31,29 +31,8 @@ char * appendTestFolder(const char * filename){
     return newArray;
 }
 
-void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeEqual = true){
-    vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
 
-    vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
-    reader2->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader2->SetFileName(filename_b);
-    reader2->Update();
-
-    vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
-    reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader1->SetFileName(filename_a);
-    reader1->Update();
-
-   bool readFilesSuccesfully = true;
-   if (errorObserver->GetError() ||errorObserver->GetWarning()){
-         readFilesSuccesfully = false;
-
-   }
-   REQUIRE(readFilesSuccesfully);
-
-    vtkSmartPointer<vtkPolyData> leftHandSide = reader1->GetOutput();
-    vtkSmartPointer<vtkPolyData> rightHandSide = reader2->GetOutput();
-
+void validateVtkPD(vtkSmartPointer<vtkPolyData> leftHandSide,vtkSmartPointer<vtkPolyData> rightHandSide, bool shouldBeEqual = true){
     unsigned int numberOfPointsRight = rightHandSide->GetNumberOfPoints();
     unsigned int numberOfPointsLeft = leftHandSide->GetNumberOfPoints();
     if(shouldBeEqual){
@@ -113,6 +92,31 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
     REQUIRE(all_equal== shouldBeEqual);
 }
 
+void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeEqual = true){
+    vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+
+    vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader2->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader2->SetFileName(filename_b);
+    reader2->Update();
+
+    vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader1->SetFileName(filename_a);
+    reader1->Update();
+
+   bool readFilesSuccesfully = true;
+   if (errorObserver->GetError() ||errorObserver->GetWarning()){
+         readFilesSuccesfully = false;
+
+   }
+   REQUIRE(readFilesSuccesfully);
+
+    vtkSmartPointer<vtkPolyData> leftHandSide = reader1->GetOutput();
+    vtkSmartPointer<vtkPolyData> rightHandSide = reader2->GetOutput();
+
+    validateVtkPD(leftHandSide, rightHandSide, shouldBeEqual);
+}
 
 void testFlow(char centerline[], char image_prefix[], double Vnyq, double cutoff, int nConvolutions, char true_output[]){
     const char testFile[] = "/flowdirection_test_1.vtk";
@@ -906,6 +910,12 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "
     REQUIRE(angleCorr.getNumOfStepsRan()==2);
 
 
+
+    vectorSpline3dDouble outSpline;
+    CHECK_NOTHROW(outSpline = angleCorr.getClSpline());
+    REQUIRE(outSpline.size()==angleCorr.getBloodVessels());
+    REQUIRE(outSpline.at(0).getTransform());
+
     uncertainty_limit = 0.5;
 
     angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist);
@@ -920,11 +930,58 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "
     CHECK_NOTHROW(out = angleCorr.getOutput());
     if(out ==NULL) REQUIRE(false);
 
-    vectorSpline3dDouble outSpline;
-    CHECK_NOTHROW(outSpline = angleCorr.getClSpline());
 
     const char* filename_a ="/flowdirection_test_11_a.vtk";
     CHECK_NOTHROW(angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_a)));
+
+    vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+
+    vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader1->SetFileName(appendTestFolder(filename_a));
+    reader1->Update();
+
+    bool readFilesSuccesfully = true;
+    if (errorObserver->GetError() ||errorObserver->GetWarning()){
+         readFilesSuccesfully = false;
+
+    }
+    REQUIRE(readFilesSuccesfully);
+
+    vtkSmartPointer<vtkPolyData> leftHandSide = reader1->GetOutput();
+
+    validateVtkPD(leftHandSide, out, true);
+
     std::remove(appendTestFolder(filename_a));
+
+}
+
+TEST_CASE("AngleCorrection: Test error handler", "[angle_correction][unit]")
+{
+    vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
+
+    CHECK_NOTHROW(errorObserver->Clear());
+    REQUIRE(!errorObserver->GetError());
+    REQUIRE(!errorObserver->GetWarning());
+    REQUIRE(errorObserver->GetErrorMessage().length()==0);
+    REQUIRE(errorObserver->GetWarningMessage().length()==0);
+
+    const char* filename_a = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-NonExisting";
+    vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader1->AddObserver(vtkCommand::ErrorEvent,errorObserver);
+    reader1->SetFileName(appendTestFolder(filename_a));
+    reader1->Update();
+
+    REQUIRE(errorObserver->GetError());
+    REQUIRE(!errorObserver->GetWarning());
+    REQUIRE(errorObserver->GetErrorMessage().length()>0);
+    REQUIRE(errorObserver->GetWarningMessage().length()==0);
+
+    CHECK_NOTHROW(errorObserver->Clear());
+
+    REQUIRE(!errorObserver->GetError());
+    REQUIRE(!errorObserver->GetWarning());
+    REQUIRE(errorObserver->GetErrorMessage().length()==0);
+    REQUIRE(errorObserver->GetWarningMessage().length()==0);
 
 }
