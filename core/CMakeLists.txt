@@ -36,12 +36,12 @@ set(AngleCorrection_SOURCE_FILES
     intersection_set.hpp
     matrix.hpp
     metaimage.hpp
-    plane3d.cpp
     plane3d.hpp
     precision.hpp
     quadratic_spline_fitter.hpp
     spline3d.hpp
     ErrorHandler.hpp
+    ErrorHandler.cpp
 )
 
 add_library(AngleCorr STATIC ${AngleCorrection_SOURCE_FILES})

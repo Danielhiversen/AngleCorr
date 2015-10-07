@@ -39,7 +39,14 @@ AngleCorrection::AngleCorrection(){
     mIntersections =  0;
     mBloodVessels = 0;
     mNumOfStepsRan=0;
-
+    mVnyq=0;
+    mCutoff=0;
+    mnConvolutions=0;
+    mUncertainty_limit=0;
+    mMinArrowDist=0;
+    mBloodVesselsRemoved = 0;
+    mUpdate1=true;
+    mUpdate2=true;
 }
 
 
@@ -117,7 +124,6 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, cons
     vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
     reader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    reader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
     reader->SetFileName(filename.c_str());
     reader->Update();
@@ -136,7 +142,6 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
     clReader->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    clReader->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
     clReader->SetFileName(centerline);
     clReader->Update();
@@ -159,8 +164,11 @@ void AngleCorrection::setInput(const char* centerline,const char* image_prefix, 
 
 bool AngleCorrection::calculate()
 {
+    cerr << "params: " << mnConvolutions<< "      "   << mCutoff  << "      "  <<  mUncertainty_limit << "            " << mMinArrowDist << "         " << mVnyq <<endl;
+
     if(!mValidInput)
     {
+        cerr << "Invalid input " << endl;
         mOutput = NULL;
         return false;
     }
@@ -215,7 +223,6 @@ void AngleCorrection::writeDirectionToVtkFile(const char* filename)
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
     vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
     writer->AddObserver(vtkCommand::ErrorEvent,errorObserver);
-    writer->AddObserver(vtkCommand::WarningEvent,errorObserver);
 
     writer->SetFileName(filename);
 #if VTK_MAJOR_VERSION <= 5
@@ -306,21 +313,20 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
     double p_temp[3];
     double flow_vector[3];
     double flow_vector_n[3];
-    double flow_direction;
     double abs_dir;
     double abs_vessel_vel;
-    int num_uncertainty_limit = 0;
+    mBloodVesselsRemoved = 0;
     for(auto &spline: *splines)
     {
 
-        flow_direction = spline.getIntersections().getEstimatedDirection();
+        double flow_direction = spline.getIntersections().getEstimatedDirection();
         abs_dir = flow_direction*sgn(flow_direction);
         abs_vessel_vel = spline.getIntersections().getEstimatedVelocity();
         abs_vessel_vel = abs_vessel_vel*sgn(abs_vessel_vel);
 
 
         if( abs_dir< uncertainty_limit){
-            num_uncertainty_limit++;
+            mBloodVesselsRemoved++;
             continue;
         }
         if(std::isnan(abs_dir) || std::isnan(abs_vessel_vel) ){
@@ -337,7 +343,6 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
             p_temp[0]=p[0]-p_prev[0];
             p_temp[1]=p[2]-p_prev[1];
             p_temp[1]=p[2]-p_prev[2];
-
             if(length3d(p_temp)<minArrowDist){
                 continue;
             }
@@ -370,8 +375,8 @@ vtkSmartPointer<vtkPolyData> AngleCorrection::computeVtkPolyData( vectorSpline3d
     pointdata->AddArray(flowdirection);
     pointdata->AddArray(dir_uncertainty);
     pointdata->AddArray(velocitydata);
-    if (num_uncertainty_limit){
-        cerr << "Removed " << num_uncertainty_limit << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
+    if (mBloodVesselsRemoved){
+        cerr << "Removed " << mBloodVesselsRemoved << " segment(s) due to an uncertainty limit of " << uncertainty_limit << "\n";
     }
     return polydata;
 }

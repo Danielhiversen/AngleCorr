@@ -19,6 +19,8 @@ namespace cx
  */
 
 
+typedef boost::shared_ptr<class AngleCorrectionExecuter> AngleCorrectionExecuterPtr;
+
 
 class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public ThreadedTimedAlgorithm<bool>, private AngleCorrection
 {
@@ -26,7 +28,7 @@ class org_custusx_anglecorrection_EXPORT AngleCorrectionExecuter : public Thread
 public:
   AngleCorrectionExecuter();
   virtual ~AngleCorrectionExecuter();
-  void setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist);
+  void setInput(QString clFilename, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist);
   vtkSmartPointer<vtkPolyData> getOutput();
   int getNumOfStepsRan(){return AngleCorrection::getNumOfStepsRan();}
   virtual bool calculate(bool reportOutSuccess);

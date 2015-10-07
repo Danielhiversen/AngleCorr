@@ -45,9 +45,9 @@ public:
     }
 
     /**
-   * Default constructor - initialize to 10 points
+   * Default constructor - initialize to 0 points
    */
-    Spline3D() { Spline3D(0); }
+//    Spline3D() { Spline3D(0); }
 
     /**
    * Destructor
@@ -211,7 +211,6 @@ public:
         {
             pt[i] = m_points[i][0];
         }
-        int sign;
         int prevsign = sgn(plane.getDistance(pt));
         int pos = -1;
         for(unsigned int i = 1; i < m_points[0].size(); i++)
@@ -220,7 +219,7 @@ public:
             {
                 pt[j] = m_points[j][i];
             }
-            sign = sgn(plane.getDistance(pt));
+            int sign = sgn(plane.getDistance(pt));
             if(prevsign != sign){
                 // We found the points:
                 // Points(i-1 and i)
@@ -378,7 +377,6 @@ public:
 
         // Build the splines depth first
         int curspline = 0;
-        int curnode = 0;
 
         vector<int> firstNodes = list.findAllFirst();
 
@@ -394,7 +392,7 @@ public:
         {
 
             // Pop stack
-            curnode = stack.back();
+            int curnode = stack.back();
             parents.pop_back();
             stack.pop_back();
 
@@ -580,29 +578,21 @@ protected:
 
         for(int dim = 0; dim < 3; dim++)
         {
-            T a_tmp = 0.0;
-            T b_tmp = 0.0;
-            T c_tmp = 0.0;
-
-
-            a_tmp
-                    = m_cpoints[dim][p-1]*0.5
+            T a_tmp = m_cpoints[dim][p-1]*0.5
                     - m_cpoints[dim][p]
                     + m_cpoints[dim][p+1]*0.5;
             a_tmp *= plane.getCoefficient(dim);
 
             a += a_tmp;
 
-            b_tmp
-                    = - m_cpoints[dim][p-1]
+            T b_tmp = - m_cpoints[dim][p-1]
                     + m_cpoints[dim][p];
             b_tmp *= plane.getCoefficient(dim);
 
             b += b_tmp;
 
-            c_tmp
-                    = m_cpoints[dim][p-1]*0.5
-                    + m_cpoints[dim][p]*0.5;
+            T c_tmp = m_cpoints[dim][p-1]*0.5
+                  + m_cpoints[dim][p]*0.5;
             c_tmp *= plane.getCoefficient(dim);
 
             c += c_tmp;

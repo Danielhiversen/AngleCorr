@@ -25,10 +25,10 @@ AngleCorrectionExecuter::~AngleCorrectionExecuter()
 {
 }
 
-void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
+void AngleCorrectionExecuter::setInput(QString clFilename, QString dataFilename, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
     try {
-        AngleCorrection::setInput(clData,  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions,  uncertainty_limit,  minArrowDist);
+        AngleCorrection::setInput(clFilename.toStdString().c_str(),  dataFilename.toStdString().c_str(),  Vnyq,  cutoff,  nConvolutions, uncertainty_limit, minArrowDist);
     } catch (std::exception& e){
         reportError("std::exception in angle correction algorithm during setting parameters: "+qstring_cast(e.what()));
     } catch (...){
@@ -39,7 +39,7 @@ void AngleCorrectionExecuter::setInput(vtkSmartPointer<vtkPolyData> clData, QStr
 
 bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
 {
-    report(QString("Algorithm Angle correction started."));
+    if(reportOutSuccess) report(QString("Algorithm Angle correction started."));
     bool res= false;
     try {
         res=AngleCorrection::calculate();
@@ -50,8 +50,8 @@ bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
     }
     if(res){
         QString text =QString("Algorithm Angle correction complete [%1s].").arg(this->getSecondsPassedAsString());
-        if(getBloodVessels() <1) text.append("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(QString(getBloodVessels()));
-        if(getIntersections() <1) text.append("\n Found %1 blood vessels. Maybe <<Max angle cut off>> should be lower?").arg(QString(getIntersections()));
+        if(getBloodVessels() <1) text.append(QString("\n Found %1 blood vessels. Maybe <<Velocity certainty cut off>> should be higher?").arg(getBloodVessels()));
+        if(getIntersections() <1) text.append(QString("\n Found %1 interesections. Maybe <<Max angle cut off>> should be lower?").arg(getIntersections()));
         if(getNumOfStepsRan() <1) text.append("\n Same input as previous. No new data generated.");
         if(reportOutSuccess) reportSuccess(text);
     }else{
@@ -64,6 +64,7 @@ bool AngleCorrectionExecuter::calculate(bool reportOutSuccess)
 
 void AngleCorrectionExecuter::postProcessingSlot()
 {
+
 }
 
 vtkSmartPointer<vtkPolyData>  AngleCorrectionExecuter::getOutput()
