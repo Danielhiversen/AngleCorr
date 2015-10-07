@@ -3,6 +3,8 @@ get_directory_property(hasParent PARENT_DIRECTORY)
 
 project(AngleCorrection)
 
+cmake_policy(SET CMP0012 NEW)
+
 if(NOT hasParent)
     option(BUILD_TESTS "Build tests." ON)
     set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
