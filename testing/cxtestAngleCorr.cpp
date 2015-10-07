@@ -12,8 +12,8 @@
 #include "cxReporter.h"
 #include "cxSessionStorageService.h"
 #include "cxtestQueuedSignalListener.h"
-#include "cxtestUtilities.h"
 #include "cxVisServices.h"
+#include "cxUtilHelpers.h"
 
 #include <vtkPolyDataReader.h>
 #include <vtkPointData.h>
@@ -193,7 +193,7 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
     while(fixture.angleCorrWidget->isRunning())
     {
-        cxtest::Utilities::sleep_sec(0.5);
+		cx::sleep_ms(500);
     }
     REQUIRE(fixture.logContains("Algorithm Angle correction complete"));
 

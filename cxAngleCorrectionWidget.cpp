@@ -274,14 +274,11 @@ void AngleCorrectionWidget::setClData(QString value)
 }
 
 bool AngleCorrectionWidget::isRunning(){
-    if(mExecuter)
-    {
-        mExecuter->isRunning();
-    }else
-    {
-        return false;
-    }
-
+	if(mExecuter)
+	{
+		return mExecuter->isRunning();
+	}
+	return false;
 }
 
 void AngleCorrectionWidget::setInput()
