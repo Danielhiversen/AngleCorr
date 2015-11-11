@@ -31,31 +31,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =========================================================================*/
 
 #include "cxAngleCorrectionWidget.h"
+#include "cxDoubleProperty.h"
+#include "cxHelperWidgets.h"
+#include "cxLogger.h"
+#include "cxMesh.h"
+#include "cxProfile.h"
+#include "cxRegistrationTransform.h"
+#include "cxSelectDataStringProperty.h"
+#include "cxSettings.h"
+#include "cxTime.h"
+#include "cxViewGroupData.h"
+#include "cxViewService.h"
+#include "cxVisServices.h"
+#include "Exceptions.hpp"
+#include <QDir>
 #include <QLabel>
 #include <QVBoxLayout>
-#include "Exceptions.hpp"
-
-#include "cxLogger.h"
-#include "cxPatientModelServiceProxy.h"
-#include "cxAcquisitionServiceProxy.h"
-#include "cxViewService.h"
-#include "cxPatientModelService.h"
-#include "cxVisServices.h"
-#include "cxSettings.h"
-#include "cxDoubleProperty.h"
-#include "cxProfile.h"
-#include "cxHelperWidgets.h"
-#include "cxTime.h"
-#include "cxMesh.h"
-#include "cxSelectDataStringProperty.h"
-#include "cxRegistrationTransform.h"
-#include "cxMeshHelpers.h"
-#include "cxViewGroupData.h"
 
 
-#include "angle_correction_impl.cpp"
-#include <vtkPolyDataWriter.h>
-#include <lib/writeToFile.cpp>
+
 
 ///
 
@@ -68,17 +62,17 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     mVelFileSelectWidget( new FileSelectWidget(this)),
     mVisServices(visServices)
 {
-
-    mSettings = profile()->getXmlSettings().descend("angelCorr");
-
-    connect(mVisServices->getPatientService().get(), SIGNAL(patientChanged()), this, SLOT(patientChangedSlot()));
-   // connect(mAcquisitionService.get(), SIGNAL(saveDataCompleted(QString)), this, SLOT(selectVelData(QString)));
+    mSettings = profile()->getXmlSettings().descend("angleCorr");
+    connect(mVisServices->patient().get(), SIGNAL(patientChanged()), this, SLOT(patientChangedSlot()));
     this->setWhatsThis(this->defaultWhatsThis());
 	
-    mClDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patientModelService);
-	mClDataSelectWidget->setValueName("Centerline: ");
-	mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClDataSelectWidget));
+    mClDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patient());
+    mClDataSelectWidget->setUidRegexp("tsf_cl(?!.*angleCorr).*"); 
+    mClDataSelectWidget->setValueName("Centerline: ");
+    mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->view(), mVisServices->patient(), this, mClDataSelectWidget));
     connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(cLDataChangedSlot()));
+    connect(mClDataSelectWidget.get(), SIGNAL(changed()),          this, SLOT(step1ParamChangedSlot()));
+
 
     mOptionsWidget = this->createOptionsWidget();
 	mOptionsWidget->setVisible(settings()->value("AngleCorr/AngleCorrShowDetails").toBool());
@@ -90,27 +84,21 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
 		  SLOT(toggleDetailsSlot()),
 		  mVerticalLayout);
 
-
     mRunAngleCorrButton = new QPushButton("Angle correct", this);
 	connect(mRunAngleCorrButton, &QPushButton::clicked, this, &AngleCorrectionWidget::runAngleCorection);
 	mVerticalLayout->addWidget(mRunAngleCorrButton);
 
+    mOutDataSelectWidget =   StringPropertySelectMesh::New(mVisServices->patient());
+    mOutDataSelectWidget->setUidRegexp("angleCorr"); 
+	mOutDataSelectWidget->setValueName("Output: ");
+    mVerticalLayout->addWidget(new DataSelectWidget(mVisServices->view(), mVisServices->patient(), this, mOutDataSelectWidget));
 
-	QWidget* retval = new QWidget(this);
-	QGridLayout* layout = new QGridLayout(retval);
-	layout->setMargin(0);
-    layout->addWidget(new QLabel("Toggle show angle corrected data:", this),0,0);
-    mToggleShowOutputAction = this->createAction(this,
-                    QIcon(":/icons/open_icon_library/eye.png.png"),
-                    "Toggle show angle corrected data in view", "",
-                    SLOT(toggleShowOutputData()),
-                    NULL);
-    mToggleShowOutputAction->setCheckable(false);
-    CXSmallToolButton* toggleShowButton = new CXSmallToolButton();
-    toggleShowButton->setDefaultAction(mToggleShowOutputAction);
-	layout->addWidget(toggleShowButton,0,1);
-	mVerticalLayout->addWidget(retval);
-
+    mExecuter.reset(new AngleCorrectionExecuter());
+	connect(mExecuter.get(), SIGNAL(finished()), this, SLOT(executionFinished()));
+	connect(mExecuter.get(), SIGNAL(aboutToStart()), this, SLOT(preprocessExecuter()));
+    mTimedAlgorithmProgressBar = new cx::TimedAlgorithmProgressBar;
+	mTimedAlgorithmProgressBar->attach(mExecuter);
+	mVerticalLayout->addWidget(mTimedAlgorithmProgressBar);
 
 	mVerticalLayout->addStretch();
 
@@ -118,11 +106,17 @@ AngleCorrectionWidget::AngleCorrectionWidget(VisServicesPtr visServices, QWidget
     this->cLDataChangedSlot();
     mOptionsWidget->setVisible(false);
 
+    mUid="";
+    mName="";
+    mStep1ParamChanged=true;
+
+    mVNyq = 0.0;
+
 }
 
 AngleCorrectionWidget::~AngleCorrectionWidget()
 {
-   // mClSplines->clear();
+
 }
 
 QString AngleCorrectionWidget::defaultWhatsThis() const
@@ -135,7 +129,7 @@ QString AngleCorrectionWidget::defaultWhatsThis() const
 
 void AngleCorrectionWidget::patientChangedSlot()
 {
-    QString dataFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/US_Acq/";
+    QString dataFilename = mVisServices->patient()->getActivePatientFolder() + "/US_Acq/";
     mVelFileSelectWidget->setPath(dataFilename);
 }
 
@@ -144,55 +138,53 @@ void AngleCorrectionWidget::cLDataChangedSlot()
     if(!mClDataSelectWidget->getMesh()){
         return;
     }
+    QString clUid = mClDataSelectWidget->getMesh()->getUid().section("_",1,2 );
+    QStringList files=mVelFileSelectWidget->getAllFiles();
+    for (int i = 0; i < files.size(); ++i)
+    {
+        if(files.at(i).contains(clUid))
+        {
+        	  mVelFileSelectWidget->setFilename(files.at(i));
+              return;
+        }
+    }
 
-    report("Changed cl");
-
-//    mClDataSelectWidget->getMesh()
-
+    // No velocity data found => open advanced settings
+    mOptionsWidget->setVisible(true);
 }
 
+
+void AngleCorrectionWidget::step1ParamChangedSlot()
+{
+    mStep1ParamChanged=true;
+}
+
+void AngleCorrectionWidget::step2ParamChangedSlot()
+{
+    if(mStep1ParamChanged) return;
+    setInput();
+    if(!mExecuter->calculate(false)) return;
+    vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
+    mOutData->setVtkPolyData(output);
+    report(QString("Angle correction updated"));
+}
 
 void AngleCorrectionWidget::selectVelData(QString filename)
 {
-	if (filename.isEmpty())
-	{
-		reportWarning("no velocity file selected");
-		return;
-	}
-
-	  mVelFileSelectWidget->setFilename(filename);
+    if (filename.isEmpty())
+    {
+        reportWarning("No velocity file selected");
+        return;
+    }
+    mVelFileSelectWidget->setFilename(filename);
+    step1ParamChangedSlot();
 }
-
-
-
 
 void AngleCorrectionWidget::toggleDetailsSlot()
 {
     mOptionsWidget->setVisible(!mOptionsWidget->isVisible());
     settings()->setValue("AngleCorr/AngleCorrShowDetails", mOptionsWidget->isVisible());
 }
-
-
-void AngleCorrectionWidget::toggleShowOutputData()
-{
-    if (!mOutData)
-        return;
-
-    int groupIdx = mVisServices->visualizationService->getActiveGroupId();
-    if (groupIdx<0)
-        groupIdx = 0;
-	ViewGroupDataPtr currentViewGroup =  mVisServices->visualizationService->getGroup(groupIdx);
-
-    if (mToggleShowOutputAction->isChecked())
-    {
-		currentViewGroup->addData(mOutData->getUid());
-    }
-    else
-    {
-		currentViewGroup->removeData(mOutData->getUid());
-    }
-}
-
 
 QWidget* AngleCorrectionWidget::createOptionsWidget()
 {
@@ -208,6 +200,8 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
     QLabel* velLabel = new QLabel("Velocity data:");
     layout->addWidget(velLabel,line,0);
 	connect(mVelFileSelectWidget, &FileSelectWidget::fileSelected, this,&AngleCorrectionWidget::selectVelData);
+  //  connect(mVelFileSelectWidget, &FileSelectWidget::fileSelected, this,SLOT(Step1ParamChangedSlot()));
+
 	mVelFileSelectWidget->setNameFilter(QStringList() << "*Velocity.fts");
     layout->addWidget(mVelFileSelectWidget,line,1);
 	++line;
@@ -215,120 +209,136 @@ QWidget* AngleCorrectionWidget::createOptionsWidget()
     layout->addWidget(new QLabel("Centerline smoothing:", this), line, 0);
     mClSmoothing = DoubleProperty::initialize("ClSmoothing", " ", "Smoothing of the centerline", 5, DoubleRange(0, 100, 1), 0, mSettings.getElement());
     mClSmoothing->setGuiRepresentation(DoublePropertyBase::grSLIDER);
-    layout->addWidget(createDataWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mClSmoothing), line, 1);
+    connect(mClSmoothing.get(), SIGNAL(changed()),          this, SLOT(step1ParamChangedSlot()));
+    layout->addWidget(createDataWidget(mVisServices->view(), mVisServices->patient(), this, mClSmoothing), line, 1);
 	++line;
 
     layout->addWidget(new QLabel("Max angle cut off [deg]:", this), line, 0);
     mMaxThetaCutoff = DoubleProperty::initialize("maxThetaCutoff", " ", "Data from steeper angle will be ignored", 70.0, DoubleRange(0, 90, 1), 0, mSettings.getElement());
     mMaxThetaCutoff->setGuiRepresentation(DoublePropertyBase::grSLIDER);
-    layout->addWidget(createDataWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mMaxThetaCutoff), line, 1);
+    connect(mMaxThetaCutoff.get(), SIGNAL(changed()),          this, SLOT(step1ParamChangedSlot()));
+    layout->addWidget(createDataWidget(mVisServices->view(), mVisServices->patient(), this, mMaxThetaCutoff), line, 1);
 	++line;
 
-    layout->addWidget(new QLabel("Velocity certainty cut off:", this), line, 0);    
+    layout->addWidget(new QLabel("FLow direction certainty cut off:", this), line, 0);
     mUncertaintyLimit = DoubleProperty::initialize("uncertaintyLimit", " ", "Semgents with lower certainty will be ignored", 0.0, DoubleRange(0, 1, 0.1), 1, mSettings.getElement());
     mUncertaintyLimit->setGuiRepresentation(DoublePropertyBase::grSLIDER);
-    layout->addWidget(createDataWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mUncertaintyLimit), line, 1);
+    connect(mUncertaintyLimit.get(), SIGNAL(changed()),          this, SLOT(step2ParamChangedSlot()));
+    layout->addWidget(createDataWidget(mVisServices->view(), mVisServices->patient(), this, mUncertaintyLimit), line, 1);
 	++line;
 
-    layout->addWidget(new QLabel("Min arrow[mm]:", this), line, 0);
-    mMinArrowDist = DoubleProperty::initialize("minArrowDist", " ", "Min dist between visualization arrows [mm]", 0.3, DoubleRange(0, 1, 0.1), 1, mSettings.getElement());
+    layout->addWidget(new QLabel("Min arrow dist. [mm]:", this), line, 0);
+    mMinArrowDist = DoubleProperty::initialize("minArrowDist", " ", "Min dist between visualization arrows [mm]", 0.3, DoubleRange(0, 10, 0.1), 1, mSettings.getElement());
     mMinArrowDist->setGuiRepresentation(DoublePropertyBase::grSLIDER);
-    layout->addWidget(createDataWidget(mVisServices->visualizationService, mVisServices->patientModelService, this, mMinArrowDist), line, 1);
+    connect(mMinArrowDist.get(), SIGNAL(changed()),          this, SLOT(step2ParamChangedSlot()));
+    layout->addWidget(createDataWidget(mVisServices->view(), mVisServices->patient(), this, mMinArrowDist), line, 1);
 	++line;
 
 	return retval;
 }
 
-void AngleCorrectionWidget::runAngleCorection()
+MeshPtr AngleCorrectionWidget::getOutData() const
 {
-    mRunAngleCorrButton->setEnabled(false);
-    bool result = execute();
-    mRunAngleCorrButton->setEnabled(true);
-    mToggleShowOutputAction->setCheckable(true);
+    return mOutData;
+
 }
 
+void AngleCorrectionWidget::setMinArrowDist(double value)
+{
+    mMinArrowDist->setValue(value);
+}
 
+void AngleCorrectionWidget::setUncertaintyLimit(double value)
+{
+    mUncertaintyLimit->setValue(value);
+}
 
-bool AngleCorrectionWidget::execute()
+void AngleCorrectionWidget::setMaxThetaCutoff(double value)
+{
+    mMaxThetaCutoff->setValue(value);
+}
+
+void AngleCorrectionWidget::setClSmoothing(double value)
+{
+    mClSmoothing->setValue(value);
+}
+
+void AngleCorrectionWidget::setVNyq(double value)
+{
+    mVNyq = value;
+}
+
+void AngleCorrectionWidget::setClData(QString value)
+{
+    mClDataSelectWidget->setValue(value);
+}
+
+bool AngleCorrectionWidget::isRunning(){
+	if(mExecuter)
+	{
+		return mExecuter->isRunning();
+	}
+	return false;
+}
+
+void AngleCorrectionWidget::setInput()
 {
     if(!mClDataSelectWidget->getMesh()){
         reportError("No centerline selected");
-        return false;
+        return;
     }
+    vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
+    QString clFilename =QDir(mVisServices->patient()->getActivePatientFolder()).filePath(mClDataSelectWidget->getMesh()->getFilename());
 
-    
     QString dataFilename = mVelFileSelectWidget->getFilename();
     if(dataFilename.length() ==0){
-        //dataFilename = mVisServices->getPatientService()->getActivePatientFolder() + "/US_Acq/" + mClDataSelectWidget->getMesh()->getUid()
         reportError("No velocity data selected");
          mOptionsWidget->setVisible(true);
-        return false;
+        return;
     }
     dataFilename.replace(".fts","_");
-
-    //QStringList filter= QStringList() << "*_tsf_cl?.vtk";   
-    //filter << "*_tsf_cl??.vtk";   
-    // if file name not filter warning!
-
-    double Vnyq = 0.0;
     double cutoff = cos(mMaxThetaCutoff->getValue()/180.0*M_PI);
     int nConvolutions = (int) mClSmoothing->getValue();
     double uncertainty_limit = mUncertaintyLimit->getValue();
     double minArrowDist = mMinArrowDist->getValue();
 
-    vector<Spline3D<D> > *mClSplines;
-    try {    
-        report(dataFilename);
-        mClSplines = angle_correction_impl(mClDataSelectWidget->getMesh()->getVtkPolyData(), dataFilename.toStdString().c_str(), Vnyq, cutoff, nConvolutions);
-
-    } catch (std::exception& e){
-		reportError("std::exception in angle correction algorithm  step 1:"+qstring_cast(e.what()));
-        return false;
-    } catch (...){
-		reportError("Angle correction algorithm threw a unknown exception in step 1.");
-        return false;
-    }
-
-
-    QString temp = mVisServices->getPatientService()->getActivePatientFolder() + "/Images/"+mClDataSelectWidget->getMesh()->getName()+"_angleCorr%1.vtk";
-    QString outputFilename = temp.arg(1);
-    int i =1;
-    while(QFileInfo(outputFilename).isFile())
-    {
-        i++;
-        outputFilename = temp.arg(i);
-    }
-    vtkSmartPointer<vtkPolyData> output;
-    try {    
-        report(outputFilename);
-         output= flowDirection(mClSplines, uncertainty_limit, minArrowDist);
-    } catch (std::exception& e){
-		reportError("std::exception in angle correction algorithm  step 2:"+qstring_cast(e.what()));
-        return false;
-    } catch (...){
-		reportError("Angle correction algorithm threw a unknown exception in step 2.");
-        return false;
-    }
-
-
-    report(mClDataSelectWidget->getMesh()->getUid());
-    report(mClDataSelectWidget->getMesh()->getUid());
-
-
-    QString uid = mClDataSelectWidget->getMesh()->getUid() + "_angelCorr%1"; 
-	QString name = mClDataSelectWidget->getMesh()->getName()+" angelCorr%1";
-    mOutData = mVisServices->patientModelService->createSpecificData<Mesh>(uid, name);
-	mOutData->setVtkPolyData(output);
-	mOutData->setColor(QColor(0, 0, 255, 255));
-    mOutData->get_rMd_History()->setParentSpace(mClDataSelectWidget->getMesh()->getUid());
-
-	mVisServices->patientModelService->insertData(mOutData);
-	mVisServices->visualizationService->autoShowData(mOutData);
-
-
-    reportSuccess(QString("Completed angle correction"));
-    return true;
+    mExecuter->setInput(clFilename, dataFilename, mVNyq, cutoff, nConvolutions, uncertainty_limit, minArrowDist);
 }
 
+void AngleCorrectionWidget::preprocessExecuter()
+{
+    setInput();
+    mRunAngleCorrButton->setEnabled(false);
+}
+
+void AngleCorrectionWidget::runAngleCorection()
+{
+    mExecuter->execute();
+}
+
+void AngleCorrectionWidget::executionFinished()
+{
+    mRunAngleCorrButton->setEnabled(true);
+    vtkSmartPointer<vtkPolyData> output = mExecuter->getOutput();
+    if(output==NULL)
+    {
+        reportError("Invalid output from anglecorrection algorithm");
+        return;
+    }
+    if (mExecuter->getNumOfStepsRan() > 1)
+    {
+        mUid = mClDataSelectWidget->getMesh()->getUid() + "_angleCorr%1";
+        mName = mClDataSelectWidget->getMesh()->getName()+" angleCorr%1";
+        mOutData = mVisServices->patient()->createSpecificData<Mesh>(mUid, mName);
+        mOutData->get_rMd_History()->setParentSpace(mClDataSelectWidget->getMesh()->getUid());
+    }
+
+	mOutData->setVtkPolyData(output);
+
+    mVisServices->patient()->insertData(mOutData);
+    mVisServices->view()->autoShowData(mOutData);
+    mOutDataSelectWidget->setValue(mOutData->getUid());
+    mStep1ParamChanged=false;
+}
 
 } /* namespace cx */

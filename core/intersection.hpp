@@ -21,15 +21,16 @@ public:
   /**
    * Initialize everything to 0, false or NULL
    */
-  Intersection()
+  Intersection():m_points()
   {
     m_spline = NULL;
     m_intersection_pos = 0.0;
     m_cosTheta = 0.0;
     m_origAvgValue = 0.0;
-    m_points = vector<T>();
     m_valid = false;
     m_img = NULL;
+    m_avg_computed = 0;
+    m_avgValue = 0;
   }      
   /**
    * Retrieve the intersecting spline curve 
@@ -110,8 +111,8 @@ public:
   inline void
   setPoints(vector<T>&& points)
   {
-    m_avg_computed = false;
     m_points = std::move(points);
+    m_avg_computed = false;
   }
 
   /**
@@ -173,6 +174,7 @@ public:
   setMetaImage(const MetaImage<inData_t>* img)
   {
     m_img = img;
+    m_avg_computed = false;
   }
   
   /**
@@ -247,7 +249,7 @@ public:
 
     negative = m_points.size()-positive;
   
-    T pos_weight = (T)(positive - negative)/(D)(positive + negative);
+    T pos_weight = (T)(positive - negative)/(double)(positive + negative);
     pos_weight = pos_weight * pos_weight;
     T ret = A*pos_weight;
     if(abs(m_cosTheta) > a && abs(m_cosTheta) < b)

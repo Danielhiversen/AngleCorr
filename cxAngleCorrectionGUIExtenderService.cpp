@@ -58,9 +58,7 @@ QString AngleCorrectionGUIExtenderService::getType() const
 std::vector<GUIExtenderService::CategorizedWidget> AngleCorrectionGUIExtenderService::createWidgets() const
 {
     VisServicesPtr services = VisServices::create(mContext);
-//	AcquisitionServicePtr acquisitionService(new AcquisitionServiceProxy(mContext));
-//	PatientModelServicePtr patientModelService = PatientModelServicePtr(new PatientModelServiceProxy(mContext));
-	
+
     std::vector<CategorizedWidget> retval;
 
 	retval.push_back(GUIExtenderService::CategorizedWidget(

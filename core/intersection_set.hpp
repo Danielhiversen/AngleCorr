@@ -75,7 +75,7 @@ public:
     m_have_direction = true;
     if(std::isnan(m_direction))
     {
-    	m_direction = 0.0;
+        m_direction = 0.0;
     }
   }
   
@@ -94,9 +94,10 @@ public:
       T b;
       std::pair<T,T>& operator()(std::pair<T,T> &ret, Intersection<T> &i)
       {
-		if(abs(i.getCosTheta()) < a || abs(i.getCosTheta()) > b)
+        if(abs(i.getCosTheta()) < a || abs(i.getCosTheta()) > b){
 		  return ret;
-		D tmp1, tmp2;
+        }
+		double tmp1, tmp2;
 
 		tmp1 = i.getAverage()*i.getCosTheta();
 		tmp2 = i.getCosTheta()*i.getCosTheta();
@@ -118,7 +119,7 @@ public:
 
     if(std::isnan(m_velocity_ls ))
     {
-    	m_velocity_ls = 0.0;
+        m_velocity_ls = 0.0;
     }
   }
   

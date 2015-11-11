@@ -32,14 +32,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef CXANGLECORRECTIONWIDGET_H_
 #define CXANGLECORRECTIONWIDGET_H_
+
+
 #include "cxBaseWidget.h"
 #include <QPushButton>
+#include "cxAngleCorrectionExecuter.h"
 #include "cxFileSelectWidget.h"
 #include "cxDataSelectWidget.h"
 #include "cxUSAcqusitionWidget.h"
+#include "cxTimedAlgorithmProgressBar.h"
 #include "cxPatientModelServiceProxy.h"
 #include "cxXmlOptionItem.h"
 #include "cxSelectDataStringProperty.h"
+#include "org_custusx_anglecorrection_Export.h"
 
 
 class QVBoxLayout;
@@ -55,19 +60,38 @@ namespace cx
  * \date 2015-06-14
  * \author Daniel Hoyer Iversen
  */
-class AngleCorrectionWidget : public BaseWidget
+
+
+
+class org_custusx_anglecorrection_EXPORT AngleCorrectionWidget : public BaseWidget
 {
 	Q_OBJECT
 public:
     AngleCorrectionWidget(VisServicesPtr visServices, QWidget* parent) ;
 	virtual ~AngleCorrectionWidget();
+    void setInput();
+    void setClSmoothing(double value);
+    void setMaxThetaCutoff(double value);
+    void setUncertaintyLimit(double value);
+    void setMinArrowDist(double value);
+    void setVNyq(double value);
+    void setClData(QString value);
+    MeshPtr getOutData() const;
+    bool isRunning();
+
 public slots:
-	void runAngleCorection();
-    void patientChangedSlot();    
+    void runAngleCorection();
+    void patientChangedSlot();
     void selectVelData(QString filename);
-	void toggleDetailsSlot();
+    void toggleDetailsSlot();
     void cLDataChangedSlot();
-    void toggleShowOutputData();
+
+private slots:
+	void preprocessExecuter();
+	void executionFinished();
+    void step1ParamChangedSlot();
+    void step2ParamChangedSlot();
+
 private:
 
     bool execute();
@@ -82,14 +106,23 @@ private:
     QPushButton* mRunAngleCorrButton;
     QWidget* createOptionsWidget();
     QWidget* mOptionsWidget;
-    QAction* mToggleShowOutputAction;
+
 
     DoublePropertyPtr mClSmoothing;
     DoublePropertyPtr mMaxThetaCutoff;
     DoublePropertyPtr mUncertaintyLimit;
     DoublePropertyPtr mMinArrowDist;
+    double mVNyq;
     MeshPtr mOutData;
 
+    StringPropertySelectMeshPtr mOutDataSelectWidget;
+	TimedAlgorithmProgressBar* mTimedAlgorithmProgressBar;
+
+	AngleCorrectionExecuterPtr mExecuter;
+
+    QString mUid;
+    QString mName;
+    bool mStep1ParamChanged;
 };
 
 } /* namespace cx */

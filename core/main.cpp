@@ -1,8 +1,11 @@
-#include <vector>
-#include <vtkSmartPointer.h>
-#include "angle_correction_impl.cpp"
-#include <vtkPolyDataWriter.h>
-#include <lib/writeToFile.cpp>
+/**
+* Main for AngleCorrection
+*
+* \author Daniel Hoyer Iversen
+*
+*/
+
+#include "AngleCorrection.h"
 
 using namespace std;
 
@@ -12,12 +15,7 @@ using namespace std;
  * This writes the flow direction
  * alias corrected velocities and acquisition direction vector and cosTheta, all annotated to the point representing representing the intersection position
  * for each intersection to a VTK file.
- * @param filename Filename to write to
- * @param splines The spline curves to write
  */
-
-
-  
 
 int main(int argc, char *argv[])
 {
@@ -34,9 +32,11 @@ int main(int argc, char *argv[])
   int nConvolutions = atoi(argv[argidx++]);
   double uncertainty_limit = atof(argv[argidx++]);//Hide flow direction with uncertainty under given value [0,1]
 
-  vector<Spline3D<D> > *splines = angle_correction_impl(centerline, image_prefix, Vnyq, cutoff, nConvolutions);
-
-  // Write output files
-  writeDirectionToVtkFile("output_flowdirection.vtk", splines,uncertainty_limit);
+  AngleCorrection angleCorr = AngleCorrection();
+  angleCorr.setInput(centerline, image_prefix, Vnyq, cutoff, nConvolutions, uncertainty_limit);
+  if(angleCorr.calculate()){
+      // Write output files
+      angleCorr.writeDirectionToVtkFile("output_flowdirection.vtk");
+   }
 
 }
