@@ -378,13 +378,13 @@ TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]"
     bool res;
 
     AngleCorrection angleCorr = AngleCorrection();
-    CHECK_THROWS(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions,uncertainty_limit,minArrowDist));
+    REQUIRE_THROWS(angleCorr.setInput(appendTestFolder(centerline), appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions,uncertainty_limit,minArrowDist));
     REQUIRE_NOTHROW(res = angleCorr.calculate());
     REQUIRE(!res);
 
     char centerline2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix2[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-NonExisting";
-    CHECK_THROWS(angleCorr.setInput(appendTestFolder(centerline2), appendTestFolder(image_prefix2), Vnyq, cutoff, nConvolutions,  uncertainty_limit,minArrowDist));
+    REQUIRE_THROWS(angleCorr.setInput(appendTestFolder(centerline2), appendTestFolder(image_prefix2), Vnyq, cutoff, nConvolutions,  uncertainty_limit,minArrowDist));
     REQUIRE_NOTHROW(res = angleCorr.calculate());
     REQUIRE(!res);
     
@@ -395,7 +395,7 @@ TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]"
     REQUIRE(res);
 
     Vnyq =  -0.312;
-    CHECK_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    REQUIRE_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     REQUIRE_NOTHROW(res = angleCorr.calculate());
     REQUIRE(!res);
 
@@ -405,7 +405,7 @@ TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]"
     REQUIRE(res);
 
     nConvolutions = -1;
-    CHECK_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    REQUIRE_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     REQUIRE_NOTHROW(res = angleCorr.calculate());
     REQUIRE(!res);
 
@@ -420,7 +420,7 @@ TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]"
     REQUIRE(res);
 
     uncertainty_limit = -0.5;
-    CHECK_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    REQUIRE_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     REQUIRE_NOTHROW(res = angleCorr.calculate());
     REQUIRE(!res);
 
@@ -430,7 +430,7 @@ TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]"
     REQUIRE(res);
 
     minArrowDist = -0.5;
-    CHECK_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    REQUIRE_THROWS(angleCorr.setInput(appendTestFolder(centerline3), appendTestFolder(image_prefix3), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     REQUIRE_NOTHROW(res = angleCorr.calculate());
     REQUIRE(!res);
 
@@ -652,7 +652,7 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correct
     std::remove(appendTestFolder(filename_b));
 
     vpd_centerline1=vtkSmartPointer<vtkPolyData>::New();
-    CHECK_THROWS(angleCorr.setInput(vpd_centerline1, appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
+    REQUIRE_THROWS(angleCorr.setInput(vpd_centerline1, appendTestFolder(image_prefix), Vnyq, cutoff, nConvolutions, uncertainty_limit,minArrowDist));
     res = angleCorr.calculate();
     REQUIRE(!res);
     angleCorr.writeDirectionToVtkFile(appendTestFolder(filename_b));
