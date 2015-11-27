@@ -72,7 +72,7 @@ public:
   /**
    * Find an adjacent node that has not been visited or found yet
    * @param node Node to find unvisited adjacent node for
-   * @ret Unvisited neighbouring node if larger than 0, -1 if no such node exist
+   * @return Unvisited neighbouring node if larger than 0, -1 if no such node exist
    */
   int findNext(int node) const
   {
