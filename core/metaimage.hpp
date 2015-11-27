@@ -99,7 +99,7 @@ public:
    * Transform a point to from world coordinates to pixel coordinates
    * @param x The x coordinate is returned here
    * @param y The y coordinate is returned here
-   * param @p The point to transform
+   * @param p The point to transform
    */
     void
     toImgCoords(double &x,

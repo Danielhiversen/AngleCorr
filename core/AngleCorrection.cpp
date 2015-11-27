@@ -18,15 +18,7 @@ using namespace std;
 *
 * \author Daniel Hoyer Iversen
 *
-* EstimateAngleCorrectedFlowDirection
-* @param centerline - centerline of the blood vessels
-* @param images - 2D velocity frames
-* @param Vnyq - Nyquist velocity
 *
-* @param minAbsCosThetaCutoff - lower abs(cosTheta) cutoff
-* @param splineSmoothing - smoothning of the blood vessel spline
-* @param uncertainty_limit - lower value for reject vessel segment
-* @param minArrowDist - min distance between visualization arrows
 */
 
 AngleCorrection::AngleCorrection(){
@@ -68,7 +60,17 @@ AngleCorrection::~AngleCorrection(){
     mNumOfStepsRan=0;
 }
 
-
+  /**
+* setInput
+* @param centerline - centerline of the blood vessels
+* @param velData - 2D velocity frames
+* @param Vnyq - Nyquist velocity
+*
+* @param cutoff - lower abs(cosTheta) cutoff
+* @param nConvolutions - smoothning of the blood vessel spline
+* @param uncertainty_limit - lower value for reject vessel segment
+* @param minArrowDist - min distance between visualization arrows
+*/
 void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, vector<MetaImage<inData_t> >* velData, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
     mValidInput= false;
