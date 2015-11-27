@@ -89,7 +89,7 @@ public:
   /** 
    * Find all adjacent nodes that has not been visited yet
    * @param node to find all unvisited adjacent nodes for
-   * @ret vector of adjacent unvisited nodes, empty vector if no such nodes exists.
+   * @return vector of adjacent unvisited nodes, empty vector if no such nodes exists.
    */
   vector<int> findAllNext(int node) const
   {
