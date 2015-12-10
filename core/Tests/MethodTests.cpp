@@ -189,7 +189,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_corr
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][integration]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][integration][unit]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751/US-Acq_02_20150527T125751_Velocity_";

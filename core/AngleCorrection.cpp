@@ -140,6 +140,9 @@ void AngleCorrection::setInput(vtkSmartPointer<vtkPolyData> vpd_centerline, cons
 
 void AngleCorrection::setInput(const char* centerline,const char* image_prefix, double Vnyq, double cutoff, int nConvolutions, double uncertainty_limit, double minArrowDist)
 {
+
+    cerr << "Input params: " << centerline<< "      "   << image_prefix  << "      "  <<  Vnyq << "            " << nConvolutions << "         " << uncertainty_limit<< "         " << minArrowDist <<endl;
+
     vtkSmartPointer<vtkPolyDataReader> clReader = vtkSmartPointer<vtkPolyDataReader>::New();
 
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
