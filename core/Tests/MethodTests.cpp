@@ -15,8 +15,6 @@
 #include <vtkPointData.h>
 #include <cstdio>
 #include <time.h>
-#include <QString>
-#include "cxDataLocations.h"
 
 #include "catch.hpp"
 
@@ -24,15 +22,13 @@
 using namespace std;
 
 
-const char * appendTestFolder(const char * filename){
-//    char anglecorrection_test_data_dir[]=ANGLECORRECTION_TEST_DATA_DIR;
-//    char * newArray = new char[std::strlen(anglecorrection_test_data_dir)+std::strlen(filename)+1];
-//    std::strcpy(newArray,anglecorrection_test_data_dir);
-//    std::strcat(newArray,filename);
+char * appendTestFolder(const char * filename){
+    char anglecorrection_test_data_dir[]=ANGLECORRECTION_TEST_DATA_DIR;
+    char * newArray = new char[std::strlen(anglecorrection_test_data_dir)+std::strlen(filename)+1];
+    std::strcpy(newArray,anglecorrection_test_data_dir);
+    std::strcat(newArray,filename);
 
-//	return newArray;
-	QString retval = cx::DataLocations::getLargeTestDataPath()+"/testing"+filename;
-	return retval.toStdString().c_str();
+    return newArray;
 }
 
 
