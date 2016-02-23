@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Angle correction by Danielhiversen</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Angle correction</h1>
+        <p>Estimation of blood flow direction from intraoperative ultrasound</p>
+
+        <p class="view"><a href="https://github.com/Danielhiversen/AngleCorr">View the Project on GitHub <small>Danielhiversen/AngleCorr</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Danielhiversen/AngleCorr/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Danielhiversen/AngleCorr/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Danielhiversen/AngleCorr">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="angle-correction" class="anchor" href="#angle-correction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Angle Correction</h1>
+
+<p>The algorithm is described here: <a href="http://dx.doi.org/10.1109/TMI.2013.2261536">http://dx.doi.org/10.1109/TMI.2013.2261536</a></p>
+
+<hr>
+
+<h2>
+<a id="building" class="anchor" href="#building" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building</h2>
+
+<p>The source code is organized in following folders:</p>
+
+<p>core - which contains the Makefile and the main source file
+core/lib - which contains the rest of the source code
+core/test - which contains tests for the code</p>
+
+<p>To build the program, you will first need the following packages (with development headers for the libraries:</p>
+
+<p>libvtk
+libeigen3
+g++-4.7
+cmake
+ninja (or make)</p>
+
+<p>These can be installed on a Debian GNU/Linux machine by issuing (as root)
+apt-get install libvtk5-dev libeigen3-dev g++-4.7 ninja-build cmake cmake-qt-gui git</p>
+
+<p>To build the program as a standalone algorithm:</p>
+
+<p>git clone  <a href="mailto:git@github.com">git@github.com</a>:SINTEFMedtek/AngleCorrection.git angelCorr</p>
+
+<p>mkdir -p build; cd build</p>
+
+<p>cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DANGLECORRECTION_TEST_DATA_DIR=../testData/ ../angelCorr/core/</p>
+
+<p>ninja</p>
+
+<hr>
+
+<h2>
+<a id="using" class="anchor" href="#using" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using</h2>
+
+<p>Running the program angle_correction without any arguments gives a short help text:</p>
+
+<p>$ ./angle_correction </p>
+
+<p>Usage: ./angle_correction centerline.vtk image_prefix Vnyq cutoff nConvolutions</p>
+
+<p>As indicated, the program must be run with 6 parameters:</p>
+
+<p>centerline.vtk   - the center line</p>
+
+<p>image_prefix     - the prefix of the images. The suffix $NUMBER.mhd will be appended to it, 
+           where $NUMBER starts at 0 and progresses until no more files are found.</p>
+
+<p>Vnyq         - Nyquist velocity used when acquiring the images</p>
+
+<p>cutoff       - The lower cutoff value for abs(cos(theta)), used for the velocity estimation algorithms</p>
+
+<p>nConvolutions    - the number of times to run the smoothAll algorithm</p>
+
+<hr>
+
+<h2>
+<a id="output" class="anchor" href="#output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Output</h2>
+
+<p>An output file are generated: output.vtk</p>
+
+<p>output.vtk is a file that may be visualized by ParaView or CustuX, and contains the center line as a point set. Each point is annotated with the following data:</p>
+
+<p>The flow direction (normalized gradient of the center line curve)
+The estimated flow velocity (simple estimate)
+The estimated acquisition direction vector</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Danielhiversen">Danielhiversen</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
