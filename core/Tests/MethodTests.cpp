@@ -205,7 +205,7 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correctio
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 3", "[angle_correction][integration][flow_dir]")
+TEST_CASE("AngleCorrection: Test flow direction estimation 3", "[angle_correction][integration][flow_dir][not_apple]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026/US-Acq_03_20150527T130026_Velocity_";
@@ -547,7 +547,7 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
 }
 
 
-TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][integration]")
+TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][integration][not_apple]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
