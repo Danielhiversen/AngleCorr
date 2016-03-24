@@ -187,10 +187,10 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     QString filename = cx::DataLocations::getLargeTestDataPath()+"/testing"+centerline;
     cx::DataPtr data = fixture.importData(filename);
     REQUIRE(data);
-    CHECK_NOTHROW(fixture.angleCorrWidget->setClData(data->getUid()));
-    CHECK_NOTHROW(fixture.angleCorrWidget->selectVelData(cx::DataLocations::getLargeTestDataPath()+ "/testing"+velData));
+    REQUIRE_NOTHROW(fixture.angleCorrWidget->setClData(data->getUid()));
+    REQUIRE_NOTHROW(fixture.angleCorrWidget->selectVelData(cx::DataLocations::getLargeTestDataPath()+ "/testing"+velData));
 
-    CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
+    REQUIRE_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
     while(fixture.angleCorrWidget->isRunning())
     {
 		cx::sleep_ms(500);
@@ -201,7 +201,7 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
 
     if(fixture.angleCorrWidget->getOutData()==NULL) REQUIRE(false); //REQUIRE(fixture.angleCorrWidget->getOutData()!=NULL);
 
-    CHECK_NOTHROW(fixture.angleCorrWidget->toggleDetailsSlot());
+    REQUIRE_NOTHROW(fixture.angleCorrWidget->toggleDetailsSlot());
 
     QString outputFilepath = fixture.getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
     validateFiles(outputFilepath.toStdString().c_str(),appendTestFolder(true_output.toStdString().c_str()));
@@ -215,7 +215,7 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
 {
     cxtest::TestAngleCorrFixture fixture;
 
-    CHECK_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
+    REQUIRE_NOTHROW(fixture.angleCorrWidget->runAngleCorection());
     REQUIRE(fixture.logContains("Algorithm Angle correction started"));
     REQUIRE(fixture.logContains("Algorithm Angle correction failed"));
 
@@ -228,7 +228,7 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     double uncertainty_limit = 0;
     double minArrowDist = 1;
     double vNyq = 0.312;
-    CHECK_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
+    REQUIRE_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
 
 
     centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
@@ -237,7 +237,7 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     vNyq =  0.0;
     cutoff = 90; //acos(0)
     nConvolutions = 5;
-    CHECK_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
+    REQUIRE_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
 
 
     centerline = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
@@ -246,7 +246,7 @@ TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correcti
     vNyq =  0.156;
     cutoff = 79.6302402; // = acos(0.18)
     nConvolutions = 6;
-    CHECK_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
+    REQUIRE_NOTHROW(testFlow(fixture, centerline, velData, cutoff, nConvolutions, uncertainty_limit, minArrowDist,vNyq,true_output ));
 
 
     fixture.shutdown();

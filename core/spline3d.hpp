@@ -135,7 +135,7 @@ public:
 
     /**
    * Apply an 1d spatial convolution to the points to interpolate
-   * @mask Mask to use for convolution - must be of length 3.
+   * @param Mask to use for convolution - must be of length 3.
    */
     void
     applyConvolution(vector<T> const &mask)

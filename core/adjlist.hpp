@@ -26,11 +26,11 @@ public:
    */
   AdjList(int nodes):m_nodes(nodes),  m_visited(nodes)
   {
-    for(visititer i = m_visited.begin(); i != m_visited.end();i++)
+    for(visititer i = m_visited.begin(); i != m_visited.end();++i)
     {
       *i = false;
     }
-    for(nodeiter i = m_nodes.begin(); i != m_nodes.end(); i++)
+    for(nodeiter i = m_nodes.begin(); i != m_nodes.end(); ++i)
     {
       (*i) = vector<int>();
     }
@@ -72,7 +72,7 @@ public:
   /**
    * Find an adjacent node that has not been visited or found yet
    * @param node Node to find unvisited adjacent node for
-   * @ret Unvisited neighbouring node if larger than 0, -1 if no such node exist
+   * @return Unvisited neighbouring node if larger than 0, -1 if no such node exist
    */
   int findNext(int node) const
   {
@@ -89,7 +89,7 @@ public:
   /** 
    * Find all adjacent nodes that has not been visited yet
    * @param node to find all unvisited adjacent nodes for
-   * @ret vector of adjacent unvisited nodes, empty vector if no such nodes exists.
+   * @return vector of adjacent unvisited nodes, empty vector if no such nodes exists.
    */
   vector<int> findAllNext(int node) const
   {

@@ -99,7 +99,7 @@ public:
    * Transform a point to from world coordinates to pixel coordinates
    * @param x The x coordinate is returned here
    * @param y The y coordinate is returned here
-   * param @p The point to transform
+   * @param p The point to transform
    */
     void
     toImgCoords(double &x,
@@ -251,7 +251,7 @@ public:
    * @param prefix The prefix of the file name. File names are assumed to be of the format prefix$NUMBER.mhd
    * @return a vector containing the retrieved images
    */
-    static vector<MetaImage>* readImages(const string prefix)
+    static vector<MetaImage>* readImages(const string & prefix)
     {
         // Images are on the format prefix$NUMBER.mhd
         vtkSmartPointer<vtkMetaImageReader> reader= vtkSmartPointer<vtkMetaImageReader>::New();

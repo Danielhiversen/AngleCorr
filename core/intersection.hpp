@@ -85,7 +85,7 @@ public:
 
   /**
    * Set the cosTheta value of the intersection
-   * @parameter t the cosTheta value
+   * @param t the cosTheta value
    */
   inline void 
   setCosTheta(T t)
