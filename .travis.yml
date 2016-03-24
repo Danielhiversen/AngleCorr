@@ -25,7 +25,8 @@ before_install:
   - git clone git@github.com:RLovelett/eigen.git
   - cd eigen
   - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
-  - ls eigen
+  - ls
+  - ls Eigen
   - cd ..
 script:
   - cd $TRAVIS_BUILD_DIR
