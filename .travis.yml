@@ -26,11 +26,12 @@ before_install:
 #  - cd eigen
 #  - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
 #  - cd ..
+  - cd /usr/include
+  - sudo ln -sf eigen3/Eigen Eigen
 script:
+  - cd $TRAVIS_BUILD_DIR
   - mkdir -p build
   - cd build
-  - ls ../
-  - ls ../eigen
   - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ ../core/
   - ninja
   - git clone https://github.com/Danielhiversen/angleCorr_data.git testData 
