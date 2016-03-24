@@ -27,6 +27,7 @@ before_install:
 #  - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
 #  - cd ..
   - cd /usr/include
+  - ls eigen3/Eigen
   - sudo ln -sf eigen3/Eigen Eigen
 script:
   - cd $TRAVIS_BUILD_DIR
