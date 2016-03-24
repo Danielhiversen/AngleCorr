@@ -21,17 +21,17 @@ matrix:
 # command to run tests
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y libvtk5-dev
-  - git clone git@github.com:RLovelett/eigen.git
-  - cd eigen
-  - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
-  - cd ..
+  - sudo apt-get install -y libvtk5-dev libeigen3-dev 
+#  - git clone git@github.com:RLovelett/eigen.git
+#  - cd eigen
+#  - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
+#  - cd ..
 script:
   - mkdir -p build
   - cd build
   - ls ../
   - ls ../eigen
-  - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -DEIGEN_INCLUDE_DIR:PATH="../eigen" ../core/
+  - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ ../core/
   - ninja
   - git clone https://github.com/Danielhiversen/angleCorr_data.git testData 
   - ./Tests/Catch 
