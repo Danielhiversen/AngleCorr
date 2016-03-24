@@ -29,7 +29,7 @@ before_install:
 script:
   - mkdir -p build
   - cd build
-  - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -D Eigen3_DIR=../eigen ../core/
+  - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -D EIGEN_INCLUDE_DIR=../eigen ../core/
   - ninja
   - git clone https://github.com/Danielhiversen/angleCorr_data.git testData 
   - ./Tests/Catch 
