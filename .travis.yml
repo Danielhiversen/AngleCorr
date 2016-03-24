@@ -11,13 +11,13 @@ matrix:
           sources: [ 'ubuntu-toolchain-r-test', 'kalakris-cmake' ]
           packages: [ 'g++-4.8', 'libstdc++-4.8-dev', 'ninja-build', 'cmake' ]
       env: CMAKE_BUILD_TYPE=DEBUG
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: [ 'ubuntu-toolchain-r-test', 'kalakris-cmake' ]
-          packages: [ 'g++-4.8', 'libstdc++-4.8-dev', 'ninja-build', 'cmake' ]
-      env: CMAKE_BUILD_TYPE=RELEASE
+#    - os: linux
+#      compiler: gcc
+#      addons:
+#        apt:
+#          sources: [ 'ubuntu-toolchain-r-test', 'kalakris-cmake' ]
+#          packages: [ 'g++-4.8', 'libstdc++-4.8-dev', 'ninja-build', 'cmake' ]
+#      env: CMAKE_BUILD_TYPE=RELEASE
 # command to run tests
 before_install:
   - sudo apt-get update -qq
@@ -29,7 +29,7 @@ before_install:
 script:
   - mkdir -p build
   - cd build
-  - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -DEigen3_DIR=../eigen ../core/
+  - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -D Eigen3_DIR=../eigen ../core/
   - ninja
   - git clone https://github.com/Danielhiversen/angleCorr_data.git testData 
   - ./Tests/Catch 
