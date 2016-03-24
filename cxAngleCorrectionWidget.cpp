@@ -287,7 +287,6 @@ void AngleCorrectionWidget::setInput()
         reportError("No centerline selected");
         return;
     }
-    vtkSmartPointer<vtkPolyData> clData = mClDataSelectWidget->getMesh()->getVtkPolyData();
     QString clFilename =QDir(mVisServices->patient()->getActivePatientFolder()).filePath(mClDataSelectWidget->getMesh()->getFilename());
 
     QString dataFilename = mVelFileSelectWidget->getFilename();
