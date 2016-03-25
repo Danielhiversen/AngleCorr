@@ -8,10 +8,12 @@ cmake_policy(SET CMP0012 NEW)
 if(NOT hasParent)
     option(BUILD_TESTS "Build tests." ON)
     set(ANGLECORRECTION_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/../../Testdata/" CACHE STRING "Directory of test data")
+    set(EIGEN_DIR "" CACHE STRING "Directory of Eigen")
 
     string(REPLACE "\"" "" ANGLECORRECTION_TEST_DATA_DIR ${ANGLECORRECTION_TEST_DATA_DIR})
     message("-- ANGLECORRECTION test data directory set to: \"${ANGLECORRECTION_TEST_DATA_DIR}\"")
     add_definitions("-DANGLECORRECTION_TEST_DATA_DIR=\"${ANGLECORRECTION_TEST_DATA_DIR}\"")
+    add_definitions("-DEIGEN_DIR=\"${EIGEN_DIR}\"")
 endif()
 
 ## VTK
@@ -23,7 +25,9 @@ set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 
 
 ## Eigen
-if(NOT EIGEN_FOUND)
+if(NOT EIGEN_FOUND AND EIGEN_DIR)
+    include_directories(${EIGEN_DIR})
+elseif(NOT Eigen_FOUND)
     find_package(Eigen3 REQUIRED)
     include_directories(${EIGEN3_INCLUDE_DIR} )
 endif()
