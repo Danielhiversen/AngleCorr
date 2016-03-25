@@ -35,6 +35,9 @@ Try:
   - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
   - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -DEIGEN_DIR=PATH_TO_EIGEN ../core/
 
+
+The test data can be downloaded as: git clone https://github.com/Danielhiversen/angleCorr_data.git testData
+
 -----------------------------------------------------------------------------
 Using
 -----------------------------------------------------------------------------
