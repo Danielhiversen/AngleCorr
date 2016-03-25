@@ -36,12 +36,12 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install homebrew/science/vtk5 ninja cmake; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq && sudo apt-get install -y libvtk5-dev ; fi
   - cd ..
-  - if ![[ -d "eigen" ]]; then  git clone git@github.com:RLovelett/eigen.git; fi
+  - if ![[ -d eigen ]]; then  git clone git@github.com:RLovelett/eigen.git; fi
   - cd eigen
   - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
   - cd ..
 script:
-  - if ![[ -d "testData" ]]; then  git clone https://github.com/Danielhiversen/angleCorr_data.git testData ; fi
+  - if ![[ -d testData ]]; then  git clone https://github.com/Danielhiversen/angleCorr_data.git testData ; fi
   - cd $TRAVIS_BUILD_DIR
   - mkdir -p build
   - cd build
