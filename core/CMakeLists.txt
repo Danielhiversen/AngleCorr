@@ -25,12 +25,11 @@ set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 
 
 ## Eigen
-if(NOT EIGEN_FOUND)
-    find_package(Eigen3 QUIET)
-    include_directories(${EIGEN3_INCLUDE_DIR} )
+if(NOT EIGEN_FOUND AND EIGEN_DIR)
+    include_directories(${EIGEN_DIR})
 elseif(NOT Eigen_FOUND)
-  include(${EIGEN_DIR}/cmake/FindEigen3.cmake)
-  set(Eigen_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
+    find_package(Eigen3 REQUIRED)
+    include_directories(${EIGEN3_INCLUDE_DIR} )
 endif()
 
 
