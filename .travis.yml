@@ -1,8 +1,8 @@
 sudo: true
 language: cpp
 cache:
-  - apt
-  - directories:
+  apt: true
+  directories:
     - eigen
     - testData
 matrix:
