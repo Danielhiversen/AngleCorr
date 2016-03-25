@@ -1,4 +1,4 @@
-# Angle Correction [![Build Status](https://travis-ci.com/Danielhiversen/AngleCorr.svg?token=VnLvwWiKx6V2ymqpgXFo&branch=master)](https://travis-ci.com/Danielhiversen/AngleCorr)
+# Angle Correction [![Build Status](https://travis-ci.com/SINTEFMedtek/AngleCorrection.svg?token=VnLvwWiKx6V2ymqpgXFo&branch=master)](https://travis-ci.com/SINTEFMedtek/AngleCorrection)
 
 The algorithm is described here: http://dx.doi.org/10.1109/TMI.2013.2261536
 
