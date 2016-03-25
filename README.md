@@ -23,15 +23,17 @@ These can be installed on a Debian GNU/Linux machine by issuing (as root)
 apt-get install libvtk5-dev libeigen3-dev g++-4.7 ninja-build cmake cmake-qt-gui git
 
 To build the program as a standalone algorithm:
+  - git clone  git@github.com:Danielhiversen/AngleCorr.git angelCorr
+  - mkdir -p build; cd build
+  - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DANGLECORRECTION_TEST_DATA_DIR=../testData/ ../angelCorr/core/
+  - ninja
 
-git clone  git@github.com:SINTEFMedtek/AngleCorrection.git angelCorr
-
-mkdir -p build; cd build
-
-cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DANGLECORRECTION_TEST_DATA_DIR=../testData/ ../angelCorr/core/
-
-ninja
-
+Problems with the Eigen library?
+Try:
+  - git clone git@github.com:RLovelett/eigen.git
+  - cd eigen
+  - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
+  - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -DEIGEN_DIR=PATH_TO_EIGEN ../core/
 
 -----------------------------------------------------------------------------
 Using
