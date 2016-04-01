@@ -27,7 +27,7 @@ set(LIBRARIES ${LIBRARIES} ${VTK_LIBRARIES})
 ## Eigen
 if(NOT EIGEN_FOUND AND EIGEN_DIR)
     include_directories(${EIGEN_DIR})
-elseif(NOT Eigen_FOUND)
+elseif(NOT EIGEN_FOUND)
     find_package(Eigen3 REQUIRED)
     include_directories(${EIGEN3_INCLUDE_DIR} )
 endif()
