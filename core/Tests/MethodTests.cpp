@@ -173,7 +173,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correctio
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_correction][unit]")
+//TODO: Test disabled from now. Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_correction]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
@@ -189,7 +190,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_corr
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][integration][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][integration]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751/US-Acq_02_20150527T125751_Velocity_";
@@ -253,7 +255,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 5", "[angle_correctio
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 5 unit", "[angle_correction][unit][flow_dir]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 5 unit", "[angle_correction][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229/US-Acq_05_20150527T130229_Velocity_";
@@ -316,7 +319,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing", "[angle
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing, unit", "[angle_correction][unit][aliasing]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing, unit", "[angle_correction][aliasing]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558/US-Acq_08_20150527T130558_Velocity_";
@@ -363,7 +367,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 10, cross movement", 
 }
 
 
-TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/NonExisting.vtk";
@@ -887,7 +892,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle
     REQUIRE(angleCorr.getNumOfStepsRan()==1);
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "[angle_correction][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "[angle_correction]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity_";
@@ -956,7 +962,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "
 
 }
 
-TEST_CASE("AngleCorrection: Test error handler", "[angle_correction][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test error handler", "[angle_correction]")
 {
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
 
