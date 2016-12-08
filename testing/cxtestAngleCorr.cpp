@@ -39,7 +39,7 @@ TestAngleCorrFixture::TestAngleCorrFixture() : mw(NULL), angleCorrWidget(NULL)
     logger = cx::MessageListener::create();
     logger->setMessageQueueMaxSize(200);
 
-    cx::sessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
+	cx::logicManager()->getSessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
 }
 
 void TestAngleCorrFixture::runApp(int milliseconds)
