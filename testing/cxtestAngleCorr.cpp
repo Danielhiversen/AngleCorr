@@ -213,7 +213,7 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
 // --------------------------------------------------------
 // --------------------------------------------------------
 
-TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correction_gui][angle_correction][integration]")
+TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correction_gui][angle_correction]")
 {
     cxtest::TestAngleCorrFixture fixture;
 
