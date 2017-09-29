@@ -38,7 +38,7 @@ before_install:
   - cd ..
   - if [[ ! -d "eigen" ]]; then  git clone git@github.com:RLovelett/eigen.git; fi
   - cd eigen
-  - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
+  - git checkout '3.2.10'
   - cd ..
 script:
   - if [[ ! -d "testData" ]]; then  git clone https://github.com/Danielhiversen/angleCorr_data.git testData ; fi
