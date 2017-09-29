@@ -39,7 +39,7 @@ TestAngleCorrFixture::TestAngleCorrFixture() : mw(NULL), angleCorrWidget(NULL)
     logger = cx::MessageListener::create();
     logger->setMessageQueueMaxSize(200);
 
-    cx::sessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
+	cx::logicManager()->getSessionStorageService()->load(cx::DataLocations::getTestDataPath()+ "/temp/angleCorr/");
 }
 
 void TestAngleCorrFixture::runApp(int milliseconds)
@@ -163,14 +163,14 @@ void validateFiles(const char* filename_a,const char* filename_b, bool shouldBeE
     REQUIRE(all_equal== shouldBeEqual);
 }
 
-char * appendTestFolder(const char * filename){
-    char anglecorrection_test_data_dir[]=ANGLECORRECTION_TEST_DATA_DIR;
-    char * newArray = new char[std::strlen(anglecorrection_test_data_dir)+std::strlen(filename)+1];
-    std::strcpy(newArray,anglecorrection_test_data_dir);
-    std::strcat(newArray,filename);
+//char * appendTestFolder(const char * filename){
+//    char anglecorrection_test_data_dir[]=ANGLECORRECTION_TEST_DATA_DIR;
+//    char * newArray = new char[std::strlen(anglecorrection_test_data_dir)+std::strlen(filename)+1];
+//    std::strcpy(newArray,anglecorrection_test_data_dir);
+//    std::strcat(newArray,filename);
 
-    return newArray;
-}
+//    return newArray;
+//}
 
 
 
@@ -204,14 +204,16 @@ void testFlow(cxtest::TestAngleCorrFixture fixture, QString centerline, QString 
     REQUIRE_NOTHROW(fixture.angleCorrWidget->toggleDetailsSlot());
 
     QString outputFilepath = fixture.getActivePatientFolder() +"/"+fixture.angleCorrWidget->getOutData()->getFilename();
-    validateFiles(outputFilepath.toStdString().c_str(),appendTestFolder(true_output.toStdString().c_str()));
+
+	QString true_output_full_path = cx::DataLocations::getLargeTestDataPath()+ "/testing"+true_output;
+	validateFiles(outputFilepath.toStdString().c_str(), true_output_full_path.toStdString().c_str());
 }
 
 // --------------------------------------------------------
 // --------------------------------------------------------
 // --------------------------------------------------------
 
-TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correction_gui][angle_correction][integration]")
+TEST_CASE("AngleCorrection: Test gui plugin with several runs", "[angle_correction_gui][angle_correction]")
 {
     cxtest::TestAngleCorrFixture fixture;
 

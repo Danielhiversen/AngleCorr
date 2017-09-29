@@ -173,7 +173,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 1", "[angle_correctio
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_correction][unit]")
+//TODO: Test disabled from now. Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_correction]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_01_20150527T125724_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_01_20150527T125724_raw/US-Acq_01_20150527T125724_Velocity_";
@@ -189,7 +190,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 1 unit", "[angle_corr
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][integration][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correction][flow_dir][not_integration]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150527T125751_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150527T125751/US-Acq_02_20150527T125751_Velocity_";
@@ -205,7 +207,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 2", "[angle_correctio
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 3", "[angle_correction][integration][flow_dir][not_apple]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 3", "[angle_correction][not_integration][flow_dir][not_apple]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_03_20150527T130026_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_03_20150527T130026/US-Acq_03_20150527T130026_Velocity_";
@@ -221,7 +224,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 3", "[angle_correctio
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 4", "[angle_correction][integration][flow_dir]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 4", "[angle_correction][not_integration][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_04_20150527T130043_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_04_20150527T130043/US-Acq_04_20150527T130043_Velocity_";
@@ -237,7 +241,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 4", "[angle_correctio
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 5", "[angle_correction][integration][flow_dir]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 5", "[angle_correction][not_integration][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229/US-Acq_05_20150527T130229_Velocity_";
@@ -253,7 +258,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 5", "[angle_correctio
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 5 unit", "[angle_correction][unit][flow_dir]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 5 unit", "[angle_correction][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_05_20150527T130229_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_05_20150527T130229/US-Acq_05_20150527T130229_Velocity_";
@@ -269,7 +275,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 5 unit", "[angle_corr
 
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 6", "[angle_correction][integration][flow_dir]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 6", "[angle_correction][not_integration][flow_dir]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_06_20150527T130329_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_06_20150527T130329/US-Acq_06_20150527T130329_Velocity_";
@@ -285,7 +292,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 6", "[angle_correctio
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 7, aliasing", "[angle_correction][integration][aliasing]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 7, aliasing", "[angle_correction][not_integration][aliasing][not_apple]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_07_20150527T130532_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_07_20150527T130532/US-Acq_07_20150527T130532_Velocity_";
@@ -301,7 +309,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 7, aliasing", "[angle
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing", "[angle_correction][integration][aliasing]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing", "[angle_correction][not_integration][aliasing]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558/US-Acq_08_20150527T130558_Velocity_";
@@ -316,7 +325,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing", "[angle
     testFlow(centerline, image_prefix,  Vnyq,  cutoff,  nConvolutions, true_output);
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing, unit", "[angle_correction][unit][aliasing]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing, unit", "[angle_correction][aliasing]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_08_20150527T130558_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_08_20150527T130558/US-Acq_08_20150527T130558_Velocity_";
@@ -331,7 +341,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 8, aliasing, unit", "
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation 9, cross movement", "[angle_correction][integration]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation 9, cross movement", "[angle_correction][not_integration]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_09_20150527T131009_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_09_20150527T131009/US-Acq_09_20150527T131009_Velocity_";
@@ -363,7 +374,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation 10, cross movement", 
 }
 
 
-TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/NonExisting.vtk";
@@ -441,7 +453,8 @@ TEST_CASE("AngleCorrection: Test Invalid parameters", "[angle_correction][unit]"
 }
 
 
-TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][not_integration]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_10_20150527T131055/US-Acq_10_20150527T131055_Velocity_";
@@ -547,7 +560,8 @@ TEST_CASE("AngleCorrection: Test several runs", "[angle_correction][integration]
 }
 
 
-TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][integration][not_apple]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test several runs cl pointer input", "[angle_correction][not_integration][not_apple]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
@@ -789,7 +803,8 @@ TEST_CASE("AngleCorrection: Benchmark", "[angle_correction][Benchmark]")
 }
 
 
-TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_correction][integration][simple]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_correction][not_integration][simple]")
 {
     
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_10_20150527T131055_Angio_1_tsf_cl1.vtk";
@@ -845,7 +860,8 @@ TEST_CASE("AngleCorrection: Test several runs cl pointer input simple", "[angle_
 }
 
 
-TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle_correction][integration]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle_correction][not_integration]")
 {
     const char* filename_a ="/flowdirection_test_11_a.vtk";
 
@@ -887,7 +903,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data", "[angle
     REQUIRE(angleCorr.getNumOfStepsRan()==1);
 }
 
-TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "[angle_correction][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "[angle_correction]")
 {
     char centerline[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/Images/US_02_20150625T105554_Angio_1_tsf_cl1.vtk";
     char image_prefix[] = "/2015-05-27_12-02_AngelCorr_tets.cx3/US_Acq/US-Acq_02_20150625T105554/US-Acq_02_20150625T105554_Velocity_";
@@ -956,7 +973,8 @@ TEST_CASE("AngleCorrection: Test flow direction estimation tumour data, unit", "
 
 }
 
-TEST_CASE("AngleCorrection: Test error handler", "[angle_correction][unit]")
+//TODO: Duplicate test in testing/cxtestAngleCorr
+TEST_CASE("AngleCorrection: Test error handler", "[angle_correction]")
 {
     vtkSmartPointer<ErrorObserver>  errorObserver =  vtkSmartPointer<ErrorObserver>::New();
 

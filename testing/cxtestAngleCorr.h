@@ -2,7 +2,7 @@
 #define CXTESTANGLECORR_H
 
 #include "cxMessageListener.h"
-#include "cxLogicManager.h"
+#include "cxForwardDeclarations.h"
 
 
 namespace cx
