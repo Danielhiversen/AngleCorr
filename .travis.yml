@@ -1,6 +1,6 @@
 language: cpp
 cache:
-  apt: false
+  apt: true
   directories:
     - eigen
     - testData
@@ -18,21 +18,21 @@ matrix:
       addons:
         apt:
           sources: [ 'ubuntu-toolchain-r-test', 'kalakris-cmake' ]
-          packages: [ 'g++-4.8', 'libstdc++-4.8-dev', 'ninja-build', 'cmake' ]
+          packages: [ 'g++-4.8', 'libstdc++-4.8-dev', 'ninja-build', 'cmake', 'libvtk5-dev' ]
       env: CMAKE_BUILD_TYPE=RELEASE
     - os: linux
       compiler: clang
       addons:
         apt:
           sources: [ 'ubuntu-toolchain-r-test', 'kalakris-cmake' ]
-          packages: [ 'clang', 'libstdc++-4.8-dev', 'ninja-build', 'cmake' ]
+          packages: [ 'clang', 'libstdc++-4.8-dev', 'ninja-build', 'cmake', 'libvtk5-dev' ]
       env: CMAKE_BUILD_TYPE=RELEASE
 #    - os: osx
 #      compiler: clang
 #      env: CMAKE_BUILD_TYPE=RELEASE
 # command to run tests
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install homebrew/science/vtk5 ninja cmake; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install homebrew/science/vtk5 ninja cmake; fi
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get clean && sudo apt-get update -qq && sudo apt-get install -y libvtk5-dev ; fi
   - cd ..
   - if [[ ! -d "eigen" ]]; then  git clone https://github.com/RLovelett/eigen.git; fi
