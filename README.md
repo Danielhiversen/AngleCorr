@@ -1,4 +1,4 @@
-# Angle Correction [![Build Status](https://travis-ci.com/Danielhiversen/AngleCorr.svg?token=VnLvwWiKx6V2ymqpgXFo&branch=master)](https://travis-ci.com/Danielhiversen/AngleCorr)
+# Angle Correction [![Build Status](https://travis-ci.org/Danielhiversen/AngleCorr.svg?branch=master)](https://travis-ci.org/Danielhiversen/AngleCorr)
 
 The algorithm is described here: http://dx.doi.org/10.1109/TMI.2013.2261536
 
@@ -32,7 +32,7 @@ Problems with the Eigen library?
 Try:
   - git clone git@github.com:RLovelett/eigen.git
   - cd eigen
-  - git checkout 36cd8ffd9dfcdded4717efb96daad9f6353f6351
+  - git checkout 3.2.10
   - cmake -G "Ninja" -DANGLECORRECTION_TEST_DATA_DIR=../testData/ -DEIGEN_DIR=PATH_TO_EIGEN ../core/
 
 
