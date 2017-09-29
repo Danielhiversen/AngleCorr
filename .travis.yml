@@ -11,7 +11,7 @@ matrix:
       addons:
         apt:
           sources: [ 'ubuntu-toolchain-r-test', 'kalakris-cmake' ]
-          packages: [ 'g++-4.8', 'libstdc++-4.8-dev', 'ninja-build', 'cmake' 'libvtk5-dev']
+          packages: [ 'g++-4.8', 'libstdc++-4.8-dev', 'ninja-build', 'cmake', 'libvtk5-dev']
       env: CMAKE_BUILD_TYPE=DEBUG
     - os: linux
       compiler: gcc
