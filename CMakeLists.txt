@@ -81,6 +81,10 @@ target_include_directories(org_custusx_anglecorrection
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+
+cx_doc_define_plugin_user_docs("${PROJECT_NAME}" "${CMAKE_CURRENT_SOURCE_DIR}/doc")
+cx_add_non_source_file("doc/org.custusx.anglecorrection.md")
+
 if(BUILD_TESTING)
     option(BUILD_TESTS_CX_ANGLECORR "Build cx angleCorr core tests." ON)
     mark_as_advanced(BUILD_TESTS_CX_ANGLECORR)
