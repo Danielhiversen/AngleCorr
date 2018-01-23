@@ -1,9 +1,12 @@
-Dicom plugin {#org_custusx_anglecorrection}
+Angle correction {#org_custusx_anglecorrection}
 ===================
+
+
+\addindex AngleCorrectionWidget
 
 Overview {#org_custusx_anglecorrection_overview}
 ========================
 
 An algorithm for estimating the flow direction and angle corrected velocities in blood vessels.
 
-The algorithm is described further here: http://dx.doi.org/10.1109/TMI.2013.2261536
+The algorithm is described further here: https://github.com/Danielhiversen/AngleCorr
